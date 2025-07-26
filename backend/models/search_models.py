@@ -63,9 +63,44 @@ class SearchHistory(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     search_term: str
     suggestions_count: int
+    company_id: str = Field(..., description="ID of the company this search belongs to")
+    user_id: str = Field(..., description="ID of the user who performed the search")
     created_at: datetime = Field(default_factory=datetime.utcnow)
     ip_address: Optional[str] = None
     user_agent: Optional[str] = None
+
+class Company(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str = Field(..., min_length=1, max_length=100, description="Company name")
+    user_id: str = Field(..., description="ID of the user who owns this company")
+    is_personal: bool = Field(default=False, description="Whether this is the default Personal company")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "id": "123e4567-e89b-12d3-a456-426614174000",
+                "name": "My Marketing Agency",
+                "user_id": "user_123",
+                "is_personal": False,
+                "created_at": "2025-01-16T10:30:00Z",
+                "updated_at": "2025-01-16T10:30:00Z"
+            }
+        }
+
+class CompanyCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100, description="Company name")
+    
+class CompanyUpdate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100, description="Updated company name")
+
+class DashboardStats(BaseModel):
+    total_searches: int = 0
+    recent_searches: List[Dict] = Field(default_factory=list, description="Recent searches with details")
+    popular_terms: List[Dict[str, int]] = Field(default_factory=list)
+    search_trends: List[Dict] = Field(default_factory=list, description="Search trends over time")
+    company_info: Optional[Company] = None
 
 class SearchStats(BaseModel):
     total_searches: int = 0
