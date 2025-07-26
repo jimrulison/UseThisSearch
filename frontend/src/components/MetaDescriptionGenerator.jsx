@@ -109,113 +109,101 @@ const MetaDescriptionGenerator = ({ searchTerm, onError }) => {
   if (!isVisible) return null;
 
   return (
-    <Card className="mt-6 border-0 shadow-lg bg-gradient-to-br from-blue-50 to-teal-50">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xl flex items-center gap-2">
-            <FileText className="h-5 w-5 text-blue-600" />
-            SEO Meta Descriptions
-            <Badge className="bg-blue-600 text-white">
-              📝 New Feature
-            </Badge>
-          </CardTitle>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsVisible(false)}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            ✕
-          </Button>
+    <div className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-lg p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <FileText className="h-5 w-5 text-blue-600" />
+          <h4 className="text-xl font-semibold text-gray-800">SEO Meta Descriptions</h4>
+          <Badge className="bg-blue-600 text-white">
+            📝 New Feature
+          </Badge>
         </div>
-        <p className="text-sm text-gray-600 mt-2">
-          SEO-optimized meta descriptions for "<strong>{searchTerm}</strong>" - perfect for search engine results
-        </p>
-      </CardHeader>
+      </div>
+      <p className="text-sm text-gray-600 mb-6">
+        SEO-optimized meta descriptions for "<strong>{searchTerm}</strong>" - perfect for search engine results
+      </p>
       
-      <CardContent>
-        <div className="space-y-3">
-          {metaDescriptions.map((description, index) => {
-            const descLength = getDescriptionLength(description);
-            const lengthColor = getDescriptionLengthColor(descLength);
-            const status = getDescriptionStatus(descLength);
-            
-            return (
-              <div
-                key={index}
-                className="group p-4 bg-white rounded-lg border-2 border-blue-100 hover:border-blue-300 hover:shadow-md transition-all duration-200"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <p className="text-gray-800 leading-relaxed text-sm">
-                      {description}
-                    </p>
-                    <div className="flex items-center gap-4 mt-3 text-xs">
-                      <span className={`font-medium ${lengthColor}`}>
-                        {descLength} characters
-                      </span>
-                      <span className="text-gray-500">
-                        {status}
-                      </span>
-                    </div>
+      <div className="space-y-3">
+        {metaDescriptions.map((description, index) => {
+          const descLength = getDescriptionLength(description);
+          const lengthColor = getDescriptionLengthColor(descLength);
+          const status = getDescriptionStatus(descLength);
+          
+          return (
+            <div
+              key={index}
+              className="group p-4 bg-white rounded-lg border-2 border-blue-100 hover:border-blue-300 hover:shadow-md transition-all duration-200"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1">
+                  <p className="text-gray-800 leading-relaxed text-sm">
+                    {description}
+                  </p>
+                  <div className="flex items-center gap-4 mt-3 text-xs">
+                    <span className={`font-medium ${lengthColor}`}>
+                      {descLength} characters
+                    </span>
+                    <span className="text-gray-500">
+                      {status}
+                    </span>
                   </div>
-                  
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => copyToClipboard(description, index)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-blue-600 hover:text-blue-800 hover:bg-blue-100"
-                  >
-                    {copiedIndex === index ? (
-                      <Check className="h-4 w-4" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )}
-                  </Button>
                 </div>
+                
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => copyToClipboard(description, index)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-blue-600 hover:text-blue-800 hover:bg-blue-100"
+                >
+                  {copiedIndex === index ? (
+                    <Check className="h-4 w-4" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )}
+                </Button>
               </div>
-            );
-          })}
-        </div>
-        
-        <div className="mt-6 p-4 bg-blue-100 rounded-lg border border-blue-200">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-            <div>
-              <h4 className="font-semibold text-blue-800 mb-2">Meta Description Best Practices:</h4>
-              <ul className="text-sm text-blue-700 space-y-1">
-                <li>• <strong>150-160 characters</strong> is optimal (Google typically shows ~155)</li>
-                <li>• Include your <strong>target keyword</strong> naturally</li>
-                <li>• Write <strong>compelling copy</strong> that encourages clicks</li>
-                <li>• Make it <strong>unique</strong> for each page on your website</li>
-                <li>• Include a <strong>call-to-action</strong> when appropriate</li>
-              </ul>
             </div>
+          );
+        })}
+      </div>
+      
+      <div className="mt-6 p-4 bg-blue-100 rounded-lg border border-blue-200">
+        <div className="flex items-start gap-3">
+          <AlertCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+          <div>
+            <h4 className="font-semibold text-blue-800 mb-2">Meta Description Best Practices:</h4>
+            <ul className="text-sm text-blue-700 space-y-1">
+              <li>• <strong>150-160 characters</strong> is optimal (Google typically shows ~155)</li>
+              <li>• Include your <strong>target keyword</strong> naturally</li>
+              <li>• Write <strong>compelling copy</strong> that encourages clicks</li>
+              <li>• Make it <strong>unique</strong> for each page on your website</li>
+              <li>• Include a <strong>call-to-action</strong> when appropriate</li>
+            </ul>
           </div>
         </div>
+      </div>
 
-        <div className="mt-4 flex justify-center">
-          <Button
-            onClick={generateMetaDescriptions}
-            disabled={isGenerating}
-            variant="outline"
-            className="border-blue-300 text-blue-600 hover:bg-blue-50"
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <Wand2 className="mr-2 h-4 w-4" />
-                Generate New Descriptions
-              </>
-            )}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+      <div className="mt-4 flex justify-center">
+        <Button
+          onClick={generateMetaDescriptions}
+          disabled={isGenerating}
+          variant="outline"
+          className="border-blue-300 text-blue-600 hover:bg-blue-50"
+        >
+          {isGenerating ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Generating...
+            </>
+          ) : (
+            <>
+              <Wand2 className="mr-2 h-4 w-4" />
+              Generate New Descriptions
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
   );
 };
 
