@@ -167,8 +167,8 @@
 ### 📞 **NEXT STEPS**
 
 #### **Try Use This Search:**
-- **Main Application**: https://9a76a9ea-700d-47a3-88de-5159bbbee22e.preview.emergentagent.com
-- **Sales Sheet**: https://9a76a9ea-700d-47a3-88de-5159bbbee22e.preview.emergentagent.com/sales
+- **Main Application**: https://e04157fa-966a-4fb2-a3af-2dd71de7c7ee.preview.emergentagent.com
+- **Sales Sheet**: https://e04157fa-966a-4fb2-a3af-2dd71de7c7ee.preview.emergentagent.com/sales
 
 #### **Contact Information:**
 - **Demo**: Available instantly on the platform
