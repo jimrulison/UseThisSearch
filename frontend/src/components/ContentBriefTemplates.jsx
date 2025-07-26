@@ -396,29 +396,19 @@ Create an engaging video that explains ${searchTerm} concepts clearly, drives ch
   if (!isVisible) return null;
 
   return (
-    <Card className="mt-6 border-0 shadow-lg bg-gradient-to-br from-indigo-50 to-purple-50">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xl flex items-center gap-2">
-            <Target className="h-5 w-5 text-indigo-600" />
-            Content Brief Templates
-            <Badge className="bg-indigo-600 text-white">
-              🎯 New Feature
-            </Badge>
-          </CardTitle>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsVisible(false)}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            ✕
-          </Button>
+    <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Target className="h-5 w-5 text-indigo-600" />
+          <h4 className="text-xl font-semibold text-gray-800">Content Brief Templates</h4>
+          <Badge className="bg-indigo-600 text-white">
+            📋 New Feature
+          </Badge>
         </div>
-        <p className="text-sm text-gray-600 mt-2">
-          Professional content briefs for "<strong>{searchTerm}</strong>" - ready to send to writers and creators
-        </p>
-      </CardHeader>
+      </div>
+      <p className="text-sm text-gray-600 mb-6">
+        Professional content briefs for "<strong>{searchTerm}</strong>" - ready to send to writers and creators
+      </p>
       
       <CardContent>
         <Tabs defaultValue={Object.keys(contentBriefs)[0]} className="w-full">
