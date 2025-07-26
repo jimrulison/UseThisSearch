@@ -24,12 +24,48 @@ async def init_database():
         # Search history indexes
         await db.search_history.create_index("search_term")
         await db.search_history.create_index("created_at")
+        await db.search_history.create_index("user_id")
+        await db.search_history.create_index("company_id")
+        await db.search_history.create_index([("user_id", 1), ("company_id", 1), ("created_at", -1)])
         await db.search_history.create_index([("search_term", 1), ("created_at", -1)])
+        
+        # Company indexes
+        await db.companies.create_index("user_id")
+        await db.companies.create_index([("user_id", 1), ("name", 1)], unique=True)
+        await db.companies.create_index([("user_id", 1), ("is_personal", 1)])
         
         logger.info("Database indexes created successfully")
         
     except Exception as e:
         logger.error(f"Error initializing database: {e}")
+
+async def ensure_personal_company(user_id: str) -> str:
+    """Ensure user has a Personal company and return its ID"""
+    try:
+        # Check if user already has a Personal company
+        personal_company = await db.companies.find_one({
+            "user_id": user_id,
+            "is_personal": True
+        })
+        
+        if personal_company:
+            return personal_company["id"]
+        
+        # Create Personal company for user
+        from models.search_models import Company
+        personal_company = Company(
+            name="Personal",
+            user_id=user_id,
+            is_personal=True
+        )
+        
+        await db.companies.insert_one(personal_company.dict())
+        logger.info(f"Created Personal company for user: {user_id}")
+        return personal_company.id
+        
+    except Exception as e:
+        logger.error(f"Error ensuring personal company for user {user_id}: {e}")
+        raise
 
 async def close_database():
     """Close database connection"""
