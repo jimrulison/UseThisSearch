@@ -312,9 +312,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Hashtag Generator Tab"
+    []
   stuck_tasks:
-    - "Hashtag Generator Tab"
+    []
   test_all: false
   test_priority: "high_first"
 
