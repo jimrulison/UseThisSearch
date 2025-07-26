@@ -226,11 +226,37 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
         </div>
       )}
 
-      {/* Blog Title Generator - NEW FEATURE (completely isolated) */}
-      <BlogTitleGenerator 
-        searchTerm={searchTerm} 
-        onError={handleBlogTitleError}
-      />
+      {/* Content Creation Tools - NEW FEATURES (completely isolated) */}
+      <div className="space-y-4">
+        <div className="text-center">
+          <h3 className="text-2xl font-bold text-gray-800 mb-2">🚀 Content Creation Tools</h3>
+          <p className="text-gray-600">Transform your keyword research into ready-to-use content</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <BlogTitleGenerator 
+            searchTerm={searchTerm} 
+            onError={handleFeatureError}
+          />
+          <MetaDescriptionGenerator 
+            searchTerm={searchTerm} 
+            onError={handleFeatureError}
+          />
+          <SocialMediaPostCreator 
+            searchTerm={searchTerm} 
+            onError={handleFeatureError}
+          />
+          <FAQGenerator 
+            searchTerm={searchTerm} 
+            onError={handleFeatureError}
+          />
+        </div>
+        
+        <ContentBriefTemplates 
+          searchTerm={searchTerm} 
+          onError={handleFeatureError}
+        />
+      </div>
     </div>
   );
 };
