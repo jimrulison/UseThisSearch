@@ -10,6 +10,9 @@ from typing import List
 import uuid
 from datetime import datetime
 
+# Import new modules
+from .routes.search_routes import router as search_router
+from .database import init_database, close_database
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -20,13 +23,16 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # Create the main app without a prefix
-app = FastAPI()
+app = FastAPI(
+    title="AnswerThePublic Clone API",
+    description="AI-powered keyword research and question generation API",
+    version="1.0.0"
+)
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
-
-# Define Models
+# Define Models (keeping existing ones for compatibility)
 class StatusCheck(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     client_name: str
@@ -35,10 +41,10 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
-# Add your routes to the router instead of directly to app
+# Add existing routes (keeping for compatibility)
 @api_router.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "AnswerThePublic Clone API - Ready to generate keyword suggestions!"}
 
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
@@ -52,9 +58,22 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
+# Health check endpoint
+@api_router.get("/health")
+async def health_check():
+    return {
+        "status": "healthy",
+        "service": "AnswerThePublic Clone API",
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+# Include the search routes
+api_router.include_router(search_router, tags=["search"])
+
 # Include the router in the main app
 app.include_router(api_router)
 
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
@@ -70,6 +89,16 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database and services on startup"""
+    logger.info("Starting AnswerThePublic Clone API...")
+    await init_database()
+    logger.info("API startup complete!")
+
 @app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
+async def shutdown_event():
+    """Cleanup on shutdown"""
+    logger.info("Shutting down AnswerThePublic Clone API...")
+    await close_database()
+    logger.info("API shutdown complete!")
