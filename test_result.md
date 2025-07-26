@@ -125,15 +125,18 @@ backend:
 
   - task: "Multi-Company Database Schema"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/models/search_models.py, backend/database.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented new Company model and updated SearchHistory to include company_id and user_id fields. Added database indexes for company and user relationships. Created ensure_personal_company helper function to auto-create Personal company for users."
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Multi-company database schema working perfectly. Personal company auto-creation confirmed for all test users (test_user_marketing_pro, test_user_content_creator, test_user_seo_specialist). Database indexes created successfully. Company model with user_id and company_id associations working correctly. SearchHistory model properly updated with company and user relationships."
 
   - task: "Company Management API"
     implemented: true
