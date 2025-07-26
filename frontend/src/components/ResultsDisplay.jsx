@@ -132,7 +132,7 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
           >
             All ({totalSuggestions})
           </Button>
-          {Object.entries(results).map(([category, items]) => {
+          {Object.entries(sortedResults).map(([category, items]) => {
             const IconComponent = categoryIcons[category];
             return (
               <Button
