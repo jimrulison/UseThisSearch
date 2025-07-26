@@ -261,12 +261,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Claude AI Service Integration"
-    - "Search API Endpoint"
     - "Frontend API Integration"
     - "Graph Visualization Component"
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
 agent_communication:
