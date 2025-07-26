@@ -803,6 +803,49 @@ class BackendTester:
         except Exception as e:
             self.log_test("company_aware_search_integration", "fail", f"Company-aware search test error: {str(e)}")
     
+    def test_performance(self):
+        """Test performance and response times"""
+        print("\n=== Testing Performance ===")
+        
+        try:
+            # Test multiple concurrent-like requests
+            response_times = []
+            
+            for i in range(3):
+                payload = {"search_term": f"performance test {i+1}"}
+                start_time = time.time()
+                
+                response = self.session.post(f"{API_BASE}/search", json=payload)
+                
+                if response.status_code == 200:
+                    response_time = (time.time() - start_time) * 1000
+                    response_times.append(response_time)
+                    
+                    data = response.json()
+                    api_reported_time = data.get("processing_time_ms", 0)
+                    
+                    print(f"Request {i+1}: {response_time:.0f}ms total, {api_reported_time}ms API processing")
+                else:
+                    self.log_test("performance", "fail", 
+                                f"Performance test failed: HTTP {response.status_code}")
+                    return
+            
+            if response_times:
+                avg_time = sum(response_times) / len(response_times)
+                max_time = max(response_times)
+                
+                if max_time < 30000:  # 30 seconds
+                    self.log_test("performance", "pass", 
+                                f"Performance acceptable. Avg: {avg_time:.0f}ms, Max: {max_time:.0f}ms")
+                else:
+                    self.log_test("performance", "fail", 
+                                f"Performance too slow. Avg: {avg_time:.0f}ms, Max: {max_time:.0f}ms")
+            else:
+                self.log_test("performance", "fail", "No successful performance tests")
+                
+        except Exception as e:
+            self.log_test("performance", "fail", f"Performance test error: {str(e)}")
+    
     
     def run_all_tests(self):
         """Run all backend tests"""
