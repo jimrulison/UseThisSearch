@@ -1,38 +1,82 @@
-import { useEffect } from "react";
-import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Toaster } from './components/ui/toaster';
+import SearchInterface from './components/SearchInterface';
+import ResultsDisplay from './components/ResultsDisplay';
+import { generateMockResults } from './data/mockData';
+import { useToast } from './hooks/use-toast';
+import './App.css';
 
 const Home = () => {
-  const helloWorldApi = async () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [results, setResults] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [viewMode, setViewMode] = useState('graph');
+  const { toast } = useToast();
+
+  const handleSearch = async (term) => {
+    setIsLoading(true);
+    
     try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
+      // Simulate API delay for realistic experience
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const mockResults = generateMockResults(term);
+      setResults(mockResults);
+      
+      const totalSuggestions = Object.values(mockResults).reduce((total, items) => total + items.length, 0);
+      
+      toast({
+        title: "Search Complete!",
+        description: `Found ${totalSuggestions} suggestions for "${term}"`,
+        duration: 3000,
+      });
+      
+    } catch (error) {
+      console.error('Search error:', error);
+      toast({
+        title: "Search Failed",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="container mx-auto px-4 py-8 space-y-8">
+        <SearchInterface 
+          onSearch={handleSearch}
+          isLoading={isLoading}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+        />
+        
+        {results && (
+          <ResultsDisplay 
+            results={results}
+            searchTerm={searchTerm}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+          />
+        )}
+        
+        {/* Footer */}
+        <footer className="text-center text-muted-foreground mt-16 pb-8">
+          <p className="text-sm">
+            🚀 **Note**: This is currently using mock data for demonstration. 
+            The backend will integrate with Claude AI for real-time question generation.
+          </p>
+          <p className="text-xs mt-2 opacity-75">
+            Built with React, FastAPI, and MongoDB • Powered by Claude AI
+          </p>
+        </footer>
+      </div>
+      
+      <Toaster />
     </div>
   );
 };
@@ -42,9 +86,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
+          <Route path="/" element={<Home />} />
         </Routes>
       </BrowserRouter>
     </div>

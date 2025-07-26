@@ -1,0 +1,171 @@
+import React, { useState } from 'react';
+import { Download, BarChart3, List, Search, MessageCircleQuestion, ArrowRight, Hash } from 'lucide-react';
+import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Badge } from './ui/badge';
+import GraphVisualization from './GraphVisualization';
+import { Separator } from './ui/separator';
+
+const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  if (!results || Object.keys(results).length === 0) {
+    return null;
+  }
+
+  const handleExportCSV = () => {
+    const csvData = [];
+    csvData.push(['Category', 'Type', 'Question/Phrase', 'Search Term']);
+    
+    Object.entries(results).forEach(([category, items]) => {
+      items.forEach(item => {
+        csvData.push([category, category, item, searchTerm]);
+      });
+    });
+
+    const csvContent = csvData.map(row => 
+      row.map(cell => `"${cell}"`).join(',')
+    ).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `answerthepublic-${searchTerm}-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+  };
+
+  const totalSuggestions = Object.values(results).reduce((total, items) => total + items.length, 0);
+
+  const categoryColors = {
+    questions: 'bg-blue-100 text-blue-800 border-blue-200',
+    prepositions: 'bg-green-100 text-green-800 border-green-200',
+    comparisons: 'bg-purple-100 text-purple-800 border-purple-200',
+    alphabetical: 'bg-orange-100 text-orange-800 border-orange-200'
+  };
+
+  const categoryIcons = {
+    questions: MessageCircleQuestion,
+    prepositions: ArrowRight,
+    comparisons: BarChart3,
+    alphabetical: Hash
+  };
+
+  return (
+    <div className="w-full max-w-7xl mx-auto space-y-6">
+      {/* Results Header */}
+      <Card className="border-0 shadow-lg bg-gradient-to-r from-blue-50 to-purple-50">
+        <CardHeader>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <CardTitle className="text-2xl font-bold text-gray-800">
+                Results for "{searchTerm}"
+              </CardTitle>
+              <p className="text-muted-foreground mt-1">
+                Found {totalSuggestions} suggestions across {Object.keys(results).length} categories
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setViewMode(viewMode === 'graph' ? 'list' : 'graph')}
+                className="flex items-center gap-2"
+              >
+                {viewMode === 'graph' ? (
+                  <>
+                    <List className="h-4 w-4" />
+                    List View
+                  </>
+                ) : (
+                  <>
+                    <BarChart3 className="h-4 w-4" />
+                    Graph View
+                  </>
+                )}
+              </Button>
+              <Button 
+                onClick={handleExportCSV}
+                className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Export CSV
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
+
+      {/* View Toggle & Category Filter */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant={selectedCategory === 'all' ? 'default' : 'outline'}
+            onClick={() => setSelectedCategory('all')}
+            size="sm"
+          >
+            All ({totalSuggestions})
+          </Button>
+          {Object.entries(results).map(([category, items]) => {
+            const IconComponent = categoryIcons[category];
+            return (
+              <Button
+                key={category}
+                variant={selectedCategory === category ? 'default' : 'outline'}
+                onClick={() => setSelectedCategory(category)}
+                size="sm"
+                className="flex items-center gap-1 capitalize"
+              >
+                {IconComponent && <IconComponent className="h-3 w-3" />}
+                {category.replace('_', ' ')} ({items.length})
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Results Content */}
+      {viewMode === 'graph' ? (
+        <GraphVisualization 
+          results={results} 
+          searchTerm={searchTerm}
+          selectedCategory={selectedCategory}
+        />
+      ) : (
+        <div className="grid gap-6">
+          {Object.entries(results)
+            .filter(([category]) => selectedCategory === 'all' || selectedCategory === category)
+            .map(([category, items]) => {
+              const IconComponent = categoryIcons[category];
+              return (
+                <Card key={category} className="shadow-lg border-0">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-xl capitalize">
+                      {IconComponent && <IconComponent className="h-5 w-5 text-blue-600" />}
+                      {category.replace('_', ' ')}
+                      <Badge variant="secondary" className="ml-2">
+                        {items.length}
+                      </Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {items.map((item, index) => (
+                        <div
+                          key={index}
+                          className={`p-3 rounded-lg border-2 ${categoryColors[category]} hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105`}
+                        >
+                          <p className="font-medium text-sm">{item}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ResultsDisplay;
