@@ -44,6 +44,31 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
     alphabetical: 'bg-orange-100 text-orange-800 border-orange-200'
   };
 
+  const popularityColors = {
+    HIGH: 'bg-red-100 text-red-800 border-red-200',
+    MEDIUM: 'bg-yellow-100 text-yellow-800 border-yellow-200', 
+    LOW: 'bg-gray-100 text-gray-800 border-gray-200'
+  };
+
+  const popularityIcons = {
+    HIGH: '🔥',
+    MEDIUM: '🔸',
+    LOW: '🔹'
+  };
+
+  // Sort results by popularity within each category
+  const sortedResults = {};
+  Object.entries(results).forEach(([category, items]) => {
+    const popularityOrder = { 'HIGH': 0, 'MEDIUM': 1, 'LOW': 2 };
+    sortedResults[category] = [...items].sort((a, b) => {
+      const aPopularity = typeof a === 'object' ? a.popularity : 'MEDIUM';
+      const bPopularity = typeof b === 'object' ? b.popularity : 'MEDIUM';
+      return popularityOrder[aPopularity] - popularityOrder[bPopularity];
+    });
+  });
+
+  const displayResults = selectedCategory === 'all' ? sortedResults : { [selectedCategory]: sortedResults[selectedCategory] || [] };
+
   const categoryIcons = {
     questions: MessageCircleQuestion,
     prepositions: ArrowRight,
