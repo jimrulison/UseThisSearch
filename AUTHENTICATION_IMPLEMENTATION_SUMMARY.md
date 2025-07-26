@@ -47,17 +47,17 @@
 ## 🌐 **LIVE APPLICATION URLS**
 
 ### **🔗 Main Application (Protected):**
-**https://e04157fa-966a-4fb2-a3af-2dd71de7c7ee.preview.emergentagent.com**
+**https://42013ce2-ebe6-4b19-8988-9b215d1da0b9.preview.emergentagent.com**
 - **Requires login** to access
 - **Demo credentials**: Any valid email + password (6+ characters)
 
 ### **📊 Sales Sheet (Public):**
-**https://e04157fa-966a-4fb2-a3af-2dd71de7c7ee.preview.emergentagent.com/sales**
+**https://42013ce2-ebe6-4b19-8988-9b215d1da0b9.preview.emergentagent.com/sales**
 - **Public access** - no login required
 - **"Sign In to Access Tool"** button in top-right corner
 
 ### **🔑 Login Page:**
-**https://e04157fa-966a-4fb2-a3af-2dd71de7c7ee.preview.emergentagent.com/login**
+**https://42013ce2-ebe6-4b19-8988-9b215d1da0b9.preview.emergentagent.com/login**
 - **Professional login/signup form**
 - **Demo mode** - accepts any valid credentials
 
