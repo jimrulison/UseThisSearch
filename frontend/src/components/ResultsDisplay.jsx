@@ -131,6 +131,14 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
                 )}
               </Button>
               <Button 
+                variant="outline"
+                onClick={() => setViewMode('guide')}
+                className={`flex items-center gap-2 ${viewMode === 'guide' ? 'bg-blue-100 text-blue-700 border-blue-300' : ''}`}
+              >
+                <BookOpen className="h-4 w-4" />
+                Expert Guide
+              </Button>
+              <Button 
                 onClick={handleExportCSV}
                 className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
               >
