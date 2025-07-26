@@ -139,132 +139,120 @@ const SocialMediaPostCreator = ({ searchTerm, onError }) => {
   if (!isVisible) return null;
 
   return (
-    <Card className="mt-6 border-0 shadow-lg bg-gradient-to-br from-pink-50 to-rose-50">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xl flex items-center gap-2">
-            <Share2 className="h-5 w-5 text-pink-600" />
-            Social Media Posts
-            <Badge className="bg-pink-600 text-white">
-              📱 New Feature
-            </Badge>
-          </CardTitle>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsVisible(false)}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            ✕
-          </Button>
+    <div className="bg-gradient-to-br from-pink-50 to-rose-50 rounded-lg p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Share2 className="h-5 w-5 text-pink-600" />
+          <h4 className="text-xl font-semibold text-gray-800">Social Media Posts</h4>
+          <Badge className="bg-pink-600 text-white">
+            📱 New Feature
+          </Badge>
         </div>
-        <p className="text-sm text-gray-600 mt-2">
-          Ready-to-post content for all major platforms based on "<strong>{searchTerm}</strong>"
-        </p>
-      </CardHeader>
+      </div>
+      <p className="text-sm text-gray-600 mb-6">
+        Ready-to-post content for all major platforms based on "<strong>{searchTerm}</strong>"
+      </p>
       
-      <CardContent>
-        <Tabs defaultValue="twitter" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            {Object.keys(socialPosts).map((platform) => {
-              const Icon = getPlatformIcon(platform);
-              return (
-                <TabsTrigger key={platform} value={platform} className="flex items-center gap-1 capitalize">
-                  <Icon className={`h-4 w-4 ${getPlatformColor(platform)}`} />
-                  {platform}
-                </TabsTrigger>
-              );
-            })}
-          </TabsList>
-          
-          {Object.entries(socialPosts).map(([platform, posts]) => (
-            <TabsContent key={platform} value={platform} className="mt-4">
-              <div className="space-y-3">
-                {posts.map((post, index) => {
-                  const charCount = getCharacterCount(post);
-                  const charLimit = getCharacterLimit(platform);
-                  const isOverLimit = charCount > charLimit;
-                  
-                  return (
-                    <div
-                      key={index}
-                      className="group p-4 bg-white rounded-lg border-2 border-pink-100 hover:border-pink-300 hover:shadow-md transition-all duration-200"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-1">
-                          <pre className="whitespace-pre-wrap font-sans text-gray-800 text-sm leading-relaxed">
-                            {post}
-                          </pre>
-                          <div className="flex items-center gap-4 mt-3 text-xs">
-                            <span className={`font-medium ${isOverLimit ? 'text-red-600' : 'text-green-600'}`}>
-                              {charCount}/{charLimit} characters
-                            </span>
-                            {platform === 'twitter' && (
-                              <span className="text-gray-500">
-                                {isOverLimit ? '❌ Too long for Twitter' : '✅ Perfect length'}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => copyToClipboard(post, platform, index)}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-pink-600 hover:text-pink-800 hover:bg-pink-100"
-                        >
-                          {copiedPost === `${platform}-${index}` ? (
-                            <Check className="h-4 w-4" />
-                          ) : (
-                            <Copy className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </TabsContent>
-          ))}
-        </Tabs>
+      <Tabs defaultValue="twitter" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          {Object.keys(socialPosts).map((platform) => {
+            const Icon = getPlatformIcon(platform);
+            return (
+              <TabsTrigger key={platform} value={platform} className="flex items-center gap-1 capitalize">
+                <Icon className={`h-4 w-4 ${getPlatformColor(platform)}`} />
+                {platform}
+              </TabsTrigger>
+            );
+          })}
+        </TabsList>
         
-        <div className="mt-6 p-4 bg-pink-100 rounded-lg border border-pink-200">
-          <div className="flex items-start gap-3">
-            <Share2 className="h-5 w-5 text-pink-600 mt-0.5 flex-shrink-0" />
-            <div>
-              <h4 className="font-semibold text-pink-800 mb-2">Social Media Best Practices:</h4>
-              <ul className="text-sm text-pink-700 space-y-1">
-                <li>• <strong>Twitter:</strong> Keep it under 280 characters, use relevant hashtags</li>
-                <li>• <strong>LinkedIn:</strong> Professional tone, add value to your network</li>
-                <li>• <strong>Facebook:</strong> Engaging content that encourages comments</li>
-                <li>• <strong>Instagram:</strong> Visual-friendly copy with strategic hashtags</li>
-              </ul>
+        {Object.entries(socialPosts).map(([platform, posts]) => (
+          <TabsContent key={platform} value={platform} className="mt-4">
+            <div className="space-y-3">
+              {posts.map((post, index) => {
+                const charCount = getCharacterCount(post);
+                const charLimit = getCharacterLimit(platform);
+                const isOverLimit = charCount > charLimit;
+                
+                return (
+                  <div
+                    key={index}
+                    className="group p-4 bg-white rounded-lg border-2 border-pink-100 hover:border-pink-300 hover:shadow-md transition-all duration-200"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <pre className="whitespace-pre-wrap font-sans text-gray-800 text-sm leading-relaxed">
+                          {post}
+                        </pre>
+                        <div className="flex items-center gap-4 mt-3 text-xs">
+                          <span className={`font-medium ${isOverLimit ? 'text-red-600' : 'text-green-600'}`}>
+                            {charCount}/{charLimit} characters
+                          </span>
+                          {platform === 'twitter' && (
+                            <span className="text-gray-500">
+                              {isOverLimit ? '❌ Too long for Twitter' : '✅ Perfect length'}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => copyToClipboard(post, platform, index)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-pink-600 hover:text-pink-800 hover:bg-pink-100"
+                      >
+                        {copiedPost === `${platform}-${index}` ? (
+                          <Check className="h-4 w-4" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
+          </TabsContent>
+        ))}
+      </Tabs>
+      
+      <div className="mt-6 p-4 bg-pink-100 rounded-lg border border-pink-200">
+        <div className="flex items-start gap-3">
+          <Share2 className="h-5 w-5 text-pink-600 mt-0.5 flex-shrink-0" />
+          <div>
+            <h4 className="font-semibold text-pink-800 mb-2">Social Media Best Practices:</h4>
+            <ul className="text-sm text-pink-700 space-y-1">
+              <li>• <strong>Twitter:</strong> Keep it under 280 characters, use relevant hashtags</li>
+              <li>• <strong>LinkedIn:</strong> Professional tone, add value to your network</li>
+              <li>• <strong>Facebook:</strong> Engaging content that encourages comments</li>
+              <li>• <strong>Instagram:</strong> Visual-friendly copy with strategic hashtags</li>
+            </ul>
           </div>
         </div>
+      </div>
 
-        <div className="mt-4 flex justify-center">
-          <Button
-            onClick={generateSocialPosts}
-            disabled={isGenerating}
-            variant="outline"
-            className="border-pink-300 text-pink-600 hover:bg-pink-50"
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <Wand2 className="mr-2 h-4 w-4" />
-                Generate New Posts
-              </>
-            )}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+      <div className="mt-4 flex justify-center">
+        <Button
+          onClick={generateSocialPosts}
+          disabled={isGenerating}
+          variant="outline"
+          className="border-pink-300 text-pink-600 hover:bg-pink-50"
+        >
+          {isGenerating ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Generating...
+            </>
+          ) : (
+            <>
+              <Wand2 className="mr-2 h-4 w-4" />
+              Generate New Posts
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
   );
 };
 
