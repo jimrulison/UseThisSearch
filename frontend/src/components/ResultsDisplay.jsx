@@ -129,8 +129,10 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
             variant={selectedCategory === 'all' ? 'default' : 'outline'}
             onClick={() => setSelectedCategory('all')}
             size="sm"
+            className="flex items-center gap-1"
           >
-            All ({totalSuggestions})
+            <span>🔥</span>
+            All - Ranked by Popularity ({totalSuggestions})
           </Button>
           {Object.entries(sortedResults).map(([category, items]) => {
             const IconComponent = categoryIcons[category];
