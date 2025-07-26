@@ -159,7 +159,7 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
         />
       ) : (
         <div className="grid gap-6">
-          {Object.entries(results)
+          {Object.entries(sortedResults)
             .filter(([category]) => selectedCategory === 'all' || selectedCategory === category)
             .map(([category, items]) => {
               const IconComponent = categoryIcons[category];
@@ -176,14 +176,27 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {items.map((item, index) => (
-                        <div
-                          key={index}
-                          className={`p-3 rounded-lg border-2 ${categoryColors[category]} hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105`}
-                        >
-                          <p className="font-medium text-sm">{item}</p>
-                        </div>
-                      ))}
+                      {items.map((item, index) => {
+                        const text = typeof item === 'object' ? item.text : item;
+                        const popularity = typeof item === 'object' ? item.popularity : 'MEDIUM';
+                        const popularityColor = popularityColors[popularity];
+                        const popularityIcon = popularityIcons[popularity];
+                        
+                        return (
+                          <div
+                            key={index}
+                            className={`p-3 rounded-lg border-2 ${categoryColors[category]} hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 relative`}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <p className="font-medium text-sm flex-1">{text}</p>
+                              <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${popularityColor} flex-shrink-0`}>
+                                <span>{popularityIcon}</span>
+                                <span>{popularity}</span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </CardContent>
                 </Card>
