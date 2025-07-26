@@ -111,8 +111,15 @@ const GraphVisualization = ({ results, searchTerm, selectedCategory }) => {
       categoryLabel.textContent = category.replace('_', ' ').toUpperCase();
       svg.appendChild(categoryLabel);
 
-      // Items around category
-      const itemsToShow = items.slice(0, 8); // Limit items to prevent overcrowding
+      // Items around category - sort by popularity and show top items first
+      const sortedItems = [...items].sort((a, b) => {
+        const aPopularity = typeof a === 'object' ? a.popularity : 'MEDIUM';
+        const bPopularity = typeof b === 'object' ? b.popularity : 'MEDIUM';
+        const popularityOrder = { 'HIGH': 0, 'MEDIUM': 1, 'LOW': 2 };
+        return popularityOrder[aPopularity] - popularityOrder[bPopularity];
+      });
+      
+      const itemsToShow = sortedItems.slice(0, 8); // Limit items to prevent overcrowding
       const itemAngleStep = (2 * Math.PI) / Math.max(itemsToShow.length, 1);
       
       itemsToShow.forEach((item, itemIndex) => {
@@ -122,13 +129,19 @@ const GraphVisualization = ({ results, searchTerm, selectedCategory }) => {
         const itemX = categoryX + Math.cos(itemAngle) * itemRadius;
         const itemY = categoryY + Math.sin(itemAngle) * itemRadius;
 
-        // Item node
+        const text = typeof item === 'object' ? item.text : item;
+        const popularity = typeof item === 'object' ? item.popularity : 'MEDIUM';
+        
+        // Item node - size based on popularity
+        const nodeRadius = popularity === 'HIGH' ? 8 : popularity === 'MEDIUM' ? 6 : 4;
         const itemNode = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         itemNode.setAttribute('cx', itemX);
         itemNode.setAttribute('cy', itemY);
-        itemNode.setAttribute('r', '6');
+        itemNode.setAttribute('r', nodeRadius);
         itemNode.setAttribute('fill', categoryColors[category]);
-        itemNode.setAttribute('opacity', '0.8');
+        itemNode.setAttribute('opacity', popularity === 'HIGH' ? '1.0' : popularity === 'MEDIUM' ? '0.8' : '0.6');
+        itemNode.setAttribute('stroke', popularity === 'HIGH' ? '#ff0000' : popularity === 'MEDIUM' ? '#ffa500' : '#808080');
+        itemNode.setAttribute('stroke-width', popularity === 'HIGH' ? '2' : '1');
         svg.appendChild(itemNode);
 
         // Item line
@@ -138,24 +151,35 @@ const GraphVisualization = ({ results, searchTerm, selectedCategory }) => {
         itemLine.setAttribute('x2', itemX);
         itemLine.setAttribute('y2', itemY);
         itemLine.setAttribute('stroke', categoryColors[category]);
-        itemLine.setAttribute('stroke-width', '1');
-        itemLine.setAttribute('opacity', '0.4');
+        itemLine.setAttribute('stroke-width', popularity === 'HIGH' ? '2' : '1');
+        itemLine.setAttribute('opacity', popularity === 'HIGH' ? '0.6' : '0.4');
         svg.appendChild(itemLine);
 
         // Item text (truncated)
         const itemText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        const truncatedText = item.length > 20 ? item.substring(0, 20) + '...' : item;
+        const truncatedText = text.length > 15 ? text.substring(0, 15) + '...' : text;
         itemText.setAttribute('x', itemX);
         itemText.setAttribute('y', itemY - 15);
         itemText.setAttribute('text-anchor', 'middle');
         itemText.setAttribute('fill', '#374151');
-        itemText.setAttribute('font-size', '10');
+        itemText.setAttribute('font-size', popularity === 'HIGH' ? '11' : '10');
+        itemText.setAttribute('font-weight', popularity === 'HIGH' ? 'bold' : 'normal');
         itemText.textContent = truncatedText;
         svg.appendChild(itemText);
 
+        // Popularity indicator
+        const popularityIcon = popularity === 'HIGH' ? '🔥' : popularity === 'MEDIUM' ? '🔸' : '🔹';
+        const popularityText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        popularityText.setAttribute('x', itemX + 12);
+        popularityText.setAttribute('y', itemY - 10);
+        popularityText.setAttribute('text-anchor', 'middle');
+        popularityText.setAttribute('font-size', '12');
+        popularityText.textContent = popularityIcon;
+        svg.appendChild(popularityText);
+
         // Tooltip on hover
         const tooltip = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-        tooltip.textContent = item;
+        tooltip.textContent = `${text} (${popularity})`;
         itemNode.appendChild(tooltip);
       });
 
