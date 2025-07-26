@@ -18,6 +18,19 @@ from database import db, ensure_personal_company
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+def get_user_id_from_request(request: Request) -> str:
+    """Extract user ID from request headers"""
+    user_id = request.headers.get("X-User-ID")
+    if not user_id:
+        # For backward compatibility, allow searches without user ID (will use 'anonymous')
+        return "anonymous"
+    return user_id
+
+def get_company_id_from_request(request: Request) -> str:
+    """Extract company ID from request headers"""
+    company_id = request.headers.get("X-Company-ID")
+    return company_id
+
 @router.post("/search", response_model=SearchResponse)
 async def search_suggestions(
     request: SearchRequest,
