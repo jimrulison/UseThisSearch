@@ -1,5 +1,19 @@
-import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+// Add login link to sales sheet
+const SalesSheetWithLogin = () => {
+  return (
+    <>
+      <div className="fixed top-4 right-4 z-50">
+        <Button 
+          onClick={() => window.location.href = '/login'}
+          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg"
+        >
+          Sign In to Access Tool
+        </Button>
+      </div>
+      <SalesSheet />
+    </>
+  );
+};
 import { Toaster } from './components/ui/toaster';
 import { ToastProvider, useToast } from './hooks/use-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
