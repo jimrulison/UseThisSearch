@@ -248,7 +248,7 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
         <Card className="border-0 shadow-lg">
           <CardContent className="p-6">
             <Tabs defaultValue="blog-titles" className="w-full">
-              <TabsList className="grid w-full grid-cols-5">
+              <TabsList className="grid w-full grid-cols-6">
                 <TabsTrigger value="blog-titles" className="flex items-center gap-1">
                   <span>✨</span>
                   Blog Titles
@@ -260,6 +260,10 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
                 <TabsTrigger value="social-media" className="flex items-center gap-1">
                   <span>📱</span>
                   Social Media
+                </TabsTrigger>
+                <TabsTrigger value="hashtags" className="flex items-center gap-1">
+                  <span>#️⃣</span>
+                  Hashtags
                 </TabsTrigger>
                 <TabsTrigger value="faq" className="flex items-center gap-1">
                   <span>❓</span>
@@ -287,6 +291,13 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
               
               <TabsContent value="social-media" className="mt-4">
                 <SocialMediaPostCreator 
+                  searchTerm={searchTerm} 
+                  onError={handleFeatureError}
+                />
+              </TabsContent>
+              
+              <TabsContent value="hashtags" className="mt-4">
+                <HashtagGenerator 
                   searchTerm={searchTerm} 
                   onError={handleFeatureError}
                 />
