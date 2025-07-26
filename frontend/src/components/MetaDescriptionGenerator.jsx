@@ -79,7 +79,12 @@ const MetaDescriptionGenerator = ({ searchTerm, onError }) => {
 
   if (!isVisible && metaDescriptions.length === 0) {
     return (
-      <div className="mt-4">
+      <div className="text-center py-8">
+        <div className="mb-4">
+          <div className="text-gray-600 mb-4">
+            Generate SEO-optimized meta descriptions for "<strong>{searchTerm}</strong>"
+          </div>
+        </div>
         <Button
           onClick={generateMetaDescriptions}
           disabled={isGenerating || !searchTerm}
