@@ -23,7 +23,18 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm }) => 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* Navigation */}
-      <div className="flex justify-end">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-4">
+          <CompanySelector />
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/dashboard')}
+            className="flex items-center gap-2 text-blue-600 hover:bg-blue-50"
+          >
+            <LayoutDashboard className="h-4 w-4" />
+            Dashboard
+          </Button>
+        </div>
         <UserDropdown />
       </div>
 
