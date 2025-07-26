@@ -59,20 +59,48 @@ Please return your response as a valid JSON object with exactly these 4 categori
 3. "comparisons" - Comparison phrases (vs, versus, or, and, like, similar to, compared to, better than, different from)
 4. "alphabetical" - Alphabetical combinations (terms that start with each letter A-Z combined with the search term)
 
+IMPORTANT POPULARITY RANKING REQUIREMENTS:
+- For each suggestion, estimate its search popularity based on real-world search behavior
+- Consider commercial intent, trending topics, common pain points, and general user interest
+- Include a popularity level for each suggestion: "HIGH", "MEDIUM", or "LOW"
+- Order suggestions within each category by popularity (HIGH first, then MEDIUM, then LOW)
+- Aim for roughly: 30% HIGH, 50% MEDIUM, 20% LOW distribution per category
+
 Guidelines:
-- Generate 15-30 suggestions per category
+- Generate 20-30 suggestions per category
 - Make suggestions realistic and commonly searched
 - Include variations in tense and structure
 - For alphabetical, create meaningful combinations for most letters
 - Focus on what real people would actually search for
 - Consider commercial intent, informational queries, and navigational searches
+- HIGH popularity = Very commonly searched, broad appeal, commercial intent
+- MEDIUM popularity = Moderately searched, specific interest, informational
+- LOW popularity = Niche searches, specific scenarios, long-tail queries
 
-Return ONLY the JSON object, no other text. Format:
+Return ONLY the JSON object with this exact format:
 {{
-  "questions": ["how to {search_term}", "what is {search_term}", ...],
-  "prepositions": ["{search_term} for beginners", "{search_term} with examples", ...],
-  "comparisons": ["{search_term} vs alternatives", "{search_term} or something else", ...],
-  "alphabetical": ["affordable {search_term}", "best {search_term}", ...]
+  "questions": [
+    {{"text": "how to {search_term}", "popularity": "HIGH"}},
+    {{"text": "what is {search_term}", "popularity": "HIGH"}},
+    {{"text": "when to use {search_term}", "popularity": "MEDIUM"}},
+    ...
+  ],
+  "prepositions": [
+    {{"text": "{search_term} for beginners", "popularity": "HIGH"}},
+    {{"text": "{search_term} with examples", "popularity": "MEDIUM"}},
+    ...
+  ],
+  "comparisons": [
+    {{"text": "{search_term} vs alternatives", "popularity": "HIGH"}},
+    {{"text": "{search_term} or something else", "popularity": "MEDIUM"}},
+    ...
+  ],
+  "alphabetical": [
+    {{"text": "affordable {search_term}", "popularity": "HIGH"}},
+    {{"text": "best {search_term}", "popularity": "HIGH"}},
+    {{"text": "cheap {search_term}", "popularity": "MEDIUM"}},
+    ...
+  ]
 }}"""
 
             logger.info(f"Generating suggestions for: {search_term}")
@@ -104,12 +132,36 @@ Return ONLY the JSON object, no other text. Format:
                 if not all(key in suggestions for key in required_keys):
                     raise ValueError("Missing required categories in Claude response")
                 
-                # Ensure all values are lists
+                # Ensure all values are lists and convert to new format if needed
                 for key in required_keys:
                     if not isinstance(suggestions[key], list):
                         suggestions[key] = []
+                    
+                    # Handle both old format (strings) and new format (objects with popularity)
+                    converted_suggestions = []
+                    for item in suggestions[key]:
+                        if isinstance(item, str):
+                            # Old format - assign default popularity
+                            converted_suggestions.append({
+                                "text": item,
+                                "popularity": "MEDIUM"
+                            })
+                        elif isinstance(item, dict) and "text" in item and "popularity" in item:
+                            # New format - use as is
+                            converted_suggestions.append(item)
+                        else:
+                            # Invalid format - skip
+                            continue
+                    
+                    suggestions[key] = converted_suggestions
                 
-                logger.info(f"Successfully generated {sum(len(v) for v in suggestions.values())} suggestions")
+                # Sort each category by popularity (HIGH -> MEDIUM -> LOW)
+                popularity_order = {"HIGH": 0, "MEDIUM": 1, "LOW": 2}
+                for key in required_keys:
+                    suggestions[key].sort(key=lambda x: popularity_order.get(x.get("popularity", "MEDIUM"), 1))
+                
+                total_suggestions = sum(len(suggestions[key]) for key in required_keys)
+                logger.info(f"Successfully generated {total_suggestions} suggestions with popularity rankings")
                 return suggestions
                 
             except json.JSONDecodeError as e:
