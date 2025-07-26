@@ -143,135 +143,123 @@ const FAQGenerator = ({ searchTerm, onError }) => {
   if (!isVisible) return null;
 
   return (
-    <Card className="mt-6 border-0 shadow-lg bg-gradient-to-br from-green-50 to-emerald-50">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xl flex items-center gap-2">
-            <HelpCircle className="h-5 w-5 text-green-600" />
-            FAQ Section
-            <Badge className="bg-green-600 text-white">
-              📋 New Feature
-            </Badge>
-          </CardTitle>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsVisible(false)}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            ✕
-          </Button>
+    <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <HelpCircle className="h-5 w-5 text-green-600" />
+          <h4 className="text-xl font-semibold text-gray-800">FAQ Section</h4>
+          <Badge className="bg-green-600 text-white">
+            ❓ New Feature
+          </Badge>
         </div>
-        <p className="text-sm text-gray-600 mt-2">
-          Comprehensive FAQ section for "<strong>{searchTerm}</strong>" - ready to use on your website
-        </p>
-      </CardHeader>
+      </div>
+      <p className="text-sm text-gray-600 mb-6">
+        Comprehensive FAQ section for "<strong>{searchTerm}</strong>" - ready to use on your website
+      </p>
       
-      <CardContent>
-        <div className="space-y-2">
-          {faqs.map((faq, index) => (
+      <div className="space-y-2">
+        {faqs.map((faq, index) => (
+          <div
+            key={index}
+            className="bg-white rounded-lg border-2 border-green-100 hover:border-green-300 transition-all duration-200 overflow-hidden group"
+          >
             <div
-              key={index}
-              className="bg-white rounded-lg border-2 border-green-100 hover:border-green-300 transition-all duration-200 overflow-hidden"
+              className="flex items-center justify-between p-4 cursor-pointer"
+              onClick={() => toggleFAQ(index)}
             >
-              <div
-                className="flex items-center justify-between p-4 cursor-pointer"
-                onClick={() => toggleFAQ(index)}
-              >
-                <h3 className="font-semibold text-gray-800 flex-1 pr-4">
-                  {faq.question}
-                </h3>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      copyFAQPair(faq, index);
-                    }}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-green-600 hover:text-green-800 hover:bg-green-100"
-                  >
-                    {copiedIndex === index ? (
-                      <Check className="h-4 w-4" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )}
-                  </Button>
-                  {expandedFAQ === index ? (
-                    <ChevronUp className="h-5 w-5 text-green-600" />
+              <h3 className="font-semibold text-gray-800 flex-1 pr-4">
+                {faq.question}
+              </h3>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    copyFAQPair(faq, index);
+                  }}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-green-600 hover:text-green-800 hover:bg-green-100"
+                >
+                  {copiedIndex === index ? (
+                    <Check className="h-4 w-4" />
                   ) : (
-                    <ChevronDown className="h-5 w-5 text-green-600" />
+                    <Copy className="h-4 w-4" />
                   )}
-                </div>
+                </Button>
+                {expandedFAQ === index ? (
+                  <ChevronUp className="h-5 w-5 text-green-600" />
+                ) : (
+                  <ChevronDown className="h-5 w-5 text-green-600" />
+                )}
               </div>
-              
-              {expandedFAQ === index && (
-                <div className="px-4 pb-4 border-t border-green-100">
-                  <p className="text-gray-700 leading-relaxed pt-3">
-                    {faq.answer}
-                  </p>
-                </div>
-              )}
             </div>
-          ))}
-        </div>
-        
-        <div className="mt-6 p-4 bg-green-100 rounded-lg border border-green-200">
-          <div className="flex items-start gap-3">
-            <HelpCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-            <div>
-              <h4 className="font-semibold text-green-800 mb-2">FAQ Section Tips:</h4>
-              <ul className="text-sm text-green-700 space-y-1">
-                <li>• <strong>Add to your website</strong> to reduce support tickets</li>
-                <li>• <strong>Update regularly</strong> based on customer questions</li>
-                <li>• <strong>Use structured data</strong> markup for better SEO</li>
-                <li>• <strong>Keep answers concise</strong> but comprehensive</li>
-                <li>• <strong>Link to detailed resources</strong> when appropriate</li>
-              </ul>
-            </div>
+            
+            {expandedFAQ === index && (
+              <div className="px-4 pb-4 border-t border-green-100">
+                <p className="text-gray-700 leading-relaxed pt-3">
+                  {faq.answer}
+                </p>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      
+      <div className="mt-6 p-4 bg-green-100 rounded-lg border border-green-200">
+        <div className="flex items-start gap-3">
+          <HelpCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+          <div>
+            <h4 className="font-semibold text-green-800 mb-2">FAQ Section Tips:</h4>
+            <ul className="text-sm text-green-700 space-y-1">
+              <li>• <strong>Add to your website</strong> to reduce support tickets</li>
+              <li>• <strong>Update regularly</strong> based on customer questions</li>
+              <li>• <strong>Use structured data</strong> markup for better SEO</li>
+              <li>• <strong>Keep answers concise</strong> but comprehensive</li>
+              <li>• <strong>Link to detailed resources</strong> when appropriate</li>
+            </ul>
           </div>
         </div>
+      </div>
 
-        <div className="mt-4 flex justify-center gap-2">
-          <Button
-            onClick={copyAllFAQs}
-            variant="outline"
-            className="border-green-300 text-green-600 hover:bg-green-50"
-          >
-            {copiedIndex === 'all' ? (
-              <>
-                <Check className="mr-2 h-4 w-4" />
-                Copied All!
-              </>
-            ) : (
-              <>
-                <Copy className="mr-2 h-4 w-4" />
-                Copy All FAQs
-              </>
-            )}
-          </Button>
-          
-          <Button
-            onClick={generateFAQs}
-            disabled={isGenerating}
-            variant="outline"
-            className="border-green-300 text-green-600 hover:bg-green-50"
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <Wand2 className="mr-2 h-4 w-4" />
-                Generate New FAQs
-              </>
-            )}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+      <div className="mt-4 flex justify-center gap-2">
+        <Button
+          onClick={copyAllFAQs}
+          variant="outline"
+          className="border-green-300 text-green-600 hover:bg-green-50"
+        >
+          {copiedIndex === 'all' ? (
+            <>
+              <Check className="mr-2 h-4 w-4" />
+              Copied All!
+            </>
+          ) : (
+            <>
+              <Copy className="mr-2 h-4 w-4" />
+              Copy All FAQs
+            </>
+          )}
+        </Button>
+        
+        <Button
+          onClick={generateFAQs}
+          disabled={isGenerating}
+          variant="outline"
+          className="border-green-300 text-green-600 hover:bg-green-50"
+        >
+          {isGenerating ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Generating...
+            </>
+          ) : (
+            <>
+              <Wand2 className="mr-2 h-4 w-4" />
+              Generate New FAQs
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
   );
 };
 
