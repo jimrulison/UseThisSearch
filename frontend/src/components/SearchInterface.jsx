@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Download, BarChart3, List, Loader2 } from 'lucide-react';
+import { Search, Download, BarChart3, List, Loader2, FileText } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -18,6 +18,18 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm }) => 
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
+      {/* Navigation */}
+      <div className="flex justify-end">
+        <Button 
+          variant="outline" 
+          onClick={() => window.open('/sales', '_blank')}
+          className="flex items-center gap-2"
+        >
+          <FileText className="h-4 w-4" />
+          View Sales Sheet
+        </Button>
+      </div>
+
       {/* Hero Section with Logo */}
       <div className="text-center space-y-6">
         <div className="flex justify-center">
