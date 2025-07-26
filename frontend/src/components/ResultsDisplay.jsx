@@ -221,6 +221,12 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
             })}
         </div>
       )}
+
+      {/* Blog Title Generator - NEW FEATURE (completely isolated) */}
+      <BlogTitleGenerator 
+        searchTerm={searchTerm} 
+        onError={handleBlogTitleError}
+      />
     </div>
   );
 };
