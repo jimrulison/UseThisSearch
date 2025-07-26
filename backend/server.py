@@ -66,7 +66,7 @@ async def get_status_checks():
 async def health_check():
     return {
         "status": "healthy",
-        "service": "AnswerThePublic Clone API",
+        "service": "Use This Search API",
         "timestamp": datetime.utcnow().isoformat()
     }
 
