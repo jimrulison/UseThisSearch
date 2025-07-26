@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Search, Download, BarChart3, List, Loader2 } from 'lucide-react';
+import { Search, Download, BarChart3, List, Loader2, LayoutDashboard } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import Logo from './Logo';
 import UserDropdown from './UserDropdown';
+import CompanySelector from './CompanySelector';
+import { useNavigate } from 'react-router-dom';
 
 const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm }) => {
   const [viewMode, setViewMode] = useState('graph');
