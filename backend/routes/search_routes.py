@@ -198,7 +198,9 @@ async def clear_search_history():
 
 async def store_search_history(
     search_term: str, 
-    suggestions_count: int, 
+    suggestions_count: int,
+    user_id: str,
+    company_id: str,
     ip_address: Optional[str] = None,
     user_agent: Optional[str] = None
 ):
@@ -208,12 +210,14 @@ async def store_search_history(
         history_entry = SearchHistory(
             search_term=search_term,
             suggestions_count=suggestions_count,
+            company_id=company_id,
+            user_id=user_id,
             ip_address=ip_address,
             user_agent=user_agent
         )
         
         await db.search_history.insert_one(history_entry.dict())
-        logger.info(f"Stored search history for: {search_term}")
+        logger.info(f"Stored search history for: {search_term} (user: {user_id}, company: {company_id})")
         
     except Exception as e:
         logger.error(f"Error storing search history: {e}")
