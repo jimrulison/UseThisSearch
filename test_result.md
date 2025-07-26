@@ -286,6 +286,21 @@ frontend:
         agent: "testing"
         comment: "TESTED: CSV export functionality working correctly. Export CSV button present and functional. Dynamic filename generation with search term and date (answerthepublic-[term]-[date].csv). Proper CSV format with all suggestion categories included. Download trigger working properly."
 
+  - task: "Hashtag Generator Tab"
+    implemented: true
+    working: false
+    file: "frontend/src/components/HashtagGenerator.jsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "HashtagGenerator component created with 5 categories (Trending, Niche Specific, Branded, Long Tail, Popular) and copy functionality"
+      - working: false
+        agent: "testing"
+        comment: "CRITICAL ISSUE: Hashtag generator tab is NOT visible in the deployed application. The HashtagGenerator component exists in code but is not being rendered. Content Creation Tools section shows only 5 buttons (Blog Titles, Meta Descriptions, Social Media, FAQ, Content Briefs) instead of expected 6 tabs including Hashtags. The tabbed interface is not implemented - showing individual buttons instead. Hashtag functionality completely missing from UI. Requires immediate fix to implement proper tabbed interface and make hashtag generator accessible."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
