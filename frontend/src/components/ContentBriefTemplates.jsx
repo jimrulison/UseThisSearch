@@ -410,8 +410,7 @@ Create an engaging video that explains ${searchTerm} concepts clearly, drives ch
         Professional content briefs for "<strong>{searchTerm}</strong>" - ready to send to writers and creators
       </p>
       
-      <CardContent>
-        <Tabs defaultValue={Object.keys(contentBriefs)[0]} className="w-full">
+      <Tabs defaultValue={Object.keys(contentBriefs)[0]} className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             {Object.keys(contentBriefs).map((type) => {
               const Icon = getBriefIcon(type);
