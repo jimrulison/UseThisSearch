@@ -47,7 +47,7 @@ class StatusCheckCreate(BaseModel):
 # Add existing routes (keeping for compatibility)
 @api_router.get("/")
 async def root():
-    return {"message": "AnswerThePublic Clone API - Ready to generate keyword suggestions!"}
+    return {"message": "Use This Search API - Ready to generate keyword suggestions!"}
 
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
