@@ -318,7 +318,10 @@ metadata:
 
 test_plan:
   current_focus:
-    []
+    - "Company Management API endpoints"
+    - "Multi-company search functionality"
+    - "Database schema migration"
+    - "User dashboard backend APIs"
   stuck_tasks:
     []
   test_all: false
