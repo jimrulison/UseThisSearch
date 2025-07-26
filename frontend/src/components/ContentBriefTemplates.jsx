@@ -497,9 +497,8 @@ Create an engaging video that explains ${searchTerm} concepts clearly, drives ch
               </>
             )}
           </Button>
-        </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
