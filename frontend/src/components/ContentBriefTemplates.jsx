@@ -366,7 +366,12 @@ Create an engaging video that explains ${searchTerm} concepts clearly, drives ch
 
   if (!isVisible && Object.keys(contentBriefs).length === 0) {
     return (
-      <div className="mt-4">
+      <div className="text-center py-8">
+        <div className="mb-4">
+          <div className="text-gray-600 mb-4">
+            Generate professional content brief templates for "<strong>{searchTerm}</strong>"
+          </div>
+        </div>
         <Button
           onClick={generateContentBriefs}
           disabled={isGenerating || !searchTerm}
@@ -380,7 +385,7 @@ Create an engaging video that explains ${searchTerm} concepts clearly, drives ch
           ) : (
             <>
               <Wand2 className="mr-2 h-4 w-4" />
-              🎯 Generate Content Brief Templates
+              📋 Generate Content Brief Templates
             </>
           )}
         </Button>
