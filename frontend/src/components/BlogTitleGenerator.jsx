@@ -98,7 +98,12 @@ Return as a simple JSON array of strings:
 
   if (!isVisible && blogTitles.length === 0) {
     return (
-      <div className="mt-4">
+      <div className="text-center py-8">
+        <div className="mb-4">
+          <div className="text-gray-600 mb-4">
+            Generate SEO-optimized blog titles for "<strong>{searchTerm}</strong>"
+          </div>
+        </div>
         <Button
           onClick={generateBlogTitles}
           disabled={isGenerating || !searchTerm}
