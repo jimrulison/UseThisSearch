@@ -6,6 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Badge } from './ui/badge';
 import GraphVisualization from './GraphVisualization';
 import BlogTitleGenerator from './BlogTitleGenerator';
+import MetaDescriptionGenerator from './MetaDescriptionGenerator';
+import SocialMediaPostCreator from './SocialMediaPostCreator';
+import FAQGenerator from './FAQGenerator';
+import ContentBriefTemplates from './ContentBriefTemplates';
 import { Separator } from './ui/separator';
 import { useToast } from '../hooks/use-toast';
 
@@ -17,9 +21,9 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
     return null;
   }
 
-  const handleBlogTitleError = (message) => {
+  const handleFeatureError = (message) => {
     toast({
-      title: "Blog Title Generator",
+      title: "Content Generator",
       description: message,
       duration: 3000,
     });
