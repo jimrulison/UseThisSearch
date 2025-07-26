@@ -95,7 +95,7 @@ logger = logging.getLogger(__name__)
 @app.on_event("startup")
 async def startup_event():
     """Initialize database and services on startup"""
-    logger.info("Starting AnswerThePublic Clone API...")
+    logger.info("Starting Use This Search API...")
     await init_database()
     logger.info("API startup complete!")
 
