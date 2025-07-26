@@ -10,9 +10,12 @@ from typing import List
 import uuid
 from datetime import datetime
 
-# Import new modules
-from .routes.search_routes import router as search_router
-from .database import init_database, close_database
+# Import new modules - using absolute imports
+import sys
+sys.path.append('/app/backend')
+
+from routes.search_routes import router as search_router
+from database import init_database, close_database
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
