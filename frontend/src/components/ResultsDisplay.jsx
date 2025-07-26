@@ -181,7 +181,9 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
       </div>
 
       {/* Results Content */}
-      {viewMode === 'graph' ? (
+      {viewMode === 'guide' ? (
+        <ContentGuide searchTerm={searchTerm} />
+      ) : viewMode === 'graph' ? (
         <GraphVisualization 
           results={results} 
           searchTerm={searchTerm}
