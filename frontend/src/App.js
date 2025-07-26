@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from './components/ui/toaster';
+import { ToastProvider, useToast } from './hooks/use-toast';
 import SearchInterface from './components/SearchInterface';
 import ResultsDisplay from './components/ResultsDisplay';
-import { useToast } from './hooks/use-toast';
 import axios from 'axios';
 import './App.css';
 
