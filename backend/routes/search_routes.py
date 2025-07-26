@@ -5,15 +5,15 @@ import time
 import logging
 from datetime import datetime, timedelta
 
-from ..models.search_models import (
+from models.search_models import (
     SearchRequest, 
     SearchResponse, 
     SearchSuggestions,
     SearchHistory,
     SearchStats
 )
-from ..services.claude_service import claude_service
-from ..database import db
+from services.claude_service import claude_service
+from database import db
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
