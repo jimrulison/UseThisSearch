@@ -127,6 +127,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/sales" element={<SalesSheet />} />
           </Routes>
         </BrowserRouter>
       </ToastProvider>
