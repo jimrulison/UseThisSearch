@@ -102,6 +102,6 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     """Cleanup on shutdown"""
-    logger.info("Shutting down AnswerThePublic Clone API...")
+    logger.info("Shutting down Use This Search API...")
     await close_database()
     logger.info("API shutdown complete!")
