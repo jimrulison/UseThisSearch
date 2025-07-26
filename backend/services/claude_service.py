@@ -9,6 +9,8 @@ from functools import wraps
 logger = logging.getLogger(__name__)
 
 class ClaudeService:
+    _instance = None
+    
     def __init__(self):
         self.api_key = os.environ.get('CLAUDE_API_KEY')
         if not self.api_key:
@@ -16,6 +18,12 @@ class ClaudeService:
         
         self.client = Anthropic(api_key=self.api_key)
         self.model = "claude-3-5-sonnet-20241022"
+    
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
     
     def async_to_sync(func):
         """Decorator to run async functions in sync context"""
@@ -166,5 +174,6 @@ Return ONLY the JSON object, no other text. Format:
             ]
         }
 
-# Global instance
-claude_service = ClaudeService()
+# Function to get the service instance (lazy loading)
+def get_claude_service():
+    return ClaudeService.get_instance()
