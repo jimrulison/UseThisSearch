@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, BarChart3, List, Search, MessageCircleQuestion, ArrowRight, Hash } from 'lucide-react';
+import { Download, BarChart3, List, Search, MessageCircleQuestion, ArrowRight, Hash, BookOpen } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
@@ -10,6 +10,7 @@ import MetaDescriptionGenerator from './MetaDescriptionGenerator';
 import SocialMediaPostCreator from './SocialMediaPostCreator';
 import FAQGenerator from './FAQGenerator';
 import ContentBriefTemplates from './ContentBriefTemplates';
+import ContentGuide from './ContentGuide';
 import { Separator } from './ui/separator';
 import { useToast } from '../hooks/use-toast';
 
