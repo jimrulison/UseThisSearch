@@ -15,6 +15,7 @@ import sys
 sys.path.append('/app/backend')
 
 from routes.search_routes import router as search_router
+from routes.company_routes import router as company_router
 from database import init_database, close_database
 
 ROOT_DIR = Path(__file__).parent
