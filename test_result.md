@@ -414,10 +414,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Company Selector Component"
-    - "Dashboard Page Component" 
-    - "Company Context Integration"
-    - "Company-Aware Search Integration"
+    []
   stuck_tasks:
     []
   test_all: false
