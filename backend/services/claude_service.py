@@ -177,52 +177,52 @@ Return ONLY the JSON object with this exact format:
         """Fallback suggestions if Claude API fails"""
         return {
             "questions": [
-                f"what is {search_term}",
-                f"how to use {search_term}",
-                f"why {search_term} matters",
-                f"where to find {search_term}",
-                f"when to use {search_term}",
-                f"who uses {search_term}",
-                f"how {search_term} works",
-                f"what {search_term} benefits",
-                f"is {search_term} worth it",
-                f"can {search_term} help"
+                {"text": f"what is {search_term}", "popularity": "HIGH"},
+                {"text": f"how to use {search_term}", "popularity": "HIGH"},
+                {"text": f"why {search_term} matters", "popularity": "MEDIUM"},
+                {"text": f"where to find {search_term}", "popularity": "MEDIUM"},
+                {"text": f"when to use {search_term}", "popularity": "MEDIUM"},
+                {"text": f"who uses {search_term}", "popularity": "LOW"},
+                {"text": f"how {search_term} works", "popularity": "MEDIUM"},
+                {"text": f"what {search_term} benefits", "popularity": "MEDIUM"},
+                {"text": f"is {search_term} worth it", "popularity": "LOW"},
+                {"text": f"can {search_term} help", "popularity": "LOW"}
             ],
             "prepositions": [
-                f"{search_term} for beginners",
-                f"{search_term} with examples",
-                f"{search_term} without experience",
-                f"{search_term} to improve",
-                f"{search_term} from scratch",
-                f"{search_term} near me",
-                f"{search_term} like alternatives",
-                f"{search_term} versus competitors",
-                f"{search_term} about basics",
-                f"{search_term} under budget"
+                {"text": f"{search_term} for beginners", "popularity": "HIGH"},
+                {"text": f"{search_term} with examples", "popularity": "HIGH"},
+                {"text": f"{search_term} without experience", "popularity": "MEDIUM"},
+                {"text": f"{search_term} to improve", "popularity": "MEDIUM"},
+                {"text": f"{search_term} from scratch", "popularity": "MEDIUM"},
+                {"text": f"{search_term} near me", "popularity": "MEDIUM"},
+                {"text": f"{search_term} like alternatives", "popularity": "LOW"},
+                {"text": f"{search_term} versus competitors", "popularity": "LOW"},
+                {"text": f"{search_term} about basics", "popularity": "LOW"},
+                {"text": f"{search_term} under budget", "popularity": "MEDIUM"}
             ],
             "comparisons": [
-                f"{search_term} vs alternatives",
-                f"{search_term} or similar",
-                f"{search_term} and related",
-                f"{search_term} like options",
-                f"{search_term} compared to others",
-                f"{search_term} better than",
-                f"alternatives vs {search_term}",
-                f"similar to {search_term}",
-                f"{search_term} different from",
-                f"{search_term} versus best"
+                {"text": f"{search_term} vs alternatives", "popularity": "HIGH"},
+                {"text": f"{search_term} or similar", "popularity": "HIGH"},
+                {"text": f"{search_term} and related", "popularity": "MEDIUM"},
+                {"text": f"{search_term} like options", "popularity": "MEDIUM"},
+                {"text": f"{search_term} compared to others", "popularity": "MEDIUM"},
+                {"text": f"{search_term} better than", "popularity": "LOW"},
+                {"text": f"alternatives vs {search_term}", "popularity": "LOW"},
+                {"text": f"similar to {search_term}", "popularity": "LOW"},
+                {"text": f"{search_term} different from", "popularity": "LOW"},
+                {"text": f"{search_term} versus best", "popularity": "MEDIUM"}
             ],
             "alphabetical": [
-                f"affordable {search_term}",
-                f"best {search_term}",
-                f"cheap {search_term}",
-                f"digital {search_term}",
-                f"easy {search_term}",
-                f"free {search_term}",
-                f"good {search_term}",
-                f"help with {search_term}",
-                f"improve {search_term}",
-                f"just {search_term}"
+                {"text": f"affordable {search_term}", "popularity": "HIGH"},
+                {"text": f"best {search_term}", "popularity": "HIGH"},
+                {"text": f"cheap {search_term}", "popularity": "HIGH"},
+                {"text": f"digital {search_term}", "popularity": "MEDIUM"},
+                {"text": f"easy {search_term}", "popularity": "MEDIUM"},
+                {"text": f"free {search_term}", "popularity": "HIGH"},
+                {"text": f"good {search_term}", "popularity": "MEDIUM"},
+                {"text": f"help with {search_term}", "popularity": "MEDIUM"},
+                {"text": f"improve {search_term}", "popularity": "LOW"},
+                {"text": f"just {search_term}", "popularity": "LOW"}
             ]
         }
 
