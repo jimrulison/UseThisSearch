@@ -68,6 +68,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [viewMode, setViewMode] = useState('graph');
   const { toast } = useToast();
+  const { activeCompany, getUserId } = useCompany();
 
   const handleSearch = async (term) => {
     setIsLoading(true);
@@ -75,8 +76,20 @@ const Home = () => {
     try {
       console.log('Searching for:', term);
       
+      // Prepare headers for company-aware search
+      const headers = {};
+      const userId = getUserId();
+      if (userId) {
+        headers['X-User-ID'] = userId;
+      }
+      if (activeCompany) {
+        headers['X-Company-ID'] = activeCompany.id;
+      }
+      
       const response = await axios.post(`${API}/search`, {
         search_term: term
+      }, {
+        headers
       });
       
       const data = response.data;
@@ -94,7 +107,7 @@ const Home = () => {
       
       toast({
         title: "Search Complete!",
-        description: `Found ${data.total_suggestions} suggestions for "${term}" in ${data.processing_time_ms}ms`,
+        description: `Found ${data.total_suggestions} suggestions for "${term}" in ${data.processing_time_ms}ms${activeCompany ? ` (${activeCompany.name})` : ''}`,
         duration: 3000,
       });
       
