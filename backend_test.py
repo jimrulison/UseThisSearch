@@ -812,7 +812,7 @@ class BackendTester:
         
         start_time = time.time()
         
-        # Run tests in order
+        # Run existing tests first
         self.test_health_check()
         self.test_claude_ai_integration()
         self.test_search_api_edge_cases()
@@ -821,6 +821,16 @@ class BackendTester:
         self.test_database_integration()
         self.test_error_handling()
         self.test_performance()
+        
+        # Run new multi-company tests
+        print(f"\n{'='*60}")
+        print("MULTI-COMPANY SYSTEM TESTS")
+        print(f"{'='*60}")
+        
+        self.test_multi_company_database_schema()
+        self.test_company_management_api()
+        self.test_dashboard_statistics_api()
+        self.test_company_aware_search_integration()
         
         total_time = time.time() - start_time
         
