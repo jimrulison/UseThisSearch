@@ -128,113 +128,101 @@ Return as a simple JSON array of strings:
   if (!isVisible) return null;
 
   return (
-    <Card className="mt-6 border-0 shadow-lg bg-gradient-to-br from-purple-50 to-pink-50">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xl flex items-center gap-2">
-            <Lightbulb className="h-5 w-5 text-purple-600" />
-            AI-Generated Blog Titles
-            <Badge className="bg-purple-600 text-white">
-              ✨ New Feature
-            </Badge>
-          </CardTitle>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsVisible(false)}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            ✕
-          </Button>
+    <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Lightbulb className="h-5 w-5 text-purple-600" />
+          <h4 className="text-xl font-semibold text-gray-800">AI-Generated Blog Titles</h4>
+          <Badge className="bg-purple-600 text-white">
+            ✨ New Feature
+          </Badge>
         </div>
-        <p className="text-sm text-gray-600 mt-2">
-          Ready-to-use blog titles optimized for SEO and engagement based on "<strong>{searchTerm}</strong>"
-        </p>
-      </CardHeader>
+      </div>
+      <p className="text-sm text-gray-600 mb-6">
+        Ready-to-use blog titles optimized for SEO and engagement based on "<strong>{searchTerm}</strong>"
+      </p>
       
-      <CardContent>
-        <div className="space-y-3">
-          {blogTitles.map((title, index) => {
-            const titleLength = getTitleLength(title);
-            const lengthColor = getTitleLengthColor(titleLength);
-            
-            return (
-              <div
-                key={index}
-                className="group p-4 bg-white rounded-lg border-2 border-purple-100 hover:border-purple-300 hover:shadow-md transition-all duration-200"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-800 leading-relaxed">
-                      {title}
-                    </p>
-                    <div className="flex items-center gap-4 mt-2 text-xs">
-                      <span className={`font-medium ${lengthColor}`}>
-                        {titleLength} characters
-                      </span>
-                      <span className="text-gray-500">
-                        {titleLength >= 50 && titleLength <= 65 ? '✅ Perfect SEO length' : 
-                         titleLength >= 40 && titleLength <= 70 ? '⚠️ Good length' : 
-                         '❌ Consider shortening'}
-                      </span>
-                    </div>
+      <div className="space-y-3">
+        {blogTitles.map((title, index) => {
+          const titleLength = getTitleLength(title);
+          const lengthColor = getTitleLengthColor(titleLength);
+          
+          return (
+            <div
+              key={index}
+              className="group p-4 bg-white rounded-lg border-2 border-purple-100 hover:border-purple-300 hover:shadow-md transition-all duration-200"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1">
+                  <p className="font-medium text-gray-800 leading-relaxed">
+                    {title}
+                  </p>
+                  <div className="flex items-center gap-4 mt-2 text-xs">
+                    <span className={`font-medium ${lengthColor}`}>
+                      {titleLength} characters
+                    </span>
+                    <span className="text-gray-500">
+                      {titleLength >= 50 && titleLength <= 65 ? '✅ Perfect SEO length' : 
+                       titleLength >= 40 && titleLength <= 70 ? '⚠️ Good length' : 
+                       '❌ Consider shortening'}
+                    </span>
                   </div>
-                  
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => copyToClipboard(title, index)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-purple-600 hover:text-purple-800 hover:bg-purple-100"
-                  >
-                    {copiedIndex === index ? (
-                      <Check className="h-4 w-4" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )}
-                  </Button>
                 </div>
+                
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => copyToClipboard(title, index)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-purple-600 hover:text-purple-800 hover:bg-purple-100"
+                >
+                  {copiedIndex === index ? (
+                    <Check className="h-4 w-4" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )}
+                </Button>
               </div>
-            );
-          })}
-        </div>
-        
-        <div className="mt-6 p-4 bg-purple-100 rounded-lg border border-purple-200">
-          <div className="flex items-start gap-3">
-            <Lightbulb className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-            <div>
-              <h4 className="font-semibold text-purple-800 mb-2">Pro Tips for Blog Titles:</h4>
-              <ul className="text-sm text-purple-700 space-y-1">
-                <li>• <strong>50-65 characters</strong> is optimal for SEO (Google displays ~60)</li>
-                <li>• Include your <strong>target keyword</strong> near the beginning</li>
-                <li>• Use <strong>power words</strong> like "Ultimate", "Complete", "Essential"</li>
-                <li>• Test different titles to see what <strong>resonates</strong> with your audience</li>
-              </ul>
             </div>
+          );
+        })}
+      </div>
+      
+      <div className="mt-6 p-4 bg-purple-100 rounded-lg border border-purple-200">
+        <div className="flex items-start gap-3">
+          <Lightbulb className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
+          <div>
+            <h4 className="font-semibold text-purple-800 mb-2">Pro Tips for Blog Titles:</h4>
+            <ul className="text-sm text-purple-700 space-y-1">
+              <li>• <strong>50-65 characters</strong> is optimal for SEO (Google displays ~60)</li>
+              <li>• Include your <strong>target keyword</strong> near the beginning</li>
+              <li>• Use <strong>power words</strong> like "Ultimate", "Complete", "Essential"</li>
+              <li>• Test different titles to see what <strong>resonates</strong> with your audience</li>
+            </ul>
           </div>
         </div>
+      </div>
 
-        <div className="mt-4 flex justify-center">
-          <Button
-            onClick={generateBlogTitles}
-            disabled={isGenerating}
-            variant="outline"
-            className="border-purple-300 text-purple-600 hover:bg-purple-50"
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <Wand2 className="mr-2 h-4 w-4" />
-                Generate New Titles
-              </>
-            )}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+      <div className="mt-4 flex justify-center">
+        <Button
+          onClick={generateBlogTitles}
+          disabled={isGenerating}
+          variant="outline"
+          className="border-purple-300 text-purple-600 hover:bg-purple-50"
+        >
+          {isGenerating ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Generating...
+            </>
+          ) : (
+            <>
+              <Wand2 className="mr-2 h-4 w-4" />
+              Generate New Titles
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
   );
 };
 
