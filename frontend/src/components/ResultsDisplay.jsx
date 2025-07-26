@@ -10,6 +10,7 @@ import MetaDescriptionGenerator from './MetaDescriptionGenerator';
 import SocialMediaPostCreator from './SocialMediaPostCreator';
 import FAQGenerator from './FAQGenerator';
 import ContentBriefTemplates from './ContentBriefTemplates';
+import HashtagGenerator from './HashtagGenerator';
 import ContentGuide from './ContentGuide';
 import { Separator } from './ui/separator';
 import { useToast } from '../hooks/use-toast';
