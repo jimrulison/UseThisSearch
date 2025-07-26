@@ -4,6 +4,7 @@ import { Toaster } from './components/ui/toaster';
 import { ToastProvider, useToast } from './hooks/use-toast';
 import SearchInterface from './components/SearchInterface';
 import ResultsDisplay from './components/ResultsDisplay';
+import SalesSheet from './components/SalesSheet';
 import axios from 'axios';
 import './App.css';
 
