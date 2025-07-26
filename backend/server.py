@@ -74,6 +74,9 @@ async def health_check():
 # Include the search routes
 api_router.include_router(search_router, tags=["search"])
 
+# Include the company routes
+api_router.include_router(company_router, tags=["companies"])
+
 # Include the router in the main app
 app.include_router(api_router)
 
