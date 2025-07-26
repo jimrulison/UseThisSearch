@@ -155,15 +155,18 @@ backend:
 
   - task: "Dashboard Statistics API"
     implemented: true
-    working: "NA"
+    working: true
     file: "backend/routes/company_routes.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented GET /api/dashboard/{company_id} endpoint providing company-specific statistics: total searches, recent searches, popular terms, search trends over last 30 days. Also GET /api/companies/{id}/searches for detailed search history per company."
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Dashboard Statistics API working perfectly. GET /api/dashboard/{company_id} returns all required fields (total_searches, recent_searches, popular_terms, search_trends, company_info) with correct data types. Company-specific search history endpoint GET /api/companies/{id}/searches working with pagination support. Invalid company ID handling working (returns 404). Dashboard properly aggregates data per company with search trends, popular terms analysis, and recent search tracking."
 
   - task: "Company-Aware Search Integration"
     implemented: true
