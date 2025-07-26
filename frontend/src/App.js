@@ -1,3 +1,19 @@
+import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from './components/ui/toaster';
+import { ToastProvider, useToast } from './hooks/use-toast';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import SearchInterface from './components/SearchInterface';
+import ResultsDisplay from './components/ResultsDisplay';
+import SalesSheet from './components/SalesSheet';
+import LoginPage from './components/LoginPage';
+import { Button } from './components/ui/button';
+import axios from 'axios';
+import './App.css';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
 // Add login link to sales sheet
 const SalesSheetWithLogin = () => {
   return (
@@ -14,18 +30,6 @@ const SalesSheetWithLogin = () => {
     </>
   );
 };
-import { Toaster } from './components/ui/toaster';
-import { ToastProvider, useToast } from './hooks/use-toast';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import SearchInterface from './components/SearchInterface';
-import ResultsDisplay from './components/ResultsDisplay';
-import SalesSheet from './components/SalesSheet';
-import LoginPage from './components/LoginPage';
-import axios from 'axios';
-import './App.css';
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
