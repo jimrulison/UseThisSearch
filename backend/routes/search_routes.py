@@ -13,7 +13,7 @@ from models.search_models import (
     SearchStats
 )
 from services.claude_service import get_claude_service
-from database import db
+from database import db, ensure_personal_company
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
