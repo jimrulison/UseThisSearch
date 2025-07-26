@@ -173,7 +173,7 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/login" element={<LoginRoute />} />
-              <Route path="/sales" element={<SalesSheet />} />
+              <Route path="/sales" element={<SalesSheetWithLogin />} />
               <Route 
                 path="/" 
                 element={
