@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union
 from datetime import datetime
 import uuid
 
@@ -13,11 +13,15 @@ class SearchRequest(BaseModel):
             }
         }
 
+class SuggestionItem(BaseModel):
+    text: str = Field(..., description="The suggestion text")
+    popularity: str = Field(..., description="Popularity level: HIGH, MEDIUM, or LOW")
+
 class SearchSuggestions(BaseModel):
-    questions: List[str] = Field(default_factory=list, description="Question-based suggestions")
-    prepositions: List[str] = Field(default_factory=list, description="Preposition-based suggestions") 
-    comparisons: List[str] = Field(default_factory=list, description="Comparison-based suggestions")
-    alphabetical: List[str] = Field(default_factory=list, description="Alphabetical suggestions")
+    questions: List[SuggestionItem] = Field(default_factory=list, description="Question-based suggestions with popularity")
+    prepositions: List[SuggestionItem] = Field(default_factory=list, description="Preposition-based suggestions with popularity") 
+    comparisons: List[SuggestionItem] = Field(default_factory=list, description="Comparison-based suggestions with popularity")
+    alphabetical: List[SuggestionItem] = Field(default_factory=list, description="Alphabetical suggestions with popularity")
 
 class SearchResponse(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -33,10 +37,21 @@ class SearchResponse(BaseModel):
                 "id": "123e4567-e89b-12d3-a456-426614174000",
                 "search_term": "digital marketing",
                 "suggestions": {
-                    "questions": ["what is digital marketing", "how to start digital marketing"],
-                    "prepositions": ["digital marketing for beginners", "digital marketing with AI"],
-                    "comparisons": ["digital marketing vs traditional marketing"],
-                    "alphabetical": ["affordable digital marketing", "best digital marketing tools"]
+                    "questions": [
+                        {"text": "what is digital marketing", "popularity": "HIGH"},
+                        {"text": "how to start digital marketing", "popularity": "HIGH"}
+                    ],
+                    "prepositions": [
+                        {"text": "digital marketing for beginners", "popularity": "HIGH"},
+                        {"text": "digital marketing with AI", "popularity": "MEDIUM"}
+                    ],
+                    "comparisons": [
+                        {"text": "digital marketing vs traditional marketing", "popularity": "HIGH"}
+                    ],
+                    "alphabetical": [
+                        {"text": "affordable digital marketing", "popularity": "HIGH"},
+                        {"text": "best digital marketing tools", "popularity": "HIGH"}
+                    ]
                 },
                 "total_suggestions": 45,
                 "created_at": "2025-01-16T10:30:00Z",
