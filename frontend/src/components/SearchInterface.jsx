@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm }) => {
   const [viewMode, setViewMode] = useState('graph');
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
