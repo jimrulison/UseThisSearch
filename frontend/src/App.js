@@ -108,7 +108,7 @@ const Home = () => {
               Built with React, FastAPI, MongoDB • Powered by Claude 3.5 Sonnet
             </p>
             <p className="text-xs opacity-50">
-              Generate comprehensive keyword research, questions, and content ideas instantly
+              Use This Search - Generate comprehensive keyword research, questions, and content ideas instantly
             </p>
           </div>
         </footer>
