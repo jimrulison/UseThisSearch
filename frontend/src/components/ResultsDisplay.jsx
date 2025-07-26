@@ -244,29 +244,69 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
           <p className="text-gray-600">Transform your keyword research into ready-to-use content</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <BlogTitleGenerator 
-            searchTerm={searchTerm} 
-            onError={handleFeatureError}
-          />
-          <MetaDescriptionGenerator 
-            searchTerm={searchTerm} 
-            onError={handleFeatureError}
-          />
-          <SocialMediaPostCreator 
-            searchTerm={searchTerm} 
-            onError={handleFeatureError}
-          />
-          <FAQGenerator 
-            searchTerm={searchTerm} 
-            onError={handleFeatureError}
-          />
-        </div>
-        
-        <ContentBriefTemplates 
-          searchTerm={searchTerm} 
-          onError={handleFeatureError}
-        />
+        <Card className="border-0 shadow-lg">
+          <CardContent className="p-6">
+            <Tabs defaultValue="blog-titles" className="w-full">
+              <TabsList className="grid w-full grid-cols-5">
+                <TabsTrigger value="blog-titles" className="flex items-center gap-1">
+                  <span>✨</span>
+                  Blog Titles
+                </TabsTrigger>
+                <TabsTrigger value="meta-descriptions" className="flex items-center gap-1">
+                  <span>📝</span>
+                  Meta Descriptions
+                </TabsTrigger>
+                <TabsTrigger value="social-media" className="flex items-center gap-1">
+                  <span>📱</span>
+                  Social Media
+                </TabsTrigger>
+                <TabsTrigger value="faq" className="flex items-center gap-1">
+                  <span>❓</span>
+                  FAQ
+                </TabsTrigger>
+                <TabsTrigger value="content-briefs" className="flex items-center gap-1">
+                  <span>📋</span>
+                  Content Briefs
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="blog-titles" className="mt-4">
+                <BlogTitleGenerator 
+                  searchTerm={searchTerm} 
+                  onError={handleFeatureError}
+                />
+              </TabsContent>
+              
+              <TabsContent value="meta-descriptions" className="mt-4">
+                <MetaDescriptionGenerator 
+                  searchTerm={searchTerm} 
+                  onError={handleFeatureError}
+                />
+              </TabsContent>
+              
+              <TabsContent value="social-media" className="mt-4">
+                <SocialMediaPostCreator 
+                  searchTerm={searchTerm} 
+                  onError={handleFeatureError}
+                />
+              </TabsContent>
+              
+              <TabsContent value="faq" className="mt-4">
+                <FAQGenerator 
+                  searchTerm={searchTerm} 
+                  onError={handleFeatureError}
+                />
+              </TabsContent>
+              
+              <TabsContent value="content-briefs" className="mt-4">
+                <ContentBriefTemplates 
+                  searchTerm={searchTerm} 
+                  onError={handleFeatureError}
+                />
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
