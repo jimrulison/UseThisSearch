@@ -21,13 +21,13 @@ const SalesSheet = () => {
               Transform your content strategy with Claude AI-generated keyword insights. Discover what your audience is really searching for.
             </p>
             <div className="flex justify-center gap-2">
-              <Badge className="bg-green-100 text-green-800 border-green-200">
+              <Badge className="bg-green-600 text-white border-green-700">
                 🔥 AI-Powered
               </Badge>
-              <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+              <Badge className="bg-blue-600 text-white border-blue-700">
                 ⚡ Real-Time Results
               </Badge>
-              <Badge className="bg-purple-100 text-purple-800 border-purple-200">
+              <Badge className="bg-purple-600 text-white border-purple-700">
                 📊 Data Export
               </Badge>
             </div>
