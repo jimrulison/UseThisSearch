@@ -52,6 +52,14 @@ async def search_suggestions(
         
         logger.info(f"Processing search request for: {search_term}")
         
+        # Get user and company info
+        user_id = get_user_id_from_request(http_request)
+        company_id = get_company_id_from_request(http_request)
+        
+        # If user is authenticated but no company specified, use Personal company
+        if user_id != "anonymous" and not company_id:
+            company_id = await ensure_personal_company(user_id)
+        
         # Generate suggestions using Claude (lazy-loaded)
         claude_service = get_claude_service()
         suggestions_dict = claude_service.generate_suggestions(search_term)
@@ -76,14 +84,17 @@ async def search_suggestions(
             processing_time_ms=processing_time
         )
         
-        # Store search history in background
-        background_tasks.add_task(
-            store_search_history,
-            search_term,
-            total_suggestions,
-            http_request.client.host if http_request.client else None,
-            http_request.headers.get("user-agent")
-        )
+        # Store search history in background (only if we have user and company info)
+        if user_id != "anonymous" and company_id:
+            background_tasks.add_task(
+                store_search_history,
+                search_term,
+                total_suggestions,
+                user_id,
+                company_id,
+                http_request.client.host if http_request.client else None,
+                http_request.headers.get("user-agent")
+            )
         
         logger.info(f"Successfully processed search for '{search_term}' in {processing_time}ms")
         return response
