@@ -5,10 +5,25 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Badge } from './ui/badge';
 import GraphVisualization from './GraphVisualization';
+import BlogTitleGenerator from './BlogTitleGenerator';
 import { Separator } from './ui/separator';
+import { useToast } from '../hooks/use-toast';
 
 const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const { toast } = useToast();
+
+  if (!results || Object.keys(results).length === 0) {
+    return null;
+  }
+
+  const handleBlogTitleError = (message) => {
+    toast({
+      title: "Blog Title Generator",
+      description: message,
+      duration: 3000,
+    });
+  };
 
   if (!results || Object.keys(results).length === 0) {
     return null;
