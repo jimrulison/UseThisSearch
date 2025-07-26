@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import Logo from './Logo';
 
 const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm }) => {
   const [viewMode, setViewMode] = useState('graph');
@@ -17,11 +18,11 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm }) => 
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
-      {/* Hero Section */}
-      <div className="text-center space-y-4">
-        <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent">
-          Use This Search
-        </h1>
+      {/* Hero Section with Logo */}
+      <div className="text-center space-y-6">
+        <div className="flex justify-center">
+          <Logo size="hero" showText={true} />
+        </div>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Discover what questions people are asking about your keywords. Generate content ideas, SEO insights, and uncover search trends with AI-powered keyword research.
         </p>
