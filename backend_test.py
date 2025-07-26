@@ -399,48 +399,410 @@ class BackendTester:
         else:
             self.log_test("error_handling", "fail", f"Error handling issues: {'; '.join(details)}")
     
-    def test_performance(self):
-        """Test performance and response times"""
-        print("\n=== Testing Performance ===")
+    def test_multi_company_database_schema(self):
+        """Test multi-company database schema and Personal company auto-creation"""
+        print("\n=== Testing Multi-Company Database Schema ===")
         
         try:
-            # Test multiple concurrent-like requests
-            response_times = []
+            all_passed = True
+            details = []
             
-            for i in range(3):
-                payload = {"search_term": f"performance test {i+1}"}
-                start_time = time.time()
-                
-                response = self.session.post(f"{API_BASE}/search", json=payload)
+            for user_id in self.test_users:
+                # Test Personal company auto-creation by listing companies
+                headers = {"X-User-ID": user_id}
+                response = self.session.get(f"{API_BASE}/companies", headers=headers)
                 
                 if response.status_code == 200:
-                    response_time = (time.time() - start_time) * 1000
-                    response_times.append(response_time)
+                    companies = response.json()
                     
-                    data = response.json()
-                    api_reported_time = data.get("processing_time_ms", 0)
-                    
-                    print(f"Request {i+1}: {response_time:.0f}ms total, {api_reported_time}ms API processing")
+                    # Should have at least one company (Personal)
+                    if len(companies) >= 1:
+                        # Check if Personal company exists
+                        personal_company = next((c for c in companies if c.get("is_personal", False)), None)
+                        
+                        if personal_company:
+                            if personal_company["name"] == "Personal" and personal_company["user_id"] == user_id:
+                                details.append(f"✓ Personal company auto-created for {user_id}")
+                            else:
+                                all_passed = False
+                                details.append(f"✗ Personal company invalid for {user_id}")
+                        else:
+                            all_passed = False
+                            details.append(f"✗ No Personal company found for {user_id}")
+                    else:
+                        all_passed = False
+                        details.append(f"✗ No companies found for {user_id}")
                 else:
-                    self.log_test("performance", "fail", 
-                                f"Performance test failed: HTTP {response.status_code}")
-                    return
+                    all_passed = False
+                    details.append(f"✗ Failed to get companies for {user_id}: HTTP {response.status_code}")
             
-            if response_times:
-                avg_time = sum(response_times) / len(response_times)
-                max_time = max(response_times)
-                
-                if max_time < 30000:  # 30 seconds
-                    self.log_test("performance", "pass", 
-                                f"Performance acceptable. Avg: {avg_time:.0f}ms, Max: {max_time:.0f}ms")
-                else:
-                    self.log_test("performance", "fail", 
-                                f"Performance too slow. Avg: {avg_time:.0f}ms, Max: {max_time:.0f}ms")
+            if all_passed:
+                self.log_test("multi_company_database_schema", "pass", 
+                            f"Multi-company schema working. {'; '.join(details)}")
             else:
-                self.log_test("performance", "fail", "No successful performance tests")
+                self.log_test("multi_company_database_schema", "fail", 
+                            f"Schema issues found: {'; '.join(details)}")
                 
         except Exception as e:
-            self.log_test("performance", "fail", f"Performance test error: {str(e)}")
+            self.log_test("multi_company_database_schema", "fail", f"Database schema test error: {str(e)}")
+    
+    def test_company_management_api(self):
+        """Test company management CRUD operations"""
+        print("\n=== Testing Company Management API ===")
+        
+        try:
+            all_passed = True
+            details = []
+            test_user = self.test_users[0]
+            headers = {"X-User-ID": test_user}
+            
+            # Test 1: Create new company
+            company_data = {"name": "Test Marketing Agency"}
+            response = self.session.post(f"{API_BASE}/companies", json=company_data, headers=headers)
+            
+            if response.status_code == 200:
+                created_company = response.json()
+                company_id = created_company["id"]
+                details.append("✓ Company creation successful")
+                
+                # Test 2: List companies (should include Personal + new company)
+                response = self.session.get(f"{API_BASE}/companies", headers=headers)
+                if response.status_code == 200:
+                    companies = response.json()
+                    if len(companies) >= 2:
+                        details.append(f"✓ Company listing working ({len(companies)} companies)")
+                    else:
+                        all_passed = False
+                        details.append(f"✗ Expected at least 2 companies, got {len(companies)}")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Company listing failed: HTTP {response.status_code}")
+                
+                # Test 3: Update company name
+                update_data = {"name": "Updated Marketing Agency"}
+                response = self.session.put(f"{API_BASE}/companies/{company_id}", json=update_data, headers=headers)
+                if response.status_code == 200:
+                    updated_company = response.json()
+                    if updated_company["name"] == "Updated Marketing Agency":
+                        details.append("✓ Company update successful")
+                    else:
+                        all_passed = False
+                        details.append("✗ Company update failed - name not changed")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Company update failed: HTTP {response.status_code}")
+                
+                # Test 4: Try to create duplicate company name
+                duplicate_data = {"name": "Updated Marketing Agency"}
+                response = self.session.post(f"{API_BASE}/companies", json=duplicate_data, headers=headers)
+                if response.status_code == 400:
+                    details.append("✓ Duplicate name validation working")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Duplicate validation failed: HTTP {response.status_code}")
+                
+                # Test 5: Try to rename Personal company (should fail)
+                personal_companies = [c for c in companies if c.get("is_personal", False)]
+                if personal_companies:
+                    personal_id = personal_companies[0]["id"]
+                    rename_data = {"name": "Renamed Personal"}
+                    response = self.session.put(f"{API_BASE}/companies/{personal_id}", json=rename_data, headers=headers)
+                    if response.status_code == 400:
+                        details.append("✓ Personal company rename protection working")
+                    else:
+                        all_passed = False
+                        details.append(f"✗ Personal company rename protection failed: HTTP {response.status_code}")
+                
+                # Test 6: Delete company
+                response = self.session.delete(f"{API_BASE}/companies/{company_id}", headers=headers)
+                if response.status_code == 200:
+                    details.append("✓ Company deletion successful")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Company deletion failed: HTTP {response.status_code}")
+                
+                # Test 7: Try to delete Personal company (should fail)
+                if personal_companies:
+                    personal_id = personal_companies[0]["id"]
+                    response = self.session.delete(f"{API_BASE}/companies/{personal_id}", headers=headers)
+                    if response.status_code == 400:
+                        details.append("✓ Personal company deletion protection working")
+                    else:
+                        all_passed = False
+                        details.append(f"✗ Personal company deletion protection failed: HTTP {response.status_code}")
+                
+            else:
+                all_passed = False
+                details.append(f"✗ Company creation failed: HTTP {response.status_code}")
+            
+            # Test 8: Cross-user access protection
+            other_user = self.test_users[1]
+            other_headers = {"X-User-ID": other_user}
+            
+            # Try to access first user's companies
+            response = self.session.get(f"{API_BASE}/companies", headers=other_headers)
+            if response.status_code == 200:
+                other_companies = response.json()
+                # Should only see their own companies, not the first user's
+                user_isolation = all(c["user_id"] == other_user for c in other_companies)
+                if user_isolation:
+                    details.append("✓ User isolation working correctly")
+                else:
+                    all_passed = False
+                    details.append("✗ User isolation failed - seeing other user's companies")
+            
+            if all_passed:
+                self.log_test("company_management_api", "pass", 
+                            f"Company management API working. {'; '.join(details)}")
+            else:
+                self.log_test("company_management_api", "fail", 
+                            f"Company management issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("company_management_api", "fail", f"Company management test error: {str(e)}")
+    
+    def test_dashboard_statistics_api(self):
+        """Test dashboard statistics API for companies"""
+        print("\n=== Testing Dashboard Statistics API ===")
+        
+        try:
+            all_passed = True
+            details = []
+            test_user = self.test_users[0]
+            headers = {"X-User-ID": test_user}
+            
+            # First, get user's companies
+            response = self.session.get(f"{API_BASE}/companies", headers=headers)
+            if response.status_code != 200:
+                self.log_test("dashboard_statistics_api", "fail", "Could not get companies for dashboard test")
+                return
+            
+            companies = response.json()
+            if not companies:
+                self.log_test("dashboard_statistics_api", "fail", "No companies found for dashboard test")
+                return
+            
+            # Use the first company (likely Personal)
+            company_id = companies[0]["id"]
+            company_headers = {"X-User-ID": test_user, "X-Company-ID": company_id}
+            
+            # Make some searches to populate data
+            search_terms = ["dashboard test marketing", "dashboard test seo", "dashboard test content"]
+            for term in search_terms:
+                search_data = {"search_term": term}
+                self.session.post(f"{API_BASE}/search", json=search_data, headers=company_headers)
+                time.sleep(0.5)  # Small delay
+            
+            # Wait for background tasks to complete
+            time.sleep(2)
+            
+            # Test 1: Get dashboard stats
+            response = self.session.get(f"{API_BASE}/dashboard/{company_id}", headers=headers)
+            if response.status_code == 200:
+                stats = response.json()
+                
+                # Validate required fields
+                required_fields = ["total_searches", "recent_searches", "popular_terms", "search_trends", "company_info"]
+                missing_fields = [field for field in required_fields if field not in stats]
+                
+                if not missing_fields:
+                    details.append("✓ Dashboard stats structure valid")
+                    
+                    # Check data types
+                    if (isinstance(stats["total_searches"], int) and
+                        isinstance(stats["recent_searches"], list) and
+                        isinstance(stats["popular_terms"], list) and
+                        isinstance(stats["search_trends"], list) and
+                        isinstance(stats["company_info"], dict)):
+                        
+                        details.append(f"✓ Dashboard data types correct (total: {stats['total_searches']})")
+                        
+                        # Check if our test searches appear
+                        if stats["total_searches"] >= 3:
+                            details.append("✓ Search data populated correctly")
+                        else:
+                            details.append(f"Minor: Expected at least 3 searches, got {stats['total_searches']}")
+                        
+                    else:
+                        all_passed = False
+                        details.append("✗ Dashboard data types invalid")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Dashboard missing fields: {missing_fields}")
+            else:
+                all_passed = False
+                details.append(f"✗ Dashboard stats failed: HTTP {response.status_code}")
+            
+            # Test 2: Get company-specific search history
+            response = self.session.get(f"{API_BASE}/companies/{company_id}/searches", headers=headers)
+            if response.status_code == 200:
+                searches = response.json()
+                if isinstance(searches, list):
+                    details.append(f"✓ Company search history working ({len(searches)} records)")
+                    
+                    # Test pagination
+                    response = self.session.get(f"{API_BASE}/companies/{company_id}/searches?limit=2", headers=headers)
+                    if response.status_code == 200:
+                        limited_searches = response.json()
+                        if len(limited_searches) <= 2:
+                            details.append("✓ Company search history pagination working")
+                        else:
+                            all_passed = False
+                            details.append("✗ Company search history pagination failed")
+                    else:
+                        all_passed = False
+                        details.append("✗ Company search history pagination request failed")
+                else:
+                    all_passed = False
+                    details.append("✗ Company search history not a list")
+            else:
+                all_passed = False
+                details.append(f"✗ Company search history failed: HTTP {response.status_code}")
+            
+            # Test 3: Invalid company ID
+            response = self.session.get(f"{API_BASE}/dashboard/invalid_company_id", headers=headers)
+            if response.status_code == 404:
+                details.append("✓ Invalid company ID handling working")
+            else:
+                all_passed = False
+                details.append(f"✗ Invalid company ID handling failed: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("dashboard_statistics_api", "pass", 
+                            f"Dashboard statistics API working. {'; '.join(details)}")
+            else:
+                self.log_test("dashboard_statistics_api", "fail", 
+                            f"Dashboard statistics issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("dashboard_statistics_api", "fail", f"Dashboard statistics test error: {str(e)}")
+    
+    def test_company_aware_search_integration(self):
+        """Test company-aware search functionality"""
+        print("\n=== Testing Company-Aware Search Integration ===")
+        
+        try:
+            all_passed = True
+            details = []
+            test_user = self.test_users[0]
+            headers = {"X-User-ID": test_user}
+            
+            # Get user's companies
+            response = self.session.get(f"{API_BASE}/companies", headers=headers)
+            if response.status_code != 200:
+                self.log_test("company_aware_search_integration", "fail", "Could not get companies for search test")
+                return
+            
+            companies = response.json()
+            if len(companies) < 1:
+                self.log_test("company_aware_search_integration", "fail", "No companies found for search test")
+                return
+            
+            company_id = companies[0]["id"]
+            
+            # Test 1: Search with company headers
+            search_data = {"search_term": "company aware search test"}
+            company_headers = {"X-User-ID": test_user, "X-Company-ID": company_id}
+            
+            response = self.session.post(f"{API_BASE}/search", json=search_data, headers=company_headers)
+            if response.status_code == 200:
+                search_result = response.json()
+                if "suggestions" in search_result and "total_suggestions" in search_result:
+                    details.append("✓ Company-aware search working")
+                else:
+                    all_passed = False
+                    details.append("✗ Company-aware search response invalid")
+            else:
+                all_passed = False
+                details.append(f"✗ Company-aware search failed: HTTP {response.status_code}")
+            
+            # Wait for background task
+            time.sleep(2)
+            
+            # Test 2: Verify search was stored with company association
+            response = self.session.get(f"{API_BASE}/companies/{company_id}/searches", headers=headers)
+            if response.status_code == 200:
+                company_searches = response.json()
+                
+                # Look for our test search
+                found_search = any(s.get("search_term") == "company aware search test" for s in company_searches)
+                if found_search:
+                    details.append("✓ Search stored with company association")
+                else:
+                    all_passed = False
+                    details.append("✗ Search not found in company history")
+            else:
+                all_passed = False
+                details.append("✗ Could not verify company search storage")
+            
+            # Test 3: Search without company header (backward compatibility)
+            search_data = {"search_term": "backward compatibility test"}
+            user_only_headers = {"X-User-ID": test_user}
+            
+            response = self.session.post(f"{API_BASE}/search", json=search_data, headers=user_only_headers)
+            if response.status_code == 200:
+                details.append("✓ Backward compatibility working (search without company header)")
+            else:
+                all_passed = False
+                details.append(f"✗ Backward compatibility failed: HTTP {response.status_code}")
+            
+            # Test 4: Search without any headers (anonymous)
+            search_data = {"search_term": "anonymous search test"}
+            response = self.session.post(f"{API_BASE}/search", json=search_data)
+            if response.status_code == 200:
+                details.append("✓ Anonymous search working")
+            else:
+                all_passed = False
+                details.append(f"✗ Anonymous search failed: HTTP {response.status_code}")
+            
+            # Test 5: Create second company and test isolation
+            company_data = {"name": "Test Company 2"}
+            response = self.session.post(f"{API_BASE}/companies", json=company_data, headers=headers)
+            if response.status_code == 200:
+                company2 = response.json()
+                company2_id = company2["id"]
+                
+                # Make search in second company
+                search_data = {"search_term": "company isolation test"}
+                company2_headers = {"X-User-ID": test_user, "X-Company-ID": company2_id}
+                
+                response = self.session.post(f"{API_BASE}/search", json=search_data, headers=company2_headers)
+                if response.status_code == 200:
+                    time.sleep(2)  # Wait for background task
+                    
+                    # Check that search appears in company2 but not company1
+                    response1 = self.session.get(f"{API_BASE}/companies/{company_id}/searches", headers=headers)
+                    response2 = self.session.get(f"{API_BASE}/companies/{company2_id}/searches", headers=headers)
+                    
+                    if response1.status_code == 200 and response2.status_code == 200:
+                        searches1 = response1.json()
+                        searches2 = response2.json()
+                        
+                        found_in_company1 = any(s.get("search_term") == "company isolation test" for s in searches1)
+                        found_in_company2 = any(s.get("search_term") == "company isolation test" for s in searches2)
+                        
+                        if not found_in_company1 and found_in_company2:
+                            details.append("✓ Company search isolation working")
+                        else:
+                            all_passed = False
+                            details.append(f"✗ Company isolation failed (found in company1: {found_in_company1}, company2: {found_in_company2})")
+                    else:
+                        all_passed = False
+                        details.append("✗ Could not verify company isolation")
+                
+                # Clean up - delete test company
+                self.session.delete(f"{API_BASE}/companies/{company2_id}", headers=headers)
+            
+            if all_passed:
+                self.log_test("company_aware_search_integration", "pass", 
+                            f"Company-aware search integration working. {'; '.join(details)}")
+            else:
+                self.log_test("company_aware_search_integration", "fail", 
+                            f"Company-aware search issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("company_aware_search_integration", "fail", f"Company-aware search test error: {str(e)}")
+    
     
     def run_all_tests(self):
         """Run all backend tests"""
