@@ -3,9 +3,12 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from './components/ui/toaster';
 import SearchInterface from './components/SearchInterface';
 import ResultsDisplay from './components/ResultsDisplay';
-import { generateMockResults } from './data/mockData';
 import { useToast } from './hooks/use-toast';
+import axios from 'axios';
 import './App.css';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,28 +21,59 @@ const Home = () => {
     setIsLoading(true);
     
     try {
-      // Simulate API delay for realistic experience
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log('Searching for:', term);
       
-      const mockResults = generateMockResults(term);
-      setResults(mockResults);
+      const response = await axios.post(`${API}/search`, {
+        search_term: term
+      });
       
-      const totalSuggestions = Object.values(mockResults).reduce((total, items) => total + items.length, 0);
+      const data = response.data;
+      console.log('API Response:', data);
+      
+      // Transform API response to match frontend expectations
+      const transformedResults = {
+        questions: data.suggestions.questions || [],
+        prepositions: data.suggestions.prepositions || [],
+        comparisons: data.suggestions.comparisons || [],
+        alphabetical: data.suggestions.alphabetical || []
+      };
+      
+      setResults(transformedResults);
       
       toast({
         title: "Search Complete!",
-        description: `Found ${totalSuggestions} suggestions for "${term}"`,
+        description: `Found ${data.total_suggestions} suggestions for "${term}" in ${data.processing_time_ms}ms`,
         duration: 3000,
       });
       
     } catch (error) {
       console.error('Search error:', error);
+      
+      let errorMessage = "Something went wrong. Please try again.";
+      
+      if (error.response) {
+        // Server responded with error status
+        if (error.response.status === 400) {
+          errorMessage = error.response.data.detail || "Invalid search term";
+        } else if (error.response.status === 500) {
+          errorMessage = "Server error. Please try again later.";
+        }
+      } else if (error.request) {
+        // Request made but no response
+        errorMessage = "Unable to connect to server. Please check your connection.";
+      }
+      
       toast({
         title: "Search Failed",
-        description: "Something went wrong. Please try again.",
+        description: errorMessage,
         variant: "destructive",
-        duration: 3000,
+        duration: 5000,
       });
+      
+      // Keep previous results if any
+      if (!results) {
+        setResults(null);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -66,13 +100,17 @@ const Home = () => {
         
         {/* Footer */}
         <footer className="text-center text-muted-foreground mt-16 pb-8">
-          <p className="text-sm">
-            🚀 **Note**: This is currently using mock data for demonstration. 
-            The backend will integrate with Claude AI for real-time question generation.
-          </p>
-          <p className="text-xs mt-2 opacity-75">
-            Built with React, FastAPI, and MongoDB • Powered by Claude AI
-          </p>
+          <div className="space-y-2">
+            <p className="text-sm font-semibold text-green-600">
+              🚀 **Now powered by Claude AI!** Real-time question generation and keyword research.
+            </p>
+            <p className="text-xs opacity-75">
+              Built with React, FastAPI, MongoDB • Powered by Claude 3.5 Sonnet
+            </p>
+            <p className="text-xs opacity-50">
+              Generate comprehensive keyword research, questions, and content ideas instantly
+            </p>
+          </div>
         </footer>
       </div>
       
