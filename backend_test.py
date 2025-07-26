@@ -39,10 +39,22 @@ class BackendTester:
             "search_stats_api": {"status": "pending", "details": ""},
             "database_integration": {"status": "pending", "details": ""},
             "error_handling": {"status": "pending", "details": ""},
-            "performance": {"status": "pending", "details": ""}
+            "performance": {"status": "pending", "details": ""},
+            # New multi-company tests
+            "multi_company_database_schema": {"status": "pending", "details": ""},
+            "company_management_api": {"status": "pending", "details": ""},
+            "dashboard_statistics_api": {"status": "pending", "details": ""},
+            "company_aware_search_integration": {"status": "pending", "details": ""}
         }
         self.session = requests.Session()
         self.session.timeout = 30
+        
+        # Test users for multi-company testing
+        self.test_users = [
+            "test_user_marketing_pro",
+            "test_user_content_creator", 
+            "test_user_seo_specialist"
+        ]
         
     def log_test(self, test_name: str, status: str, details: str):
         """Log test results"""
