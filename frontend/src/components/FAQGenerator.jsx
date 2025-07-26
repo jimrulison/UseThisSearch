@@ -113,7 +113,12 @@ const FAQGenerator = ({ searchTerm, onError }) => {
 
   if (!isVisible && faqs.length === 0) {
     return (
-      <div className="mt-4">
+      <div className="text-center py-8">
+        <div className="mb-4">
+          <div className="text-gray-600 mb-4">
+            Generate frequently asked questions for "<strong>{searchTerm}</strong>"
+          </div>
+        </div>
         <Button
           onClick={generateFAQs}
           disabled={isGenerating || !searchTerm}
@@ -127,7 +132,7 @@ const FAQGenerator = ({ searchTerm, onError }) => {
           ) : (
             <>
               <Wand2 className="mr-2 h-4 w-4" />
-              📋 Generate FAQ Section
+              ❓ Generate FAQ Section
             </>
           )}
         </Button>
