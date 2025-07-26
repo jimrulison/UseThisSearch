@@ -123,6 +123,54 @@ backend:
         agent: "testing"
         comment: "POST-UI UPDATE VERIFICATION: Claude AI integration confirmed working perfectly after UI updates. Tested with 5 terms (digital marketing, coffee, AI, fitness, python programming). Generated 64-76 suggestions per query in 12-30 seconds. All categories properly populated. No degradation in functionality."
 
+  - task: "Multi-Company Database Schema"
+    implemented: true
+    working: "NA"
+    file: "backend/models/search_models.py, backend/database.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented new Company model and updated SearchHistory to include company_id and user_id fields. Added database indexes for company and user relationships. Created ensure_personal_company helper function to auto-create Personal company for users."
+
+  - task: "Company Management API"
+    implemented: true
+    working: "NA"
+    file: "backend/routes/company_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented full CRUD API for company management: GET /api/companies (list user companies), POST /api/companies (create), PUT /api/companies/{id} (update name), DELETE /api/companies/{id} (delete non-Personal companies). Includes user ownership validation and prevents operations on other users' companies."
+
+  - task: "Dashboard Statistics API"
+    implemented: true
+    working: "NA"
+    file: "backend/routes/company_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented GET /api/dashboard/{company_id} endpoint providing company-specific statistics: total searches, recent searches, popular terms, search trends over last 30 days. Also GET /api/companies/{id}/searches for detailed search history per company."
+
+  - task: "Company-Aware Search Integration"
+    implemented: true
+    working: "NA"
+    file: "backend/routes/search_routes.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated existing search endpoint to be company-aware. Added X-User-ID and X-Company-ID header support. Modified store_search_history to include user_id and company_id. Backward compatible - searches without headers still work but don't get stored with company association."
+
   - task: "Search API Endpoint"
     implemented: true
     working: true
