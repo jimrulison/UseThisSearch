@@ -20,10 +20,10 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm }) => 
       {/* Hero Section */}
       <div className="text-center space-y-4">
         <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent">
-          Answer The Public Clone
+          Use This Search
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Discover what questions people are asking about your keywords. Generate content ideas, SEO insights, and uncover search trends.
+          Discover what questions people are asking about your keywords. Generate content ideas, SEO insights, and uncover search trends with AI-powered keyword research.
         </p>
       </div>
 
