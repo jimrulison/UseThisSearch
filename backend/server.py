@@ -27,8 +27,8 @@ db = client[os.environ['DB_NAME']]
 
 # Create the main app without a prefix
 app = FastAPI(
-    title="AnswerThePublic Clone API",
-    description="AI-powered keyword research and question generation API",
+    title="Use This Search - AI Keyword Research Tool",
+    description="AI-powered keyword research and question generation API for content creators and marketers",
     version="1.0.0"
 )
 
