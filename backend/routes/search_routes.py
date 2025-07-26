@@ -12,7 +12,7 @@ from models.search_models import (
     SearchHistory,
     SearchStats
 )
-from services.claude_service import claude_service
+from services.claude_service import get_claude_service
 from database import db
 
 logger = logging.getLogger(__name__)
@@ -39,7 +39,8 @@ async def search_suggestions(
         
         logger.info(f"Processing search request for: {search_term}")
         
-        # Generate suggestions using Claude
+        # Generate suggestions using Claude (lazy-loaded)
+        claude_service = get_claude_service()
         suggestions_dict = claude_service.generate_suggestions(search_term)
         suggestions = SearchSuggestions(**suggestions_dict)
         
