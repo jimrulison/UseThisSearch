@@ -16,11 +16,13 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
 
   const handleExportCSV = () => {
     const csvData = [];
-    csvData.push(['Category', 'Type', 'Question/Phrase', 'Search Term']);
+    csvData.push(['Category', 'Type', 'Question/Phrase', 'Popularity', 'Search Term']);
     
-    Object.entries(results).forEach(([category, items]) => {
+    Object.entries(sortedResults).forEach(([category, items]) => {
       items.forEach(item => {
-        csvData.push([category, category, item, searchTerm]);
+        const text = typeof item === 'object' ? item.text : item;
+        const popularity = typeof item === 'object' ? item.popularity : 'MEDIUM';
+        csvData.push([category, category, text, popularity, searchTerm]);
       });
     });
 
