@@ -312,9 +312,11 @@ metadata:
 
 test_plan:
   current_focus:
-    []
+    - "Backend API endpoints verification"
+    - "Claude AI service functionality"
+    - "Hashtag Generator frontend display issue"
   stuck_tasks:
-    []
+    - "Hashtag Generator Tab"
   test_all: false
   test_priority: "high_first"
 
