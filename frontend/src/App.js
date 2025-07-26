@@ -1,15 +1,46 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from './components/ui/toaster';
 import { ToastProvider, useToast } from './hooks/use-toast';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import SearchInterface from './components/SearchInterface';
 import ResultsDisplay from './components/ResultsDisplay';
 import SalesSheet from './components/SalesSheet';
+import LoginPage from './components/LoginPage';
 import axios from 'axios';
 import './App.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
+
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, isLoading } = useAuth();
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  return isAuthenticated() ? children : <Navigate to="/login" replace />;
+};
+
+// Login Route Component
+const LoginRoute = () => {
+  const { login, isAuthenticated } = useAuth();
+  
+  if (isAuthenticated()) {
+    return <Navigate to="/" replace />;
+  }
+  
+  return <LoginPage onLogin={login} />;
+};
 
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -123,14 +154,25 @@ const Home = () => {
 function App() {
   return (
     <div className="App">
-      <ToastProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/sales" element={<SalesSheet />} />
-          </Routes>
-        </BrowserRouter>
-      </ToastProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/login" element={<LoginRoute />} />
+              <Route path="/sales" element={<SalesSheet />} />
+              <Route 
+                path="/" 
+                element={
+                  <ProtectedRoute>
+                    <Home />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </BrowserRouter>
+        </ToastProvider>
+      </AuthProvider>
     </div>
   );
 }
