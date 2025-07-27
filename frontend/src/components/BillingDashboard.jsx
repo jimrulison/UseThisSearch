@@ -352,7 +352,8 @@ const BillingDashboard = () => {
                   <p className="text-sm text-gray-600 mb-2">
                     Usage resets on {formatDate(usage.reset_date)}
                   </p>
-                  {(usage.searches_remaining <= 10 && usage.searches_remaining > 0) && (
+                  {((usage.searches_remaining <= 10 && usage.searches_remaining > 0) || 
+                    (usage.users_remaining <= 0 && usage.user_limit !== -1)) && (
                     <Button 
                       size="sm" 
                       onClick={() => handleUpgrade()}
