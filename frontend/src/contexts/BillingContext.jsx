@@ -123,6 +123,17 @@ export const BillingProvider = ({ children }) => {
     return true;
   };
 
+  const canInviteUser = () => {
+    if (!usage) return true;
+    
+    // Check user limits
+    if (usage.user_limit !== -1 && usage.users_remaining <= 0) {
+      return false;
+    }
+    
+    return true;
+  };
+
   const getUsageWarnings = () => {
     if (!usage) return [];
     
