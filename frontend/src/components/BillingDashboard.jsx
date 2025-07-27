@@ -326,6 +326,28 @@ const BillingDashboard = () => {
                   )}
                 </div>
 
+                {/* User Usage */}
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>Team Users</span>
+                    <span>
+                      {usage.current_users} / {usage.user_limit === -1 ? '∞' : usage.user_limit}
+                    </span>
+                  </div>
+                  {usage.user_limit !== -1 && (
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className={`h-2 rounded-full transition-all ${
+                          getUsageColor(getUsagePercentage(usage.current_users, usage.user_limit))
+                        }`}
+                        style={{ 
+                          width: `${getUsagePercentage(usage.current_users, usage.user_limit)}%` 
+                        }}
+                      ></div>
+                    </div>
+                  )}
+                </div>
+
                 <div className="pt-4 text-center">
                   <p className="text-sm text-gray-600 mb-2">
                     Usage resets on {formatDate(usage.reset_date)}
