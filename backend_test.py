@@ -1367,6 +1367,17 @@ class BackendTester:
         self.test_dashboard_statistics_api()
         self.test_company_aware_search_integration()
         
+        # Run new multi-user tests
+        print(f"\n{'='*60}")
+        print("MULTI-USER SYSTEM TESTS")
+        print(f"{'='*60}")
+        
+        self.test_multi_user_management_api()
+        self.test_user_invitation_system()
+        self.test_user_limits_tracking()
+        self.test_billing_usage_api()
+        self.test_multi_user_permissions()
+        
         total_time = time.time() - start_time
         
         # Summary
