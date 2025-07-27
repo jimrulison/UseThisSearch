@@ -213,31 +213,33 @@ function App() {
     <div className="App">
       <AuthProvider>
         <CompanyProvider>
-          <ToastProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/login" element={<LoginRoute />} />
-                <Route path="/sales" element={<SalesSheetWithLogin />} />
-                <Route 
-                  path="/dashboard" 
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/" 
-                  element={
-                    <ProtectedRoute>
-                      <Home />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </BrowserRouter>
-          </ToastProvider>
+          <BillingProvider>
+            <ToastProvider>
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/login" element={<LoginRoute />} />
+                  <Route path="/sales" element={<SalesSheetWithLogin />} />
+                  <Route 
+                    path="/dashboard" 
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/" 
+                    element={
+                      <ProtectedRoute>
+                        <Home />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </BrowserRouter>
+            </ToastProvider>
+          </BillingProvider>
         </CompanyProvider>
       </AuthProvider>
     </div>
