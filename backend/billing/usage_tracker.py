@@ -72,6 +72,7 @@ class UsageTracker:
         plan_config = get_plan_limits(plan_type)
         search_limit = plan_config["search_limit"]
         company_limit = plan_config["company_limit"]
+        user_limit = plan_config["user_limit"]
         
         # Get current usage
         usage = await self.get_current_usage(user_id)
@@ -82,9 +83,18 @@ class UsageTracker:
             "user_id": user_id
         })
         
+        # Count current users across all companies owned by this user
+        current_users = await self.db.company_users.count_documents({
+            "user_id": user_id,
+            "invitation_status": "active"
+        })
+        # Add 1 for the owner themselves
+        current_users += 1
+        
         # Calculate remaining quota
         searches_remaining = max(0, search_limit - current_searches) if search_limit != -1 else -1
         companies_remaining = max(0, company_limit - current_companies) if company_limit != -1 else -1
+        users_remaining = max(0, user_limit - current_users) if user_limit != -1 else -1
         
         # Next reset date (first day of next month)
         next_month = datetime.utcnow().replace(day=1) + timedelta(days=32)
@@ -93,10 +103,13 @@ class UsageTracker:
         return UsageLimits(
             search_limit=search_limit,
             company_limit=company_limit,
+            user_limit=user_limit,
             current_searches=current_searches,
             current_companies=current_companies,
+            current_users=current_users,
             searches_remaining=searches_remaining,
             companies_remaining=companies_remaining,
+            users_remaining=users_remaining,
             reset_date=reset_date
         )
     
