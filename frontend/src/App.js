@@ -4,11 +4,14 @@ import { Toaster } from './components/ui/toaster';
 import { ToastProvider, useToast } from './hooks/use-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CompanyProvider, useCompany } from './contexts/CompanyContext';
+import { BillingProvider, useBilling } from './contexts/BillingContext'; // NEW: Added BillingProvider
 import SearchInterface from './components/SearchInterface';
 import ResultsDisplay from './components/ResultsDisplay';
 import SalesSheet from './components/SalesSheet';
 import LoginPage from './components/LoginPage';
 import Dashboard from './components/Dashboard';
+import UsageAlerts from './components/UsageAlerts'; // NEW: Added UsageAlerts
+import SafeSearchWrapper from './components/SafeSearchWrapper'; // NEW: Added SafeSearchWrapper
 import { Button } from './components/ui/button';
 import axios from 'axios';
 import './App.css';
