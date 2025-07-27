@@ -25,6 +25,7 @@ const PRICING_PLANS = {
     features: [
       '200 searches per month',
       '1 company workspace',
+      '1 user account',
       'All 6 content generators',
       'Basic analytics',
       'Email support'
@@ -38,6 +39,7 @@ const PRICING_PLANS = {
     features: [
       '500 searches per month',
       '5 company workspaces',
+      '2 user accounts',
       'All 6 content generators',
       'Enhanced analytics',
       'Priority email support'
@@ -52,6 +54,7 @@ const PRICING_PLANS = {
     features: [
       '2,000 searches per month',
       'Unlimited companies',
+      '5 user accounts',
       'All 6 content generators',
       'Advanced analytics',
       'Priority processing',
@@ -67,6 +70,7 @@ const PRICING_PLANS = {
     features: [
       'Unlimited searches',
       'Unlimited companies',
+      '7 user accounts',
       'All 6 content generators',
       'Advanced analytics',
       'White-label options',
