@@ -151,6 +151,51 @@ class BillingAlert(BaseModel):
     acknowledged: bool = Field(default=False)
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
+class CompanyUser(BaseModel):
+    """Track users associated with companies"""
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    company_id: str = Field(..., description="Company ID")
+    user_id: str = Field(..., description="User email")
+    role: str = Field(default="member", description="Role in company: owner, admin, member")
+    invited_by: str = Field(..., description="User ID who invited this user")
+    invitation_status: str = Field(default="active", description="active, pending, revoked")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "company_id": "company_123",
+                "user_id": "user@example.com",
+                "role": "member",
+                "invited_by": "owner@example.com",
+                "invitation_status": "active"
+            }
+        }
+
+class UserInvitation(BaseModel):
+    """Handle user invitations to companies"""
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    company_id: str = Field(..., description="Company ID")
+    invited_email: str = Field(..., description="Email of invited user")
+    invited_by: str = Field(..., description="User ID who sent invitation")
+    role: str = Field(default="member", description="Role to assign")
+    token: str = Field(..., description="Invitation token")
+    status: str = Field(default="pending", description="pending, accepted, expired, revoked")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    expires_at: datetime = Field(..., description="Invitation expiry date")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "company_id": "company_123",
+                "invited_email": "newuser@example.com",
+                "invited_by": "owner@example.com",
+                "role": "member",
+                "token": "invite_token_123"
+            }
+        }
+
 # Request/Response models for API
 class SubscriptionCreate(BaseModel):
     plan_type: PlanType
