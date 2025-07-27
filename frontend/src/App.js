@@ -72,12 +72,25 @@ const Home = () => {
   const [viewMode, setViewMode] = useState('graph');
   const { toast } = useToast();
   const { activeCompany, getUserId } = useCompany();
+  const { hasUsageLeft } = useBilling(); // NEW: Added billing hook
 
   const handleSearch = async (term) => {
     setIsLoading(true);
     
     try {
       console.log('Searching for:', term);
+      
+      // NEW: Check if user has usage left before searching
+      if (!hasUsageLeft()) {
+        toast({
+          title: "Search Limit Reached",
+          description: "You've reached your search limit for this month. Please upgrade to continue.",
+          variant: "destructive",
+          duration: 5000,
+        });
+        setIsLoading(false);
+        return;
+      }
       
       // Prepare headers for company-aware search
       const headers = {};
@@ -89,7 +102,12 @@ const Home = () => {
         headers['X-Company-ID'] = activeCompany.id;
       }
       
-      const response = await axios.post(`${API}/search`, {
+      // NEW: Use safe billing endpoint for authenticated users
+      const endpoint = userId && userId !== 'anonymous' ? 
+        `${API}/safe/search-with-billing` : 
+        `${API}/search`; // Fallback to original for anonymous
+      
+      const response = await axios.post(endpoint, {
         search_term: term
       }, {
         headers
@@ -108,9 +126,13 @@ const Home = () => {
       
       setResults(transformedResults);
       
+      // NEW: Show usage info in toast if available
+      const usageInfo = data.usage_info ? 
+        ` (${data.usage_info.searches_remaining} searches remaining)` : '';
+      
       toast({
         title: "Search Complete!",
-        description: `Found ${data.total_suggestions} suggestions for "${term}" in ${data.processing_time_ms}ms${activeCompany ? ` (${activeCompany.name})` : ''}`,
+        description: `Found ${data.total_suggestions} suggestions for "${term}" in ${data.processing_time_ms}ms${activeCompany ? ` (${activeCompany.name})` : ''}${usageInfo}`,
         duration: 3000,
       });
       
@@ -120,14 +142,25 @@ const Home = () => {
       let errorMessage = "Something went wrong. Please try again.";
       
       if (error.response) {
-        // Server responded with error status
-        if (error.response.status === 400) {
+        if (error.response.status === 429) {
+          // NEW: Handle usage limit errors
+          const errorData = error.response.data;
+          errorMessage = errorData.message || "Usage limit exceeded. Please upgrade to continue.";
+          
+          toast({
+            title: "Usage Limit Reached",
+            description: errorMessage,
+            variant: "destructive",
+            duration: 8000,
+          });
+          setIsLoading(false);
+          return;
+        } else if (error.response.status === 400) {
           errorMessage = error.response.data.detail || "Invalid search term";
         } else if (error.response.status === 500) {
           errorMessage = "Server error. Please try again later.";
         }
       } else if (error.request) {
-        // Request made but no response
         errorMessage = "Unable to connect to server. Please check your connection.";
       }
       
@@ -138,7 +171,6 @@ const Home = () => {
         duration: 5000,
       });
       
-      // Keep previous results if any
       if (!results) {
         setResults(null);
       }
@@ -146,6 +178,35 @@ const Home = () => {
       setIsLoading(false);
     }
   };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="container mx-auto px-4 py-8 space-y-8">
+        
+        {/* NEW: Usage Alerts */}
+        <UsageAlerts />
+        
+        {/* Search Interface */}
+        <SearchInterface 
+          onSearch={handleSearch}
+          isLoading={isLoading}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+        />
+        
+        {/* Results Display */}
+        {results && (
+          <ResultsDisplay 
+            results={results} 
+            searchTerm={searchTerm}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
