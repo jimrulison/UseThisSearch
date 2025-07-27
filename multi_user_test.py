@@ -212,8 +212,12 @@ class MultiUserTester:
             response = self.session.get(f"{API_BASE}/safe/usage-status", headers=headers)
             if response.status_code == 200:
                 usage_status = response.json()
-                if "user_limit" in usage_status and "current_users" in usage_status:
-                    details.append("✓ Safe usage status includes user limits")
+                if ("usage" in usage_status and 
+                    "users" in usage_status["usage"] and
+                    "limit" in usage_status["usage"]["users"] and
+                    "used" in usage_status["usage"]["users"]):
+                    user_usage = usage_status["usage"]["users"]
+                    details.append(f"✓ Safe usage status includes user limits (used: {user_usage['used']}, limit: {user_usage['limit']})")
                 else:
                     all_passed = False
                     details.append("✗ Safe usage status missing user limit fields")
