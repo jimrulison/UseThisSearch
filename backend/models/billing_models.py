@@ -164,10 +164,13 @@ class SubscriptionUpdate(BaseModel):
 class UsageLimits(BaseModel):
     search_limit: int
     company_limit: int
+    user_limit: int  # NEW: User limit
     current_searches: int
     current_companies: int
+    current_users: int  # NEW: Current users
     searches_remaining: int
     companies_remaining: int
+    users_remaining: int  # NEW: Users remaining
     reset_date: datetime
     
 class BillingDashboard(BaseModel):
