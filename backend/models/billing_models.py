@@ -28,12 +28,15 @@ PRICING_CONFIG = {
         "yearly": 37,
         "search_limit": 200,
         "company_limit": 1,
+        "user_limit": 1,  # NEW: User limit
         "features": [
-            "basic_search",
-            "all_content_generators", 
-            "basic_dashboard",
-            "csv_export",
-            "email_support"
+            "200 searches per month",
+            "1 company workspace", 
+            "1 user account",  # NEW: User feature
+            "All 6 content generators",
+            "Basic analytics",
+            "CSV export",
+            "Email support"
         ]
     },
     "professional": {
@@ -41,12 +44,15 @@ PRICING_CONFIG = {
         "yearly": 77,
         "search_limit": 500,
         "company_limit": 5,
+        "user_limit": 2,  # NEW: User limit
         "features": [
-            "basic_search",
-            "all_content_generators",
-            "enhanced_dashboard", 
-            "csv_export",
-            "priority_email_support"
+            "500 searches per month",
+            "5 company workspaces",
+            "2 user accounts",  # NEW: User feature
+            "All 6 content generators",
+            "Enhanced analytics", 
+            "CSV export",
+            "Priority email support"
         ]
     },
     "agency": {
@@ -54,14 +60,17 @@ PRICING_CONFIG = {
         "yearly": 157,
         "search_limit": 2000,
         "company_limit": -1,  # -1 means unlimited
+        "user_limit": 5,  # NEW: User limit
         "features": [
-            "basic_search",
-            "all_content_generators",
-            "advanced_dashboard",
-            "priority_processing",
-            "advanced_export",
-            "chat_support",
-            "client_reports"
+            "2000 searches per month",
+            "Unlimited companies",
+            "5 user accounts",  # NEW: User feature
+            "All 6 content generators",
+            "Advanced analytics",
+            "Priority processing",
+            "Advanced export",
+            "Chat support",
+            "Client reports"
         ]
     },
     "enterprise": {
@@ -69,16 +78,19 @@ PRICING_CONFIG = {
         "yearly": 317,
         "search_limit": -1,  # -1 means unlimited
         "company_limit": -1,
+        "user_limit": 7,  # NEW: User limit
         "features": [
-            "basic_search",
-            "all_content_generators", 
-            "advanced_dashboard",
-            "priority_processing",
-            "white_label",
-            "api_access",
-            "team_access",
-            "phone_support",
-            "custom_branding"
+            "Unlimited searches",
+            "Unlimited companies",
+            "7 user accounts",  # NEW: User feature
+            "All 6 content generators", 
+            "Advanced analytics",
+            "Priority processing",
+            "White-label options",
+            "API access",
+            "Team collaboration",
+            "Phone support",
+            "Custom branding"
         ]
     }
 }
