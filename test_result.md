@@ -283,6 +283,30 @@ backend:
         comment: "POST-UI UPDATE VERIFICATION: Health check endpoint confirmed working after UI updates. Returns proper JSON response with healthy status."
 
 frontend:
+  - task: "User Availability Notice Component"
+    implemented: true
+    working: false
+    file: "frontend/src/components/UserAvailabilityNotice.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented UserAvailabilityNotice component displaying user limits at top of page: Shows current users / user limit, visual status indicators (green/yellow/red), remaining slots, plan badge, upgrade button when needed, team capacity warnings"
+  
+  - task: "User Limits Display in Billing Dashboard"
+    implemented: true
+    working: false
+    file: "frontend/src/components/BillingDashboard.jsx, frontend/src/components/StripeCheckout.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated BillingDashboard to show user limits alongside searches/companies, added user usage progress bar, updated pricing plans to include user account limits (1, 2, 5, 7 users), enhanced BillingContext with canInviteUser function and user warnings"
+  
   - task: "Search Interface Component"
     implemented: true
     working: true
