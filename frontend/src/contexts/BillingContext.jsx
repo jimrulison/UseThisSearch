@@ -173,6 +173,27 @@ export const BillingProvider = ({ children }) => {
         });
       }
     }
+
+    // User usage warnings
+    if (usage.user_limit !== -1) {
+      const userPercentage = (usage.current_users / usage.user_limit) * 100;
+      
+      if (userPercentage >= 100) {
+        warnings.push({
+          type: 'limit_exceeded',
+          category: 'users',
+          message: `You've reached your limit of ${usage.user_limit} users.`,
+          action: 'upgrade_required'
+        });
+      } else if (userPercentage >= 90) {
+        warnings.push({
+          type: 'usage_warning',
+          category: 'users', 
+          message: `You've used ${usage.current_users} of ${usage.user_limit} user slots (${Math.round(userPercentage)}%).`,
+          action: 'consider_upgrade'
+        });
+      }
+    }
     
     return warnings;
   };
