@@ -76,7 +76,7 @@ I've successfully added the **Blog Title Generator** feature to your "Use This S
 ## 🌐 **Live Feature URLs:**
 
 ### **Main Application:**
-**https://42013ce2-ebe6-4b19-8988-9b215d1da0b9.preview.emergentagent.com**
+**https://1d873bb1-e260-419a-aa82-69c670772754.preview.emergentagent.com**
 
 ### **How to Test the New Feature:**
 1. **Login** with demo credentials (any email + 6+ char password)
