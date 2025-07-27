@@ -101,9 +101,11 @@ class MultiUserTester:
                     all_passed = False
                     details.append("✗ POST invite user response missing invitation_id")
             elif response.status_code == 429:
-                # User limit exceeded - this is expected behavior
+                # User limit exceeded - this is expected behavior for Solo plan
                 error_data = response.json()
-                if "error" in error_data and "User limit exceeded" in error_data["error"]:
+                if ("detail" in error_data and 
+                    "error" in error_data["detail"] and 
+                    "User limit exceeded" in error_data["detail"]["error"]):
                     details.append("✓ POST invite user endpoint working (user limit enforced)")
                 else:
                     all_passed = False
