@@ -16,6 +16,7 @@ sys.path.append('/app/backend')
 
 from routes.search_routes import router as search_router
 from routes.company_routes import router as company_router
+from routes.user_management_routes import router as user_management_router
 
 # NEW: Import billing routes (additive - don't modify existing imports)
 from billing.billing_routes import router as billing_router
