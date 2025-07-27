@@ -8,18 +8,21 @@ import {
   Calendar,
   Building2,
   Eye,
-  Download
+  Download,
+  CreditCard
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { useNavigate } from 'react-router-dom';
-import { useCompany } from '../contexts/CompanyContext';
 import { useToast } from '../hooks/use-toast';
+import { useCompany } from '../contexts/CompanyContext';
 import Logo from './Logo';
 import UserDropdown from './UserDropdown';
 import CompanySelector from './CompanySelector';
+import BillingDashboard from './BillingDashboard';
 
 const Dashboard = () => {
   const navigate = useNavigate();
