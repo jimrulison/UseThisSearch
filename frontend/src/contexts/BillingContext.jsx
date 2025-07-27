@@ -305,6 +305,7 @@ export const BillingProvider = ({ children }) => {
     isLoading,
     hasUsageLeft,
     canCreateCompany,
+    canInviteUser,
     getUsageWarnings,
     checkUsageLimits,
     createSubscription,
