@@ -44,7 +44,13 @@ class BackendTester:
             "multi_company_database_schema": {"status": "pending", "details": ""},
             "company_management_api": {"status": "pending", "details": ""},
             "dashboard_statistics_api": {"status": "pending", "details": ""},
-            "company_aware_search_integration": {"status": "pending", "details": ""}
+            "company_aware_search_integration": {"status": "pending", "details": ""},
+            # New multi-user tests
+            "multi_user_management_api": {"status": "pending", "details": ""},
+            "user_invitation_system": {"status": "pending", "details": ""},
+            "user_limits_tracking": {"status": "pending", "details": ""},
+            "billing_usage_api": {"status": "pending", "details": ""},
+            "multi_user_permissions": {"status": "pending", "details": ""}
         }
         self.session = requests.Session()
         self.session.timeout = 30
