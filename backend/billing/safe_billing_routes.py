@@ -215,6 +215,11 @@ async def get_user_usage_status(http_request: Request):
                     "used": usage_limits.current_companies,
                     "limit": usage_limits.company_limit,
                     "remaining": usage_limits.companies_remaining
+                },
+                "users": {
+                    "used": usage_limits.current_users,
+                    "limit": usage_limits.user_limit,
+                    "remaining": usage_limits.users_remaining
                 }
             },
             "reset_date": usage_limits.reset_date,
