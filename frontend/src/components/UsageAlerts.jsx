@@ -5,6 +5,7 @@ import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { useBilling } from '../contexts/BillingContext';
 import { useToast } from '../hooks/use-toast';
+import StripeCheckout from './StripeCheckout';
 
 const UsageAlerts = () => {
   const { 
@@ -16,6 +17,8 @@ const UsageAlerts = () => {
   } = useBilling();
   
   const [warnings, setWarnings] = useState([]);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [suggestedPlan, setSuggestedPlan] = useState('professional');
   const { toast } = useToast();
 
   useEffect(() => {
@@ -32,6 +35,11 @@ const UsageAlerts = () => {
         duration: 3000,
       });
     }
+  };
+
+  const handleUpgrade = (planType = 'professional') => {
+    setSuggestedPlan(planType);
+    setShowUpgradeModal(true);
   };
 
   const getAlertVariant = (type) => {
@@ -63,38 +71,39 @@ const UsageAlerts = () => {
     }
   };
 
-  const renderUpgradeButton = (warning) => {
+  const getSuggestedUpgrade = (warning) => {
     const currentPlan = subscription?.plan_type || 'solo';
     
-    let suggestedPlan = 'professional';
-    let suggestedPrice = '$97/month';
-    
-    if (currentPlan === 'solo') {
-      suggestedPlan = 'professional';
-      suggestedPrice = '$97/month';
-    } else if (currentPlan === 'professional') {
-      suggestedPlan = 'agency';
-      suggestedPrice = '$197/month';
-    } else if (currentPlan === 'agency') {
-      suggestedPlan = 'enterprise';
-      suggestedPrice = '$397/month';
+    if (warning.category === 'searches') {
+      if (currentPlan === 'solo') return 'professional';
+      if (currentPlan === 'professional') return 'agency';
+      return 'enterprise';
     }
+    
+    if (warning.category === 'companies') {
+      if (currentPlan === 'solo') return 'professional';
+      return 'agency';
+    }
+    
+    return 'professional';
+  };
+
+  const renderUpgradeButton = (warning) => {
+    const suggestedPlan = getSuggestedUpgrade(warning);
+    const planNames = {
+      professional: 'Professional',
+      agency: 'Agency', 
+      enterprise: 'Enterprise'
+    };
 
     return (
       <Button 
         size="sm" 
         className="flex items-center gap-1"
-        onClick={() => {
-          // This would open upgrade modal in real implementation
-          toast({
-            title: "Upgrade Available",
-            description: `Upgrade to ${suggestedPlan} plan for ${suggestedPrice}`,
-            duration: 5000,
-          });
-        }}
+        onClick={() => handleUpgrade(suggestedPlan)}
       >
         <ArrowUp className="h-3 w-3" />
-        Upgrade to {suggestedPlan}
+        Upgrade to {planNames[suggestedPlan]}
       </Button>
     );
   };
@@ -105,83 +114,104 @@ const UsageAlerts = () => {
   }
 
   return (
-    <div className="space-y-3">
-      {/* Billing Alerts from Backend */}
-      {billingAlerts && billingAlerts.map((alert) => (
-        <Card key={alert.id} className="border-l-4 border-l-orange-500">
-          <CardContent className="p-4">
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-3">
-                <div className="text-orange-600 mt-0.5">
-                  {getAlertIcon(alert.alert_type)}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge variant={getAlertVariant(alert.alert_type)}>
-                      {alert.alert_type.replace('_', ' ').toUpperCase()}
-                    </Badge>
-                    <span className="text-xs text-gray-500 flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {new Date(alert.created_at).toLocaleDateString()}
-                    </span>
+    <>
+      <div className="space-y-3">
+        {/* Billing Alerts from Backend */}
+        {billingAlerts && billingAlerts.map((alert) => (
+          <Card key={alert.id} className="border-l-4 border-l-orange-500">
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-start gap-3">
+                  <div className="text-orange-600 mt-0.5">
+                    {getAlertIcon(alert.alert_type)}
                   </div>
-                  <p className="text-sm text-gray-700 mb-3">
-                    {alert.message}
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => handleAcknowledgeAlert(alert.id)}
-                    >
-                      Dismiss
-                    </Button>
-                    {alert.alert_type.includes('usage') && renderUpgradeButton()}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-
-      {/* Real-time Usage Warnings */}
-      {warnings.map((warning, index) => (
-        <Card key={`warning-${index}`} className="border-l-4 border-l-yellow-500">
-          <CardContent className="p-4">
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-3">
-                <div className="text-yellow-600 mt-0.5">
-                  <AlertCircle className="h-4 w-4" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge variant="secondary">
-                      {warning.category.toUpperCase()} WARNING
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-gray-700 mb-3">
-                    {warning.message}
-                  </p>
-                  {warning.action === 'upgrade_required' && (
-                    <div className="flex items-center gap-2">
-                      {renderUpgradeButton(warning)}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge variant={getAlertVariant(alert.alert_type)}>
+                        {alert.alert_type.replace('_', ' ').toUpperCase()}
+                      </Badge>
+                      <span className="text-xs text-gray-500 flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {new Date(alert.created_at).toLocaleDateString()}
+                      </span>
                     </div>
-                  )}
-                  {warning.action === 'consider_upgrade' && (
+                    <p className="text-sm text-gray-700 mb-3">
+                      {alert.message}
+                    </p>
                     <div className="flex items-center gap-2">
-                      <Button size="sm" variant="outline">
-                        Consider Upgrading
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleAcknowledgeAlert(alert.id)}
+                      >
+                        Dismiss
                       </Button>
+                      {alert.alert_type.includes('usage') && renderUpgradeButton({ category: 'searches' })}
+                      {alert.alert_type === 'payment_failed' && (
+                        <Button 
+                          size="sm"
+                          onClick={() => handleUpgrade()}
+                        >
+                          Update Payment
+                        </Button>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+            </CardContent>
+          </Card>
+        ))}
+
+        {/* Real-time Usage Warnings */}
+        {warnings.map((warning, index) => (
+          <Card key={`warning-${index}`} className="border-l-4 border-l-yellow-500">
+            <CardContent className="p-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-start gap-3">
+                  <div className="text-yellow-600 mt-0.5">
+                    <AlertCircle className="h-4 w-4" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge variant="secondary">
+                        {warning.category.toUpperCase()} WARNING
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-gray-700 mb-3">
+                      {warning.message}
+                    </p>
+                    {warning.action === 'upgrade_required' && (
+                      <div className="flex items-center gap-2">
+                        {renderUpgradeButton(warning)}
+                      </div>
+                    )}
+                    {warning.action === 'consider_upgrade' && (
+                      <div className="flex items-center gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => handleUpgrade()}
+                        >
+                          Consider Upgrading
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Upgrade Modal */}
+      <StripeCheckout 
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        initialPlan={suggestedPlan}
+      />
+    </>
   );
 };
 
