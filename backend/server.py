@@ -76,11 +76,15 @@ async def health_check():
         "timestamp": datetime.utcnow().isoformat()
     }
 
-# Include the search routes
+# Include the search routes (UNCHANGED)
 api_router.include_router(search_router, tags=["search"])
 
-# Include the company routes
+# Include the company routes (UNCHANGED)
 api_router.include_router(company_router, tags=["companies"])
+
+# NEW: Include billing routes (additive)
+api_router.include_router(billing_router, prefix="/billing", tags=["billing"])
+api_router.include_router(safe_billing_router, prefix="/safe", tags=["safe-billing"])
 
 # Include the router in the main app
 app.include_router(api_router)
