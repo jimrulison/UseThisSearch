@@ -16,6 +16,11 @@ sys.path.append('/app/backend')
 
 from routes.search_routes import router as search_router
 from routes.company_routes import router as company_router
+
+# NEW: Import billing routes (additive - don't modify existing imports)
+from billing.billing_routes import router as billing_router
+from billing.safe_billing_routes import router as safe_billing_router
+
 from database import init_database, close_database
 
 ROOT_DIR = Path(__file__).parent
