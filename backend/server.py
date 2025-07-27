@@ -83,6 +83,9 @@ api_router.include_router(search_router, tags=["search"])
 # Include the company routes (UNCHANGED)
 api_router.include_router(company_router, tags=["companies"])
 
+# NEW: Include user management routes (additive)
+api_router.include_router(user_management_router, prefix="/users", tags=["user-management"])
+
 # NEW: Include billing routes (additive)
 api_router.include_router(billing_router, prefix="/billing", tags=["billing"])
 api_router.include_router(safe_billing_router, prefix="/safe", tags=["safe-billing"])
