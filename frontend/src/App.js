@@ -208,46 +208,6 @@ const Home = () => {
   );
 };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <div className="container mx-auto px-4 py-8 space-y-8">
-        <SearchInterface 
-          onSearch={handleSearch}
-          isLoading={isLoading}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-        />
-        
-        {results && (
-          <ResultsDisplay 
-            results={results}
-            searchTerm={searchTerm}
-            viewMode={viewMode}
-            setViewMode={setViewMode}
-          />
-        )}
-        
-        {/* Footer */}
-        <footer className="text-center text-muted-foreground mt-16 pb-8">
-          <div className="space-y-2">
-            <p className="text-sm font-semibold text-green-600">
-              🚀 **Now powered by Claude AI!** Real-time question generation and keyword research.
-            </p>
-            <p className="text-xs opacity-75">
-              Built with React, FastAPI, MongoDB • Powered by Claude 3.5 Sonnet
-            </p>
-            <p className="text-xs opacity-50">
-              Use This Search - Generate comprehensive keyword research, questions, and content ideas instantly
-            </p>
-          </div>
-        </footer>
-      </div>
-      
-      <Toaster />
-    </div>
-  );
-};
-
 function App() {
   return (
     <div className="App">
