@@ -11,6 +11,7 @@ import SalesSheet from './components/SalesSheet';
 import LoginPage from './components/LoginPage';
 import Dashboard from './components/Dashboard';
 import UsageAlerts from './components/UsageAlerts'; // NEW: Added UsageAlerts
+import UserAvailabilityNotice from './components/UserAvailabilityNotice'; // NEW: Added UserAvailabilityNotice
 import SafeSearchWrapper from './components/SafeSearchWrapper'; // NEW: Added SafeSearchWrapper
 import { Button } from './components/ui/button';
 import axios from 'axios';
