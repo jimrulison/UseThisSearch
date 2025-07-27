@@ -21,7 +21,7 @@ async def init_database():
     try:
         # Create indexes for better performance
         
-        # Search history indexes
+        # Search history indexes (EXISTING - unchanged)
         await db.search_history.create_index("search_term")
         await db.search_history.create_index("created_at")
         await db.search_history.create_index("user_id")
@@ -29,12 +29,35 @@ async def init_database():
         await db.search_history.create_index([("user_id", 1), ("company_id", 1), ("created_at", -1)])
         await db.search_history.create_index([("search_term", 1), ("created_at", -1)])
         
-        # Company indexes
+        # Company indexes (EXISTING - unchanged)
         await db.companies.create_index("user_id")
         await db.companies.create_index([("user_id", 1), ("name", 1)], unique=True)
         await db.companies.create_index([("user_id", 1), ("is_personal", 1)])
         
-        logger.info("Database indexes created successfully")
+        # NEW: Billing-related indexes (additive)
+        # User subscriptions indexes
+        await db.user_subscriptions.create_index("user_id")
+        await db.user_subscriptions.create_index("stripe_customer_id")
+        await db.user_subscriptions.create_index("stripe_subscription_id")
+        await db.user_subscriptions.create_index([("user_id", 1), ("status", 1)])
+        
+        # Usage tracking indexes
+        await db.usage_tracking.create_index([("user_id", 1), ("month_year", 1)], unique=True)
+        await db.usage_tracking.create_index("user_id")
+        await db.usage_tracking.create_index("month_year")
+        
+        # Payment history indexes
+        await db.payment_history.create_index("user_id")
+        await db.payment_history.create_index("subscription_id")
+        await db.payment_history.create_index("created_at")
+        await db.payment_history.create_index([("user_id", 1), ("created_at", -1)])
+        
+        # Billing alerts indexes
+        await db.billing_alerts.create_index("user_id")
+        await db.billing_alerts.create_index([("user_id", 1), ("acknowledged", 1)])
+        await db.billing_alerts.create_index("created_at")
+        
+        logger.info("Database indexes created successfully (including billing indexes)")
         
     except Exception as e:
         logger.error(f"Error initializing database: {e}")
