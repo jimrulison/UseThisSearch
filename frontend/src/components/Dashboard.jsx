@@ -141,6 +141,11 @@ const Dashboard = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center gap-4">
+            <Logo size="small" showText={false} />
+            <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
+          </div>
+          
+          <div className="flex items-center gap-4">
             <Button 
               variant="outline" 
               onClick={() => navigate('/')}
@@ -149,13 +154,6 @@ const Dashboard = () => {
               <ArrowLeft className="h-4 w-4" />
               Back to Search
             </Button>
-            <div className="flex items-center gap-2">
-              <Logo size="small" showText={false} />
-              <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-4">
             <CompanySelector />
             <UserDropdown />
           </div>
@@ -183,203 +181,222 @@ const Dashboard = () => {
           </Card>
         )}
 
-        {/* Statistics Cards */}
-        {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="border-0 shadow-lg">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-sm font-medium text-gray-600">
-                  <Search className="h-4 w-4" />
-                  Total Searches
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-gray-800">
-                  {stats.total_searches.toLocaleString()}
-                </div>
-              </CardContent>
-            </Card>
+        {/* Tabbed Dashboard Content */}
+        <Tabs defaultValue="analytics" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="analytics" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger value="billing" className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4" />
+              Billing
+            </TabsTrigger>
+          </TabsList>
 
-            <Card className="border-0 shadow-lg">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-sm font-medium text-gray-600">
-                  <TrendingUp className="h-4 w-4" />
-                  Popular Terms
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-gray-800">
-                  {stats.popular_terms.length}
-                </div>
-              </CardContent>
-            </Card>
+          <TabsContent value="analytics" className="space-y-6">
+            {/* Statistics Cards */}
+            {stats && (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <Card className="border-0 shadow-lg">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="flex items-center gap-2 text-sm font-medium text-gray-600">
+                      <Search className="h-4 w-4" />
+                      Total Searches
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-gray-800">
+                      {stats.total_searches.toLocaleString()}
+                    </div>
+                  </CardContent>
+                </Card>
 
-            <Card className="border-0 shadow-lg">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-sm font-medium text-gray-600">
-                  <Clock className="h-4 w-4" />
-                  Recent Activity
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-gray-800">
-                  {stats.recent_searches.length}
-                </div>
-                <p className="text-xs text-gray-500">Last 20 searches</p>
-              </CardContent>
-            </Card>
+                <Card className="border-0 shadow-lg">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="flex items-center gap-2 text-sm font-medium text-gray-600">
+                      <TrendingUp className="h-4 w-4" />
+                      Popular Terms
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-gray-800">
+                      {stats.popular_terms.length}
+                    </div>
+                  </CardContent>
+                </Card>
 
-            <Card className="border-0 shadow-lg">
-              <CardHeader className="pb-2">
-                <CardTitle className="flex items-center gap-2 text-sm font-medium text-gray-600">
-                  <BarChart3 className="h-4 w-4" />
-                  Trend Data
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-gray-800">
-                  {stats.search_trends.length}
-                </div>
-                <p className="text-xs text-gray-500">Days with activity</p>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+                <Card className="border-0 shadow-lg">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="flex items-center gap-2 text-sm font-medium text-gray-600">
+                      <Clock className="h-4 w-4" />
+                      Recent Activity
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-gray-800">
+                      {stats.recent_searches.length}
+                    </div>
+                    <p className="text-xs text-gray-500">Last 20 searches</p>
+                  </CardContent>
+                </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          
-          {/* Recent Searches */}
-          <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-blue-600" />
-                  Recent Searches
-                </CardTitle>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={exportSearchHistory}
-                  className="flex items-center gap-2"
-                >
-                  <Download className="h-4 w-4" />
-                  Export
-                </Button>
+                <Card className="border-0 shadow-lg">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="flex items-center gap-2 text-sm font-medium text-gray-600">
+                      <BarChart3 className="h-4 w-4" />
+                      Trend Data
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-gray-800">
+                      {stats.search_trends.length}
+                    </div>
+                    <p className="text-xs text-gray-500">Days with activity</p>
+                  </CardContent>
+                </Card>
               </div>
-            </CardHeader>
-            <CardContent>
-              {recentSearches.length > 0 ? (
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {recentSearches.map((search, index) => (
-                    <div key={search.id || index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-800 truncate">
-                          {search.search_term}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {search.suggestions_count} suggestions • {formatDate(search.created_at)}
-                        </p>
-                      </div>
+            )}
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              
+              {/* Recent Searches */}
+              <Card className="border-0 shadow-lg">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                      <Clock className="h-5 w-5 text-blue-600" />
+                      Recent Searches
+                    </CardTitle>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={exportSearchHistory}
+                      className="flex items-center gap-2"
+                    >
+                      <Download className="h-4 w-4" />
+                      Export
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {recentSearches.length > 0 ? (
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                      {recentSearches.map((search, index) => (
+                        <div key={search.id || index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-gray-800 truncate">
+                              {search.search_term}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {search.suggestions_count} suggestions • {formatDate(search.created_at)}
+                            </p>
+                          </div>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => {
+                              navigate('/');
+                              // Note: In a real app, you'd want to trigger a search with this term
+                            }}
+                            className="flex-shrink-0 ml-2"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>No searches found for this company.</p>
                       <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => {
-                          navigate('/');
-                          // Note: In a real app, you'd want to trigger a search with this term
-                        }}
-                        className="flex-shrink-0 ml-2"
+                        variant="outline" 
+                        onClick={() => navigate('/')}
+                        className="mt-4"
                       >
-                        <Eye className="h-4 w-4" />
+                        Start Searching
                       </Button>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No searches found for this company.</p>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => navigate('/')}
-                    className="mt-4"
-                  >
-                    Start Searching
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                  )}
+                </CardContent>
+              </Card>
 
-          {/* Popular Terms */}
-          <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-green-600" />
-                Popular Search Terms
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {stats && stats.popular_terms.length > 0 ? (
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {stats.popular_terms.map((termData, index) => {
-                    const term = Object.keys(termData)[0];
-                    const count = termData[term];
-                    return (
-                      <div key={term} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <div className="w-6 h-6 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-medium">
-                            {index + 1}
+              {/* Popular Terms */}
+              <Card className="border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-green-600" />
+                    Popular Search Terms
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {stats && stats.popular_terms.length > 0 ? (
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                      {stats.popular_terms.map((termData, index) => {
+                        const term = Object.keys(termData)[0];
+                        const count = termData[term];
+                        return (
+                          <div key={term} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div className="flex items-center gap-3">
+                              <div className="w-6 h-6 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-sm font-medium">
+                                {index + 1}
+                              </div>
+                              <span className="font-medium text-gray-800">{term}</span>
+                            </div>
+                            <Badge variant="secondary">
+                              {count} search{count !== 1 ? 'es' : ''}
+                            </Badge>
                           </div>
-                          <span className="font-medium text-gray-800">{term}</span>
-                        </div>
-                        <Badge variant="secondary">
-                          {count} search{count !== 1 ? 'es' : ''}
-                        </Badge>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <TrendingUp className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>No popular terms yet.</p>
-                  <p className="text-sm">Search for keywords to see trends.</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-        </div>
-
-        {/* Search Trends Chart Placeholder */}
-        {stats && stats.search_trends.length > 0 && (
-          <Card className="border-0 shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5 text-purple-600" />
-                Search Activity (Last 30 Days)
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {stats.search_trends.map((trend, index) => (
-                  <div key={trend.date} className="flex items-center gap-4 p-2">
-                    <span className="text-sm text-gray-600 w-20">{trend.date}</span>
-                    <div className="flex-1 bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-purple-600 h-2 rounded-full transition-all duration-300"
-                        style={{ 
-                          width: `${Math.min((trend.count / Math.max(...stats.search_trends.map(t => t.count))) * 100, 100)}%` 
-                        }}
-                      ></div>
+                        );
+                      })}
                     </div>
-                    <span className="text-sm font-medium text-gray-800 w-12">{trend.count}</span>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <TrendingUp className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>No popular terms yet.</p>
+                      <p className="text-sm">Search for keywords to see trends.</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Search Trends Chart */}
+            {stats && stats.search_trends.length > 0 && (
+              <Card className="border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5 text-purple-600" />
+                    Search Activity (Last 30 Days)
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {stats.search_trends.map((trend, index) => (
+                      <div key={trend.date} className="flex items-center gap-4 p-2">
+                        <span className="text-sm text-gray-600 w-20">{trend.date}</span>
+                        <div className="flex-1 bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-purple-600 h-2 rounded-full transition-all duration-300"
+                            style={{ 
+                              width: `${Math.min((trend.count / Math.max(...stats.search_trends.map(t => t.count))) * 100, 100)}%` 
+                            }}
+                          ></div>
+                        </div>
+                        <span className="text-sm font-medium text-gray-800 w-12">{trend.count}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="billing" className="space-y-6">
+            <BillingDashboard />
+          </TabsContent>
+        </Tabs>
 
       </div>
     </div>
