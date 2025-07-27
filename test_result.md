@@ -414,7 +414,9 @@ metadata:
 
 test_plan:
   current_focus:
-    []
+    - "Multi-User Backend Implementation"
+    - "User Availability Notice Frontend"
+    - "User Limits Display in Billing Dashboard"
   stuck_tasks:
     []
   test_all: false
