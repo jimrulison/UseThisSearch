@@ -87,15 +87,15 @@ const AdminProtectedRoute = ({ children }) => {
   return isAuthenticated() ? children : <Navigate to="/admin/login" replace />;
 };
 
-// Admin Login Route Component
+// Admin Login Route Component  
 const AdminLoginRoute = () => {
-  const { login, isAuthenticated } = useAdminAuth();
+  const { isAuthenticated } = useAdminAuth();
   
   if (isAuthenticated()) {
     return <Navigate to="/admin" replace />;
   }
   
-  return <AdminLoginPage onLogin={login} />;
+  return <AdminLoginPage />;
 };
 
 const Home = () => {
