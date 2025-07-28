@@ -64,8 +64,8 @@ async def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(
 async def ensure_initial_admin():
     """Ensure the initial admin user exists"""
     try:
-        # Check if initial admin exists
-        existing_admin = await db.admins.find_one({"email": INITIAL_ADMIN_EMAIL})
+        # Check if initial admin exists (case-insensitive)
+        existing_admin = await db.admins.find_one({"email": INITIAL_ADMIN_EMAIL.lower()})
         
         if not existing_admin:
             # Create initial admin
