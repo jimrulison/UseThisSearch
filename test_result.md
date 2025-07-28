@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Implement an administrative platform with the following exact requirements: 1. keep the current design and layout of the user platform exactly as it is 2. add in a login form for an administrator with an email and password. I want the administrative panel to give me access to any and all of the users platform. When I let the admin platform know a persons email address, I want to see the type of results they are getting and how much usage they are using. Then I also want to see metrics of all the users combined."
+user_problem_statement: "I need you to create a place on the admin panel where I can offer a user a different price than we have listed, but still set them up as a user. I should be able to choose the pricing level and I want to be able to set the price on the spot. I need you to implement the system without changing the current design and layout. DO not change any existing buttons, colors or layouts."
 
 backend:
   - task: "Admin Authentication System"
