@@ -1945,6 +1945,7 @@ class BackendTester:
         
         self.test_admin_authentication_system()
         self.test_admin_analytics_api()
+        self.test_admin_custom_pricing_system()
         
         total_time = time.time() - start_time
         
