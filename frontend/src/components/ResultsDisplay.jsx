@@ -164,7 +164,7 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
 
       {/* View Toggle & Category Filter */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3 justify-center">
           <Button
             variant={selectedCategory === 'all' ? 'default' : 'outline'}
             onClick={() => setSelectedCategory('all')}
@@ -176,15 +176,37 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
           </Button>
           {Object.entries(sortedResults).map(([category, items]) => {
             const IconComponent = categoryIcons[category];
+            const isActive = selectedCategory === category;
+            
+            // Define colors for each category
+            const categoryColors = {
+              questions: 'from-red-400 to-pink-500',
+              prepositions: 'from-green-400 to-emerald-500', 
+              comparisons: 'from-blue-400 to-indigo-500',
+              alphabetical: 'from-purple-400 to-violet-500'
+            };
+            
+            const categoryBgColors = {
+              questions: 'bg-red-50 border-red-200 text-red-700',
+              prepositions: 'bg-green-50 border-green-200 text-green-700',
+              comparisons: 'bg-blue-50 border-blue-200 text-blue-700',
+              alphabetical: 'bg-purple-50 border-purple-200 text-purple-700'
+            };
+            
             return (
               <Button
                 key={category}
-                variant={selectedCategory === category ? 'default' : 'outline'}
+                variant={isActive ? 'default' : 'outline'}
                 onClick={() => setSelectedCategory(category)}
                 size="sm"
-                className="flex items-center gap-1 capitalize"
+                className={`flex items-center gap-2 transition-all duration-300 transform hover:scale-105 capitalize ${
+                  isActive 
+                    ? `bg-gradient-to-r ${categoryColors[category]} text-white shadow-lg border-0` 
+                    : `${categoryBgColors[category]} hover:shadow-md`
+                }`}
               >
-                {IconComponent && <IconComponent className="h-3 w-3" />}
+                {IconComponent && <IconComponent className="h-4 w-4" />}
+                {isActive && <span className="text-lg">🔥</span>}
                 {category.replace('_', ' ')} ({items.length})
               </Button>
             );
