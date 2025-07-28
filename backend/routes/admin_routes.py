@@ -91,8 +91,8 @@ async def admin_login(login_request: AdminLogin, request: Request):
         # Ensure initial admin exists
         await ensure_initial_admin()
         
-        # Find admin by email
-        admin_data = await db.admins.find_one({"email": login_request.email})
+        # Find admin by email (case-insensitive)
+        admin_data = await db.admins.find_one({"email": login_request.email.lower()})
         if not admin_data:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
