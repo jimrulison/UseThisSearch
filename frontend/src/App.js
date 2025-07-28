@@ -196,6 +196,8 @@ const Home = () => {
           isLoading={isLoading}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
         />
         
         {/* Results Display */}
