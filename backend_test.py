@@ -1348,6 +1348,304 @@ class BackendTester:
         except Exception as e:
             self.log_test("performance", "fail", f"Performance test error: {str(e)}")
     
+    def test_admin_authentication_system(self):
+        """Test admin authentication system"""
+        print("\n=== Testing Admin Authentication System ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Test 1: Admin login with correct credentials
+            login_response = self.session.post(f"{API_BASE}/admin/login", json=self.admin_credentials)
+            
+            if login_response.status_code == 200:
+                login_data = login_response.json()
+                
+                # Validate login response structure
+                required_fields = ["success", "token", "admin", "expires_at"]
+                missing_fields = [field for field in required_fields if field not in login_data]
+                
+                if not missing_fields:
+                    if login_data["success"] and login_data["token"]:
+                        self.admin_token = login_data["token"]
+                        details.append("✓ Admin login successful with correct credentials")
+                        
+                        # Validate admin data
+                        admin_data = login_data["admin"]
+                        if admin_data.get("email") == self.admin_credentials["email"]:
+                            details.append("✓ Admin data returned correctly")
+                        else:
+                            all_passed = False
+                            details.append("✗ Admin data incorrect")
+                            
+                        # Check password hash is not returned
+                        if "password_hash" not in admin_data:
+                            details.append("✓ Password hash not exposed in response")
+                        else:
+                            all_passed = False
+                            details.append("✗ Password hash exposed in response")
+                    else:
+                        all_passed = False
+                        details.append("✗ Login response indicates failure")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Login response missing fields: {missing_fields}")
+            else:
+                all_passed = False
+                details.append(f"✗ Admin login failed: HTTP {login_response.status_code}")
+            
+            # Test 2: Admin login with incorrect credentials
+            wrong_credentials = {"email": self.admin_credentials["email"], "password": "wrongpassword"}
+            wrong_login_response = self.session.post(f"{API_BASE}/admin/login", json=wrong_credentials)
+            
+            if wrong_login_response.status_code == 401:
+                details.append("✓ Incorrect credentials properly rejected")
+            else:
+                all_passed = False
+                details.append(f"✗ Incorrect credentials not rejected: HTTP {wrong_login_response.status_code}")
+            
+            # Test 3: Token verification (if we have a token)
+            if self.admin_token:
+                headers = {"Authorization": f"Bearer {self.admin_token}"}
+                verify_response = self.session.get(f"{API_BASE}/admin/verify", headers=headers)
+                
+                if verify_response.status_code == 200:
+                    verify_data = verify_response.json()
+                    if verify_data.get("success") and "admin" in verify_data:
+                        details.append("✓ Token verification working")
+                    else:
+                        all_passed = False
+                        details.append("✗ Token verification response invalid")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Token verification failed: HTTP {verify_response.status_code}")
+                
+                # Test 4: Admin logout
+                logout_response = self.session.post(f"{API_BASE}/admin/logout", headers=headers)
+                
+                if logout_response.status_code == 200:
+                    logout_data = logout_response.json()
+                    if logout_data.get("success"):
+                        details.append("✓ Admin logout working")
+                        
+                        # Test 5: Verify token is invalidated after logout
+                        verify_after_logout = self.session.get(f"{API_BASE}/admin/verify", headers=headers)
+                        if verify_after_logout.status_code == 401:
+                            details.append("✓ Token invalidated after logout")
+                        else:
+                            all_passed = False
+                            details.append(f"✗ Token not invalidated after logout: HTTP {verify_after_logout.status_code}")
+                    else:
+                        all_passed = False
+                        details.append("✗ Logout response indicates failure")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Admin logout failed: HTTP {logout_response.status_code}")
+                
+                # Re-login for subsequent tests
+                login_response = self.session.post(f"{API_BASE}/admin/login", json=self.admin_credentials)
+                if login_response.status_code == 200:
+                    self.admin_token = login_response.json()["token"]
+            
+            # Test 6: Access protected endpoint without token
+            no_auth_response = self.session.get(f"{API_BASE}/admin/verify")
+            if no_auth_response.status_code == 401:
+                details.append("✓ Protected endpoints require authentication")
+            else:
+                all_passed = False
+                details.append(f"✗ Protected endpoints accessible without auth: HTTP {no_auth_response.status_code}")
+            
+            if all_passed:
+                self.log_test("admin_authentication_system", "pass", 
+                            f"Admin authentication system working. {'; '.join(details)}")
+            else:
+                self.log_test("admin_authentication_system", "fail", 
+                            f"Admin authentication issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("admin_authentication_system", "fail", f"Admin authentication test error: {str(e)}")
+    
+    def test_admin_analytics_api(self):
+        """Test admin analytics API endpoints"""
+        print("\n=== Testing Admin Analytics API ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Ensure we have admin token
+            if not self.admin_token:
+                login_response = self.session.post(f"{API_BASE}/admin/login", json=self.admin_credentials)
+                if login_response.status_code == 200:
+                    self.admin_token = login_response.json()["token"]
+                else:
+                    self.log_test("admin_analytics_api", "fail", "Could not get admin token for analytics testing")
+                    return
+            
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
+            
+            # Test 1: User lookup by email
+            # First, create some test data by making searches with a test user
+            test_user_email = "test_admin_lookup@example.com"
+            user_headers = {"X-User-ID": test_user_email}
+            
+            # Make a few searches to create data
+            for i in range(3):
+                search_data = {"search_term": f"admin test search {i+1}"}
+                self.session.post(f"{API_BASE}/search", json=search_data, headers=user_headers)
+                time.sleep(0.5)
+            
+            # Wait for background tasks
+            time.sleep(2)
+            
+            # Test user lookup
+            lookup_data = {"email": test_user_email}
+            lookup_response = self.session.post(f"{API_BASE}/admin/analytics/user-lookup", 
+                                              json=lookup_data, headers=headers)
+            
+            if lookup_response.status_code == 200:
+                user_metrics = lookup_response.json()
+                
+                # Validate user metrics structure
+                required_fields = ["user_id", "user_email", "total_searches", "total_companies", 
+                                 "recent_searches", "search_history", "companies"]
+                missing_fields = [field for field in required_fields if field not in user_metrics]
+                
+                if not missing_fields:
+                    if user_metrics["user_email"] == test_user_email and user_metrics["total_searches"] >= 3:
+                        details.append(f"✓ User lookup working (found {user_metrics['total_searches']} searches)")
+                    else:
+                        all_passed = False
+                        details.append(f"✗ User lookup data incorrect (searches: {user_metrics.get('total_searches', 0)})")
+                else:
+                    all_passed = False
+                    details.append(f"✗ User lookup missing fields: {missing_fields}")
+            else:
+                all_passed = False
+                details.append(f"✗ User lookup failed: HTTP {lookup_response.status_code}")
+            
+            # Test 2: Global analytics
+            global_response = self.session.get(f"{API_BASE}/admin/analytics/global-analytics", headers=headers)
+            
+            if global_response.status_code == 200:
+                global_data = global_response.json()
+                
+                # Validate global analytics structure
+                required_fields = ["total_users", "total_searches", "total_companies", 
+                                 "active_subscriptions", "usage_stats", "popular_search_terms"]
+                missing_fields = [field for field in required_fields if field not in global_data]
+                
+                if not missing_fields:
+                    details.append(f"✓ Global analytics working (users: {global_data['total_users']}, searches: {global_data['total_searches']})")
+                    
+                    # Check data types
+                    if (isinstance(global_data["total_users"], int) and
+                        isinstance(global_data["total_searches"], int) and
+                        isinstance(global_data["popular_search_terms"], list)):
+                        details.append("✓ Global analytics data types correct")
+                    else:
+                        all_passed = False
+                        details.append("✗ Global analytics data types incorrect")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Global analytics missing fields: {missing_fields}")
+            else:
+                all_passed = False
+                details.append(f"✗ Global analytics failed: HTTP {global_response.status_code}")
+            
+            # Test 3: Admin dashboard
+            dashboard_response = self.session.get(f"{API_BASE}/admin/analytics/dashboard", headers=headers)
+            
+            if dashboard_response.status_code == 200:
+                dashboard_data = dashboard_response.json()
+                
+                # Validate dashboard structure
+                required_fields = ["global_analytics", "recent_users", "system_stats"]
+                missing_fields = [field for field in required_fields if field not in dashboard_data]
+                
+                if not missing_fields:
+                    details.append("✓ Admin dashboard working")
+                    
+                    # Check that global_analytics is embedded
+                    if "total_users" in dashboard_data["global_analytics"]:
+                        details.append("✓ Dashboard includes global analytics")
+                    else:
+                        all_passed = False
+                        details.append("✗ Dashboard missing global analytics data")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Dashboard missing fields: {missing_fields}")
+            else:
+                all_passed = False
+                details.append(f"✗ Admin dashboard failed: HTTP {dashboard_response.status_code}")
+            
+            # Test 4: All users listing
+            users_response = self.session.get(f"{API_BASE}/admin/analytics/users", headers=headers)
+            
+            if users_response.status_code == 200:
+                users_data = users_response.json()
+                
+                if isinstance(users_data, list):
+                    details.append(f"✓ All users listing working ({len(users_data)} users)")
+                    
+                    # Check user data structure if we have users
+                    if users_data:
+                        user = users_data[0]
+                        user_fields = ["user_id", "total_searches", "total_companies", "last_activity"]
+                        missing_user_fields = [field for field in user_fields if field not in user]
+                        
+                        if not missing_user_fields:
+                            details.append("✓ User data structure correct")
+                        else:
+                            all_passed = False
+                            details.append(f"✗ User data missing fields: {missing_user_fields}")
+                else:
+                    all_passed = False
+                    details.append("✗ Users listing not a list")
+            else:
+                all_passed = False
+                details.append(f"✗ All users listing failed: HTTP {users_response.status_code}")
+            
+            # Test 5: User search results endpoint
+            if test_user_email:
+                search_results_response = self.session.get(
+                    f"{API_BASE}/admin/analytics/user/{test_user_email}/search-results", 
+                    headers=headers
+                )
+                
+                if search_results_response.status_code == 200:
+                    search_results_data = search_results_response.json()
+                    
+                    if "search_results" in search_results_data and "user_email" in search_results_data:
+                        details.append("✓ User search results endpoint working")
+                    else:
+                        all_passed = False
+                        details.append("✗ User search results structure invalid")
+                else:
+                    all_passed = False
+                    details.append(f"✗ User search results failed: HTTP {search_results_response.status_code}")
+            
+            # Test 6: Authentication required for all endpoints
+            no_auth_headers = {}
+            auth_test_response = self.session.get(f"{API_BASE}/admin/analytics/global-analytics", headers=no_auth_headers)
+            
+            if auth_test_response.status_code == 401:
+                details.append("✓ Analytics endpoints require authentication")
+            else:
+                all_passed = False
+                details.append(f"✗ Analytics endpoints accessible without auth: HTTP {auth_test_response.status_code}")
+            
+            if all_passed:
+                self.log_test("admin_analytics_api", "pass", 
+                            f"Admin analytics API working. {'; '.join(details)}")
+            else:
+                self.log_test("admin_analytics_api", "fail", 
+                            f"Admin analytics API issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("admin_analytics_api", "fail", f"Admin analytics API test error: {str(e)}")
+    
     
     def run_all_tests(self):
         """Run all backend tests"""
