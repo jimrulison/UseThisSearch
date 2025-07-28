@@ -5,8 +5,26 @@ import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Separator } from './ui/separator';
 
-const ContentGuide = ({ searchTerm }) => {
+const ContentGuide = ({ searchTerm, results }) => {
   const [selectedGuide, setSelectedGuide] = useState('questions');
+
+  // Helper function to get questions from results
+  const getQuestionsData = () => {
+    if (!results || !results.questions) return [];
+    return results.questions.map(q => ({
+      text: typeof q === 'object' ? q.text : q,
+      popularity: typeof q === 'object' ? q.popularity : 'MEDIUM'
+    }));
+  };
+
+  // Helper function to get other category data
+  const getCategoryData = (category) => {
+    if (!results || !results[category]) return [];
+    return results[category].map(item => ({
+      text: typeof item === 'object' ? item.text : item,
+      popularity: typeof item === 'object' ? item.popularity : 'MEDIUM'
+    }));
+  };
 
   const guideContent = {
     questions: {
