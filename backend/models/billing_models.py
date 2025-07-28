@@ -219,10 +219,10 @@ class UsageLimits(BaseModel):
     reset_date: datetime
     
 class BillingDashboard(BaseModel):
-    subscription: UserSubscription
+    subscription: Optional[UserSubscription] = None
     usage: UsageLimits
-    payment_history: List[PaymentHistory]
-    alerts: List[BillingAlert]
+    payment_history: List[PaymentHistory] = Field(default_factory=list)
+    alerts: List[BillingAlert] = Field(default_factory=list)
     pricing_config: dict
 
 def get_plan_limits(plan_type: PlanType) -> dict:
