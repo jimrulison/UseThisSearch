@@ -346,7 +346,7 @@ const StripeCheckout = ({ isOpen, onClose, initialPlan = 'professional' }) => {
             </div>
 
             {/* Plan Cards */}
-            <div className="grid grid-cols-4 gap-8 px-6 min-w-[1700px]">
+            <div className="grid grid-cols-4 gap-10 px-8 min-w-[1900px]">
               {Object.entries(PRICING_PLANS).map(([planKey, plan]) => (
                 <PlanCard
                   key={planKey}
