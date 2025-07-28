@@ -1648,6 +1648,257 @@ class BackendTester:
             self.log_test("admin_analytics_api", "fail", f"Admin analytics API test error: {str(e)}")
     
     
+    def test_admin_custom_pricing_system(self):
+        """Test admin custom pricing system functionality"""
+        print("\n=== Testing Admin Custom Pricing System ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # First, login as admin to get token
+            if not self.admin_token:
+                login_response = self.session.post(f"{API_BASE}/admin/login", json=self.admin_credentials)
+                if login_response.status_code == 200:
+                    login_data = login_response.json()
+                    self.admin_token = login_data["token"]
+                    details.append("✓ Admin login successful for custom pricing tests")
+                else:
+                    self.log_test("admin_custom_pricing_system", "fail", 
+                                f"Admin login failed: HTTP {login_response.status_code}")
+                    return
+            
+            admin_headers = {"Authorization": f"Bearer {self.admin_token}"}
+            
+            # Test user email for custom pricing
+            test_user_email = "custom_pricing_test@example.com"
+            
+            # Test 1: Apply custom pricing to a user
+            custom_pricing_data = {
+                "user_email": test_user_email,
+                "plan_type": "professional",
+                "custom_price_monthly": 50,
+                "custom_price_yearly": 40,
+                "notes": "Test custom pricing for backend testing"
+            }
+            
+            response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
+                                       json=custom_pricing_data, headers=admin_headers)
+            
+            if response.status_code == 200:
+                applied_pricing = response.json()
+                details.append("✓ Custom pricing applied successfully")
+                
+                # Validate response structure
+                required_fields = ["id", "user_email", "plan_type", "custom_price_monthly", "custom_price_yearly", "applied_by", "status"]
+                missing_fields = [field for field in required_fields if field not in applied_pricing]
+                
+                if not missing_fields:
+                    details.append("✓ Custom pricing response structure valid")
+                    
+                    # Validate values
+                    if (applied_pricing["user_email"] == test_user_email and
+                        applied_pricing["plan_type"] == "professional" and
+                        applied_pricing["custom_price_monthly"] == 50 and
+                        applied_pricing["custom_price_yearly"] == 40 and
+                        applied_pricing["status"] == "active"):
+                        details.append("✓ Custom pricing values correct")
+                    else:
+                        all_passed = False
+                        details.append("✗ Custom pricing values incorrect")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Custom pricing response missing fields: {missing_fields}")
+            else:
+                all_passed = False
+                details.append(f"✗ Apply custom pricing failed: HTTP {response.status_code}")
+                if response.status_code == 404:
+                    # Try to create a user activity first by making a search
+                    search_headers = {"X-User-ID": test_user_email}
+                    search_data = {"search_term": "custom pricing test"}
+                    self.session.post(f"{API_BASE}/search", json=search_data, headers=search_headers)
+                    
+                    # Retry applying custom pricing
+                    response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
+                                               json=custom_pricing_data, headers=admin_headers)
+                    if response.status_code == 200:
+                        details.append("✓ Custom pricing applied after creating user activity")
+                    else:
+                        details.append(f"✗ Custom pricing still failed after user creation: HTTP {response.status_code}")
+            
+            # Test 2: Get user's custom pricing
+            response = self.session.get(f"{API_BASE}/admin/custom-pricing/user/{test_user_email}", 
+                                      headers=admin_headers)
+            
+            if response.status_code == 200:
+                user_pricing = response.json()
+                if user_pricing and "user_email" in user_pricing:
+                    details.append("✓ Get user custom pricing working")
+                    
+                    # Validate it matches what we applied
+                    if (user_pricing["user_email"] == test_user_email and
+                        user_pricing["custom_price_monthly"] == 50):
+                        details.append("✓ Retrieved custom pricing matches applied pricing")
+                    else:
+                        all_passed = False
+                        details.append("✗ Retrieved custom pricing doesn't match applied pricing")
+                else:
+                    details.append("Minor: No custom pricing found for user (acceptable if apply failed)")
+            else:
+                all_passed = False
+                details.append(f"✗ Get user custom pricing failed: HTTP {response.status_code}")
+            
+            # Test 3: Get custom pricing history
+            response = self.session.get(f"{API_BASE}/admin/custom-pricing/history", headers=admin_headers)
+            
+            if response.status_code == 200:
+                history = response.json()
+                if isinstance(history, list):
+                    details.append(f"✓ Custom pricing history retrieved ({len(history)} records)")
+                    
+                    # Check if our test record appears in history
+                    test_record_found = any(
+                        record.get("user_email") == test_user_email and record.get("action") == "applied"
+                        for record in history
+                    )
+                    
+                    if test_record_found:
+                        details.append("✓ Applied custom pricing appears in history")
+                    else:
+                        details.append("Minor: Test record not found in history (acceptable if apply failed)")
+                else:
+                    all_passed = False
+                    details.append("✗ Custom pricing history not a list")
+            else:
+                all_passed = False
+                details.append(f"✗ Get custom pricing history failed: HTTP {response.status_code}")
+            
+            # Test 4: Get all active custom pricing
+            response = self.session.get(f"{API_BASE}/admin/custom-pricing/active", headers=admin_headers)
+            
+            if response.status_code == 200:
+                active_pricing = response.json()
+                if isinstance(active_pricing, list):
+                    details.append(f"✓ Active custom pricing retrieved ({len(active_pricing)} records)")
+                    
+                    # Check if our test record is in active pricing
+                    test_active_found = any(
+                        record.get("user_email") == test_user_email and record.get("status") == "active"
+                        for record in active_pricing
+                    )
+                    
+                    if test_active_found:
+                        details.append("✓ Applied custom pricing appears in active list")
+                    else:
+                        details.append("Minor: Test record not found in active list (acceptable if apply failed)")
+                else:
+                    all_passed = False
+                    details.append("✗ Active custom pricing not a list")
+            else:
+                all_passed = False
+                details.append(f"✗ Get active custom pricing failed: HTTP {response.status_code}")
+            
+            # Test 5: Try to apply custom pricing to same user (should update existing)
+            updated_pricing_data = {
+                "user_email": test_user_email,
+                "plan_type": "agency",
+                "custom_price_monthly": 75,
+                "custom_price_yearly": 60,
+                "notes": "Updated custom pricing for testing"
+            }
+            
+            response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
+                                       json=updated_pricing_data, headers=admin_headers)
+            
+            if response.status_code == 200:
+                details.append("✓ Custom pricing update/reapply working")
+            else:
+                details.append(f"Minor: Custom pricing reapply returned HTTP {response.status_code}")
+            
+            # Test 6: Cancel custom pricing for user
+            response = self.session.delete(f"{API_BASE}/admin/custom-pricing/user/{test_user_email}", 
+                                         headers=admin_headers)
+            
+            if response.status_code == 200:
+                cancel_result = response.json()
+                if "message" in cancel_result:
+                    details.append("✓ Custom pricing cancellation working")
+                else:
+                    all_passed = False
+                    details.append("✗ Custom pricing cancellation response invalid")
+            else:
+                if response.status_code == 404:
+                    details.append("Minor: No custom pricing to cancel (acceptable if apply failed)")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Cancel custom pricing failed: HTTP {response.status_code}")
+            
+            # Test 7: Verify custom pricing is canceled
+            response = self.session.get(f"{API_BASE}/admin/custom-pricing/user/{test_user_email}", 
+                                      headers=admin_headers)
+            
+            if response.status_code == 200:
+                user_pricing = response.json()
+                if not user_pricing:  # Should be None/null after cancellation
+                    details.append("✓ Custom pricing properly canceled")
+                else:
+                    details.append("Minor: Custom pricing still active after cancellation")
+            else:
+                details.append("Minor: Cannot verify cancellation status")
+            
+            # Test 8: Test authentication requirements
+            # Try without admin token
+            response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
+                                       json=custom_pricing_data)
+            
+            if response.status_code == 401:
+                details.append("✓ Authentication required for custom pricing endpoints")
+            else:
+                all_passed = False
+                details.append(f"✗ Authentication not required: HTTP {response.status_code}")
+            
+            # Test 9: Test validation - invalid email format
+            invalid_pricing_data = {
+                "user_email": "invalid-email",
+                "plan_type": "professional",
+                "custom_price_monthly": 50,
+                "custom_price_yearly": 40
+            }
+            
+            response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
+                                       json=invalid_pricing_data, headers=admin_headers)
+            
+            if response.status_code in [400, 422]:
+                details.append("✓ Email validation working")
+            else:
+                details.append(f"Minor: Email validation returned HTTP {response.status_code}")
+            
+            # Test 10: Test validation - negative prices
+            negative_pricing_data = {
+                "user_email": "test@example.com",
+                "plan_type": "professional", 
+                "custom_price_monthly": -10,
+                "custom_price_yearly": -5
+            }
+            
+            response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
+                                       json=negative_pricing_data, headers=admin_headers)
+            
+            if response.status_code in [400, 422]:
+                details.append("✓ Price validation working")
+            else:
+                details.append(f"Minor: Price validation returned HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("admin_custom_pricing_system", "pass", 
+                            f"Admin custom pricing system working. {'; '.join(details)}")
+            else:
+                self.log_test("admin_custom_pricing_system", "fail", 
+                            f"Admin custom pricing issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("admin_custom_pricing_system", "fail", f"Admin custom pricing test error: {str(e)}")
+    
     def run_all_tests(self):
         """Run all backend tests"""
         print(f"Starting comprehensive backend testing...")
