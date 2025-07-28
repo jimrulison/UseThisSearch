@@ -57,7 +57,18 @@ async def init_database():
         await db.billing_alerts.create_index([("user_id", 1), ("acknowledged", 1)])
         await db.billing_alerts.create_index("created_at")
         
-        logger.info("Database indexes created successfully (including billing indexes)")
+        # NEW: Admin-related indexes (additive)
+        # Admin users indexes
+        await db.admins.create_index("email", unique=True)
+        await db.admins.create_index([("email", 1), ("is_active", 1)])
+        
+        # Admin sessions indexes
+        await db.admin_sessions.create_index("admin_id")
+        await db.admin_sessions.create_index("token", unique=True)
+        await db.admin_sessions.create_index([("admin_id", 1), ("is_active", 1)])
+        await db.admin_sessions.create_index("expires_at")
+        
+        logger.info("Database indexes created successfully (including billing and admin indexes)")
         
     except Exception as e:
         logger.error(f"Error initializing database: {e}")
