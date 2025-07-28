@@ -7,7 +7,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import Logo from './Logo';
 import UserDropdown from './UserDropdown';
 import CompanySelector from './CompanySelector';
-import UpgradeButton from './UpgradeButton';
 import { useNavigate } from 'react-router-dom';
 
 const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm }) => {
