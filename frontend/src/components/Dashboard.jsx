@@ -22,6 +22,7 @@ import { useCompany } from '../contexts/CompanyContext';
 import Logo from './Logo';
 import UserDropdown from './UserDropdown';
 import CompanySelector from './CompanySelector';
+import UpgradeButton from './UpgradeButton';
 import BillingDashboard from './BillingDashboard';
 
 const Dashboard = () => {
