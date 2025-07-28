@@ -321,6 +321,14 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
                   onError={handleFeatureError}
                 />
               </TabsContent>
+              
+              <TabsContent value="question-content" className="mt-4">
+                <QuestionContentCreator 
+                  searchTerm={searchTerm} 
+                  results={results}
+                  onError={handleFeatureError}
+                />
+              </TabsContent>
             </Tabs>
           </CardContent>
         </Card>
