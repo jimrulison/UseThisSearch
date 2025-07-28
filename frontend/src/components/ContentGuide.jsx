@@ -274,57 +274,10 @@ const ContentGuide = ({ searchTerm, results }) => {
         </CardHeader>
 
         <CardContent>
-          {/* Display Actual Search Results in Boxes */}
-          {results && (
-            <div className="mb-8">
-              <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">
-                📋 Your {selectedGuide === 'questions' ? 'Question' : selectedGuide === 'prepositions' ? 'Preposition' : selectedGuide === 'comparisons' ? 'Comparison' : 'Alphabetical'} Results
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                {(() => {
-                  let categoryData = [];
-                  if (selectedGuide === 'questions') categoryData = getQuestionsData();
-                  else if (selectedGuide === 'prepositions') categoryData = getCategoryData('prepositions');
-                  else if (selectedGuide === 'comparisons') categoryData = getCategoryData('comparisons');
-                  else if (selectedGuide === 'alphabetical') categoryData = getCategoryData('alphabetical');
-                  
-                  return categoryData.map((item, index) => (
-                    <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                      <div className="flex items-start gap-2">
-                        <div className="flex-shrink-0">
-                          {item.popularity === 'HIGH' && <span className="text-red-500 text-lg">🔥</span>}
-                          {item.popularity === 'MEDIUM' && <span className="text-orange-500 text-lg">🔸</span>}
-                          {item.popularity === 'LOW' && <span className="text-blue-500 text-lg">🔹</span>}
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-800 leading-relaxed">
-                            {item.text}
-                          </p>
-                          <div className="mt-2">
-                            <span className={`text-xs px-2 py-1 rounded-full ${
-                              item.popularity === 'HIGH' ? 'bg-red-100 text-red-700' :
-                              item.popularity === 'MEDIUM' ? 'bg-orange-100 text-orange-700' :
-                              'bg-blue-100 text-blue-700'
-                            }`}>
-                              {item.popularity}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ));
-                })()}
-              </div>
-              
-              {/* Separator */}
-              <Separator className="my-8" />
-              
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-bold text-gray-800">💡 Expert Guidance</h3>
-                <p className="text-gray-600">Learn how to make the most of these {selectedGuide}</p>
-              </div>
-            </div>
-          )}
+          <div className="text-center mb-6">
+            <h3 className="text-xl font-bold text-gray-800">💡 Expert Guidance</h3>
+            <p className="text-gray-600">Learn how to make the most of these {selectedGuide}</p>
+          </div>
           
           <div className="grid md:grid-cols-2 gap-6">
             
