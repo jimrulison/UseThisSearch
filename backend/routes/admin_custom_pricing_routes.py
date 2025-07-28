@@ -42,7 +42,7 @@ async def get_admin_from_request(request: Request) -> Admin:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
     
     # Get admin user
-    admin = await db.admin_users.find_one({"email": session["admin_email"]})
+    admin = await db.admins.find_one({"id": session["admin_id"]})
     if not admin:
         raise HTTPException(status_code=401, detail="Admin user not found")
     
