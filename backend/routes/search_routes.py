@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Request, BackgroundTasks
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 from typing import List, Optional
 import time
 import logging
