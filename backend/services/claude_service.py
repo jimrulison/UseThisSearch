@@ -249,7 +249,7 @@ Please provide a natural, conversational response that someone could use on soci
 
         try:
             logger.info(f"Calling Claude API for question content generation...")
-            response = await self.client.messages.create(
+            response = self.client.messages.create(
                 model=self.model,
                 max_tokens=500,  # Shorter for social media
                 messages=[
@@ -260,8 +260,7 @@ Please provide a natural, conversational response that someone could use on soci
                 ]
             )
             
-            logger.info(f"Claude API response received: {type(response)}")
-            logger.info(f"Response content: {response.content}")
+            logger.info(f"Claude API response received successfully")
             
             content = response.content[0].text.strip()
             logger.info(f"Successfully generated question content ({len(content)} characters)")
