@@ -85,17 +85,6 @@ const UserAvailabilityNotice = () => {
               {getPlanName()} Plan
             </Badge>
           </div>
-
-          {users_remaining <= 1 && (
-            <Button 
-              size="sm" 
-              onClick={handleUpgrade}
-              className="flex items-center gap-1"
-            >
-              <ArrowUp className="h-3 w-3" />
-              Upgrade for {getUpgradeOptions().users} users
-            </Button>
-          )}
         </div>
 
 
