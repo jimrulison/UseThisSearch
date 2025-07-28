@@ -98,14 +98,7 @@ const UserAvailabilityNotice = () => {
           )}
         </div>
 
-        {users_remaining === 0 && (
-          <div className="mt-3 pt-3 border-t border-red-200">
-            <p className="text-sm text-red-700">
-              <strong>Team at capacity:</strong> You cannot invite more users to your companies. 
-              Upgrade to {getUpgradeOptions().plan} plan to add {getUpgradeOptions().users - current_users} more users.
-            </p>
-          </div>
-        )}
+
       </CardContent>
     </Card>
   );
