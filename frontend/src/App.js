@@ -105,8 +105,8 @@ const Home = () => {
       
       // NEW: Use safe billing endpoint for authenticated users
       const endpoint = userId && userId !== 'anonymous' ? 
-        `${API}/safe/search-with-billing` : 
-        `${API}/search`; // Fallback to original for anonymous
+        `${API}/search` : 
+        `${API}/search`; // Use original endpoint for now
       
       const response = await axios.post(endpoint, {
         search_term: term
