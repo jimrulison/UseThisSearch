@@ -65,6 +65,13 @@ class BackendTester:
             "test_user_seo_specialist"
         ]
         
+        # Admin credentials for testing
+        self.admin_credentials = {
+            "email": "JimRulison@gmail.com",
+            "password": "JR09mar05"
+        }
+        self.admin_token = None
+        
     def log_test(self, test_name: str, status: str, details: str):
         """Log test results"""
         self.results[test_name] = {"status": status, "details": details}
