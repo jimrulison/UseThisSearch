@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useToast } from '../../hooks/use-toast';
-import { Button } from '../ui/button';
+import { useToast } from '../hooks/use-toast';
+import { Button } from './ui/button';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
