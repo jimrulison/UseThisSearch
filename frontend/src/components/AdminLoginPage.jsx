@@ -3,7 +3,7 @@ import { useAdminAuth } from '../contexts/AdminAuthContext';
 import { Button } from './ui/button';
 import { useToast } from '../hooks/use-toast';
 import Logo from './Logo';
-import './LoginPage.css';
+
 
 const AdminLoginPage = () => {
   const [email, setEmail] = useState('');
