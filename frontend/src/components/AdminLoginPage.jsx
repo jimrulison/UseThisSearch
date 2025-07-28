@@ -70,7 +70,7 @@ const AdminLoginPage = () => {
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <div className="bg-gradient-to-r from-red-500 to-red-600 p-3 rounded-xl">
-                <Logo className="w-8 h-8 text-white" />
+                <Logo showText={false} className="w-8 h-8 text-white" />
               </div>
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">
