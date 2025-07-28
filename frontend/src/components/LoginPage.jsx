@@ -70,7 +70,7 @@ const LoginPage = ({ onLogin }) => {
       const user = {
         id: '1',
         name: formData.name || formData.email.split('@')[0],
-        email: formData.email
+        email: formData.email.toLowerCase()
       };
       
       // Store in localStorage
