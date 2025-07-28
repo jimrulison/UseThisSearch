@@ -5,10 +5,13 @@ import { ToastProvider, useToast } from './hooks/use-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CompanyProvider, useCompany } from './contexts/CompanyContext';
 import { BillingProvider, useBilling } from './contexts/BillingContext'; // NEW: Added BillingProvider
+import { AdminAuthProvider, useAdminAuth } from './contexts/AdminAuthContext'; // NEW: Added AdminAuthProvider
 import SearchInterface from './components/SearchInterface';
 import ResultsDisplay from './components/ResultsDisplay';
 import SalesSheet from './components/SalesSheet';
 import LoginPage from './components/LoginPage';
+import AdminLoginPage from './components/AdminLoginPage'; // NEW: Added AdminLoginPage
+import AdminDashboard from './components/AdminDashboard'; // NEW: Added AdminDashboard
 import Dashboard from './components/Dashboard';
 import UsageAlerts from './components/UsageAlerts'; // NEW: Added UsageAlerts
 import UserAvailabilityNotice from './components/UserAvailabilityNotice'; // NEW: Added UserAvailabilityNotice
