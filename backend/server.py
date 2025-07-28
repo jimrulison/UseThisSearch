@@ -25,6 +25,7 @@ from billing.safe_billing_routes import router as safe_billing_router
 # NEW: Import admin routes (additive)
 from routes.admin_routes import router as admin_router
 from routes.admin_analytics_routes import router as admin_analytics_router
+from routes.admin_custom_pricing_routes import router as admin_custom_pricing_router
 
 from database import init_database, close_database
 
