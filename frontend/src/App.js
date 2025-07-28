@@ -125,6 +125,7 @@ const Home = () => {
         alphabetical: data.suggestions.alphabetical || []
       };
       
+      console.log('Transformed Results:', transformedResults);
       setResults(transformedResults);
       
       // NEW: Show usage info in toast if available
