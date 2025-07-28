@@ -237,8 +237,8 @@ async def generate_question_content(request: QuestionContentRequest):
         # Get Claude service instance
         claude_service = get_claude_service()
         
-        # Generate the conversational content
-        content = claude_service.generate_question_content(request.question)
+        # Generate the conversational content using the async method
+        content = await claude_service.generate_question_content_async(request.question)
         
         return {
             "question": request.question,
