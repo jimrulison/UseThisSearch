@@ -1,0 +1,569 @@
+import React, { useState, useEffect } from 'react';
+import { useAdminAuth } from '../contexts/AdminAuthContext';
+import { useToast } from '../hooks/use-toast';
+import { Button } from './ui/button';
+import Logo from './Logo';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const ADMIN_API = `${BACKEND_URL}/api/admin`;
+
+const AdminDashboard = () => {
+  const { admin, logout, getAuthHeaders } = useAdminAuth();
+  const { toast } = useToast();
+  
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [globalAnalytics, setGlobalAnalytics] = useState(null);
+  const [userLookupEmail, setUserLookupEmail] = useState('');
+  const [userMetrics, setUserMetrics] = useState(null);
+  const [allUsers, setAllUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [dashboardData, setDashboardData] = useState(null);
+
+  useEffect(() => {
+    if (activeTab === 'dashboard') {
+      loadDashboardData();
+    } else if (activeTab === 'analytics') {
+      loadGlobalAnalytics();
+    } else if (activeTab === 'users') {
+      loadAllUsers();
+    }
+  }, [activeTab]);
+
+  const loadDashboardData = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(`${ADMIN_API}/analytics/dashboard`, {
+        headers: getAuthHeaders()
+      });
+      setDashboardData(response.data);
+    } catch (error) {
+      console.error('Error loading dashboard:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load dashboard data",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadGlobalAnalytics = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(`${ADMIN_API}/analytics/global-analytics`, {
+        headers: getAuthHeaders()
+      });
+      setGlobalAnalytics(response.data);
+    } catch (error) {
+      console.error('Error loading analytics:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load analytics data",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadAllUsers = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(`${ADMIN_API}/analytics/users?limit=100`, {
+        headers: getAuthHeaders()
+      });
+      setAllUsers(response.data);
+    } catch (error) {
+      console.error('Error loading users:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load users data",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUserLookup = async (e) => {
+    e.preventDefault();
+    if (!userLookupEmail.trim()) {
+      toast({
+        title: "Missing Email",
+        description: "Please enter a user email to lookup",
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await axios.post(`${ADMIN_API}/analytics/user-lookup`, {
+        email: userLookupEmail.trim()
+      }, {
+        headers: getAuthHeaders()
+      });
+      setUserMetrics(response.data);
+      toast({
+        title: "User Found",
+        description: `Successfully loaded data for ${userLookupEmail}`,
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Error looking up user:', error);
+      let errorMessage = "Failed to lookup user";
+      if (error.response?.status === 404) {
+        errorMessage = "User not found";
+      } else if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      }
+      toast({
+        title: "Lookup Failed",
+        description: errorMessage,
+        variant: "destructive",
+        duration: 5000,
+      });
+      setUserMetrics(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast({
+        title: "Logged Out",
+        description: "Successfully logged out of admin panel",
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleString();
+  };
+
+  const formatNumber = (num) => {
+    if (typeof num !== 'number') return '0';
+    return num.toLocaleString();
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Header */}
+      <div className="bg-black/20 backdrop-blur-sm border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
+              <div className="bg-gradient-to-r from-red-500 to-red-600 p-2 rounded-lg">
+                <Logo className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-white font-bold text-xl">Admin Panel</h1>
+                <p className="text-gray-300 text-sm">Use This Search</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <span className="text-gray-300 text-sm">
+                Welcome, {admin?.name || admin?.email}
+              </span>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                size="sm"
+                className="border-white/20 text-white hover:bg-white/10"
+              >
+                Logout
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Tabs */}
+      <div className="bg-white/5 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex space-x-0">
+            {[
+              { id: 'dashboard', label: 'Dashboard' },
+              { id: 'lookup', label: 'User Lookup' },
+              { id: 'analytics', label: 'Global Analytics' },
+              { id: 'users', label: 'All Users' }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-6 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
+                  activeTab === tab.id
+                    ? 'text-white border-red-500 bg-white/10'
+                    : 'text-gray-300 border-transparent hover:text-white hover:border-gray-400'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {isLoading && (
+          <div className="flex items-center justify-center py-12">
+            <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+            <span className="ml-3 text-white">Loading...</span>
+          </div>
+        )}
+
+        {/* Dashboard Tab */}
+        {activeTab === 'dashboard' && dashboardData && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-white mb-6">Dashboard Overview</h2>
+            
+            {/* Key Metrics Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <h3 className="text-gray-300 text-sm font-medium">Total Users</h3>
+                <p className="text-3xl font-bold text-white mt-2">
+                  {formatNumber(dashboardData.global_analytics.total_users)}
+                </p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <h3 className="text-gray-300 text-sm font-medium">Total Searches</h3>
+                <p className="text-3xl font-bold text-white mt-2">
+                  {formatNumber(dashboardData.global_analytics.total_searches)}
+                </p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <h3 className="text-gray-300 text-sm font-medium">Total Companies</h3>
+                <p className="text-3xl font-bold text-white mt-2">
+                  {formatNumber(dashboardData.global_analytics.total_companies)}
+                </p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <h3 className="text-gray-300 text-sm font-medium">Monthly Revenue</h3>
+                <p className="text-3xl font-bold text-white mt-2">
+                  ${formatNumber(dashboardData.global_analytics.subscription_revenue.current_month)}
+                </p>
+              </div>
+            </div>
+
+            {/* Recent Users */}
+            {dashboardData.recent_users && dashboardData.recent_users.length > 0 && (
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <h3 className="text-xl font-bold text-white mb-4">Recent Active Users</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="border-b border-white/20">
+                        <th className="text-gray-300 py-2">Email</th>
+                        <th className="text-gray-300 py-2">Plan</th>
+                        <th className="text-gray-300 py-2">Searches</th>
+                        <th className="text-gray-300 py-2">Companies</th>
+                        <th className="text-gray-300 py-2">Last Activity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dashboardData.recent_users.slice(0, 10).map((user, index) => (
+                        <tr key={index} className="border-b border-white/10">
+                          <td className="text-white py-2">{user.user_email}</td>
+                          <td className="text-white py-2">
+                            <span className={`px-2 py-1 rounded text-xs ${
+                              user.subscription_plan === 'enterprise' ? 'bg-purple-500' :
+                              user.subscription_plan === 'agency' ? 'bg-blue-500' :
+                              user.subscription_plan === 'professional' ? 'bg-green-500' :
+                              'bg-gray-500'
+                            }`}>
+                              {user.subscription_plan || 'Free'}
+                            </span>
+                          </td>
+                          <td className="text-white py-2">{user.total_searches}</td>
+                          <td className="text-white py-2">{user.total_companies}</td>
+                          <td className="text-gray-300 py-2 text-sm">
+                            {formatDate(user.last_activity)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* User Lookup Tab */}
+        {activeTab === 'lookup' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-white mb-6">User Lookup</h2>
+            
+            {/* Lookup Form */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+              <form onSubmit={handleUserLookup} className="flex space-x-4">
+                <input
+                  type="email"
+                  value={userLookupEmail}
+                  onChange={(e) => setUserLookupEmail(e.target.value)}
+                  placeholder="Enter user email address"
+                  className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  disabled={isLoading}
+                />
+                <Button
+                  type="submit"
+                  disabled={isLoading || !userLookupEmail.trim()}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  {isLoading ? 'Looking up...' : 'Lookup User'}
+                </Button>
+              </form>
+            </div>
+
+            {/* User Metrics Display */}
+            {userMetrics && (
+              <div className="space-y-6">
+                {/* User Overview */}
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                  <h3 className="text-xl font-bold text-white mb-4">User Overview</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-gray-300 text-sm">Email</p>
+                      <p className="text-white font-medium">{userMetrics.user_email}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-300 text-sm">Subscription Plan</p>
+                      <p className="text-white font-medium">
+                        {userMetrics.subscription_plan || 'Free User'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-300 text-sm">Status</p>
+                      <p className="text-white font-medium">
+                        {userMetrics.subscription_status || 'N/A'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Usage Statistics */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                    <h4 className="text-gray-300 text-sm font-medium">Total Searches</h4>
+                    <p className="text-2xl font-bold text-white mt-2">
+                      {formatNumber(userMetrics.total_searches)}
+                    </p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                    <h4 className="text-gray-300 text-sm font-medium">Total Companies</h4>
+                    <p className="text-2xl font-bold text-white mt-2">
+                      {formatNumber(userMetrics.total_companies)}
+                    </p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                    <h4 className="text-gray-300 text-sm font-medium">This Month Searches</h4>
+                    <p className="text-2xl font-bold text-white mt-2">
+                      {formatNumber(userMetrics.usage_current_month.searches)}
+                    </p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                    <h4 className="text-gray-300 text-sm font-medium">Last Activity</h4>
+                    <p className="text-sm text-white mt-2">
+                      {formatDate(userMetrics.last_activity)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Recent Searches */}
+                {userMetrics.recent_searches && userMetrics.recent_searches.length > 0 && (
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                    <h4 className="text-xl font-bold text-white mb-4">Recent Searches</h4>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left">
+                        <thead>
+                          <tr className="border-b border-white/20">
+                            <th className="text-gray-300 py-2">Search Term</th>
+                            <th className="text-gray-300 py-2">Results</th>
+                            <th className="text-gray-300 py-2">Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {userMetrics.recent_searches.map((search, index) => (
+                            <tr key={index} className="border-b border-white/10">
+                              <td className="text-white py-2 font-medium">{search.search_term}</td>
+                              <td className="text-gray-300 py-2">{search.suggestions_count}</td>
+                              <td className="text-gray-300 py-2 text-sm">
+                                {formatDate(search.created_at)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+
+                {/* User Companies */}
+                {userMetrics.companies && userMetrics.companies.length > 0 && (
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                    <h4 className="text-xl font-bold text-white mb-4">User Companies</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {userMetrics.companies.map((company, index) => (
+                        <div key={index} className="bg-white/5 rounded-lg p-4 border border-white/10">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h5 className="text-white font-medium">{company.name}</h5>
+                              <p className="text-gray-300 text-sm">
+                                Created: {formatDate(company.created_at)}
+                              </p>
+                            </div>
+                            {company.is_personal && (
+                              <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded">
+                                Personal
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Global Analytics Tab */}
+        {activeTab === 'analytics' && globalAnalytics && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-white mb-6">Global Analytics</h2>
+            
+            {/* Key Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <h3 className="text-gray-300 text-sm font-medium">Total Users</h3>
+                <p className="text-3xl font-bold text-white mt-2">
+                  {formatNumber(globalAnalytics.total_users)}
+                </p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <h3 className="text-gray-300 text-sm font-medium">Total Searches</h3>
+                <p className="text-3xl font-bold text-white mt-2">
+                  {formatNumber(globalAnalytics.total_searches)}
+                </p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <h3 className="text-gray-300 text-sm font-medium">Average Searches/User</h3>
+                <p className="text-3xl font-bold text-white mt-2">
+                  {globalAnalytics.usage_stats.avg_searches_per_user}
+                </p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <h3 className="text-gray-300 text-sm font-medium">Monthly Revenue Potential</h3>
+                <p className="text-3xl font-bold text-white mt-2">
+                  ${formatNumber(globalAnalytics.subscription_revenue.monthly_potential)}
+                </p>
+              </div>
+            </div>
+
+            {/* Subscription Distribution */}
+            {Object.keys(globalAnalytics.active_subscriptions).length > 0 && (
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <h3 className="text-xl font-bold text-white mb-4">Subscription Distribution</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {Object.entries(globalAnalytics.active_subscriptions).map(([plan, count]) => (
+                    <div key={plan} className="text-center">
+                      <p className="text-2xl font-bold text-white">{count}</p>
+                      <p className="text-gray-300 text-sm capitalize">{plan}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Popular Search Terms */}
+            {globalAnalytics.popular_search_terms && globalAnalytics.popular_search_terms.length > 0 && (
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <h3 className="text-xl font-bold text-white mb-4">Popular Search Terms</h3>
+                <div className="space-y-2">
+                  {globalAnalytics.popular_search_terms.slice(0, 10).map((term, index) => (
+                    <div key={index} className="flex justify-between items-center">
+                      <span className="text-white">{term.term}</span>
+                      <span className="text-gray-300">{formatNumber(term.count)} searches</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* All Users Tab */}
+        {activeTab === 'users' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-white mb-6">All Users</h2>
+            
+            {allUsers.length > 0 ? (
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="border-b border-white/20">
+                        <th className="text-gray-300 py-2">User Email</th>
+                        <th className="text-gray-300 py-2">Plan</th>
+                        <th className="text-gray-300 py-2">Total Searches</th>
+                        <th className="text-gray-300 py-2">Companies</th>
+                        <th className="text-gray-300 py-2">First Activity</th>
+                        <th className="text-gray-300 py-2">Last Activity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {allUsers.map((user, index) => (
+                        <tr key={index} className="border-b border-white/10 hover:bg-white/5">
+                          <td className="text-white py-2">{user.user_id}</td>
+                          <td className="text-white py-2">
+                            <span className={`px-2 py-1 rounded text-xs ${
+                              user.subscription_plan === 'enterprise' ? 'bg-purple-500' :
+                              user.subscription_plan === 'agency' ? 'bg-blue-500' :
+                              user.subscription_plan === 'professional' ? 'bg-green-500' :
+                              'bg-gray-500'
+                            }`}>
+                              {user.subscription_plan || 'Free'}
+                            </span>
+                          </td>
+                          <td className="text-white py-2">{formatNumber(user.total_searches)}</td>
+                          <td className="text-white py-2">{formatNumber(user.total_companies)}</td>
+                          <td className="text-gray-300 py-2 text-sm">
+                            {formatDate(user.first_activity)}
+                          </td>
+                          <td className="text-gray-300 py-2 text-sm">
+                            {formatDate(user.last_activity)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 text-center">
+                <p className="text-gray-300">No users found</p>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AdminDashboard;
