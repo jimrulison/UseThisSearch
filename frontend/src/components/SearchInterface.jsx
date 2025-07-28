@@ -29,7 +29,7 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm, viewM
           <Button 
             variant="outline" 
             onClick={() => navigate('/dashboard')}
-            className="flex items-center gap-2 text-blue-600 hover:bg-blue-50"
+            className="flex items-center gap-2 text-blue-600 hover:bg-blue-50 border-blue-200 hover:border-blue-300 transition-all duration-200"
           >
             <LayoutDashboard className="h-4 w-4" />
             Dashboard
