@@ -36,7 +36,10 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm }) => 
             Dashboard
           </Button>
         </div>
-        <UserDropdown />
+        <div className="flex items-center gap-3">
+          <UpgradeButton />
+          <UserDropdown />
+        </div>
       </div>
 
       {/* Hero Section with Logo */}
