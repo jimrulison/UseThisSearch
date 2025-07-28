@@ -58,15 +58,33 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated() ? children : <Navigate to="/login" replace />;
 };
 
-// Login Route Component
-const LoginRoute = () => {
-  const { login, isAuthenticated } = useAuth();
+// Admin Protected Route Component
+const AdminProtectedRoute = ({ children }) => {
+  const { isAuthenticated, isLoading } = useAdminAuth();
   
-  if (isAuthenticated()) {
-    return <Navigate to="/" replace />;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-white">Loading admin panel...</p>
+        </div>
+      </div>
+    );
   }
   
-  return <LoginPage onLogin={login} />;
+  return isAuthenticated() ? children : <Navigate to="/admin/login" replace />;
+};
+
+// Admin Login Route Component
+const AdminLoginRoute = () => {
+  const { login, isAuthenticated } = useAdminAuth();
+  
+  if (isAuthenticated()) {
+    return <Navigate to="/admin" replace />;
+  }
+  
+  return <AdminLoginPage onLogin={login} />;
 };
 
 const Home = () => {
