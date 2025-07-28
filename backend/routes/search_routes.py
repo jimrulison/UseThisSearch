@@ -226,3 +226,27 @@ async def store_search_history(
     except Exception as e:
         logger.error(f"Error storing search history: {e}")
         # Don't raise exception as this shouldn't block the main response
+
+@router.post("/generate-question-content")
+async def generate_question_content(request: QuestionContentRequest):
+    """Generate conversational content for a specific question"""
+    
+    try:
+        logger.info(f"Generating content for question: {request.question}")
+        
+        # Get Claude service instance
+        claude_service = get_claude_service()
+        
+        # Generate the conversational content
+        content = claude_service.generate_question_content(request.question)
+        
+        return {
+            "question": request.question,
+            "content": content,
+            "character_count": len(content),
+            "generated_at": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Error generating question content: {e}")
+        raise HTTPException(status_code=500, detail="Error generating question content")
