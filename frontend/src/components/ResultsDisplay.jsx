@@ -103,54 +103,64 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6">
       {/* Results Header */}
-      <Card className="border-0 shadow-lg bg-gradient-to-r from-blue-50 to-purple-50">
-        <CardHeader>
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-              <CardTitle className="text-2xl font-bold text-gray-800">
-                Results for "{searchTerm}"
-              </CardTitle>
-              <p className="text-muted-foreground mt-1">
-                Found {totalSuggestions} suggestions across {Object.keys(results).length} categories
-              </p>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setViewMode(viewMode === 'graph' ? 'list' : 'graph')}
-                className="flex items-center gap-2"
-              >
-                {viewMode === 'graph' ? (
-                  <>
-                    <List className="h-4 w-4" />
-                    List View
-                  </>
-                ) : (
-                  <>
-                    <BarChart3 className="h-4 w-4" />
-                    Graph View
-                  </>
-                )}
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => setViewMode('guide')}
-                className={`flex items-center gap-2 ${viewMode === 'guide' ? 'bg-blue-100 text-blue-700 border-blue-300' : ''}`}
-              >
-                <BookOpen className="h-4 w-4" />
-                Expert Guide
-              </Button>
-              <Button 
-                onClick={handleExportCSV}
-                className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
-              >
-                <Download className="h-4 w-4" />
-                Export CSV
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-      </Card>
+      <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl shadow-lg p-8 text-white mb-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold mb-2">
+            🎯 Results for "{searchTerm}"
+          </h2>
+          <p className="text-blue-100 text-lg">
+            Found {totalSuggestions} suggestions across {Object.keys(results).length} categories
+          </p>
+        </div>
+        
+        {/* Action Buttons Row */}
+        <div className="flex flex-wrap justify-center gap-3 mt-6">
+          <Button
+            variant="secondary"
+            onClick={() => setViewMode('graph')}
+            className={`flex items-center gap-2 transition-all duration-200 ${
+              viewMode === 'graph' 
+                ? 'bg-white text-purple-600 shadow-lg scale-105' 
+                : 'bg-white/20 text-white hover:bg-white/30'
+            }`}
+          >
+            <BarChart3 className="h-4 w-4" />
+            📊 Graph View
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => setViewMode('list')}
+            className={`flex items-center gap-2 transition-all duration-200 ${
+              viewMode === 'list' 
+                ? 'bg-white text-purple-600 shadow-lg scale-105' 
+                : 'bg-white/20 text-white hover:bg-white/30'
+            }`}
+          >
+            <List className="h-4 w-4" />
+            📋 List View
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => setViewMode('guide')}
+            className={`flex items-center gap-2 transition-all duration-200 ${
+              viewMode === 'guide' 
+                ? 'bg-white text-purple-600 shadow-lg scale-105' 
+                : 'bg-white/20 text-white hover:bg-white/30'
+            }`}
+          >
+            <BookOpen className="h-4 w-4" />
+            💡 Expert Guide
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={handleExportCSV}
+            className="bg-green-400 text-white hover:bg-green-500 flex items-center gap-2 transition-all duration-200 hover:scale-105"
+          >
+            <Download className="h-4 w-4" />
+            📤 Export CSV
+          </Button>
+        </div>
+      </div>
 
       {/* View Toggle & Category Filter */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
