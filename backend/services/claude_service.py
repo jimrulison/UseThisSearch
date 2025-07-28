@@ -226,6 +226,49 @@ Return ONLY the JSON object with this exact format:
             ]
         }
 
+    @async_to_sync
+    async def generate_question_content(self, question: str) -> str:
+        """Generate conversational content for a specific question"""
+        logger.info(f"Generating question content for: {question}")
+        
+        prompt = f"""Write a brief paragraph about this question in a conversational, human tone: "{question}"
+
+IMPORTANT GUIDELINES:
+- Avoid formal academic language, marketing speak, or overly polished phrasing
+- Write as if you're explaining this to a friend over coffee - use simple, direct sentences with natural flow
+- Don't start with broad generalizations or end with sweeping conclusions
+- Include specific details rather than vague statements
+- Vary your sentence length and structure naturally
+- Don't use phrases like 'Furthermore,' 'Moreover,' 'It's worth noting,' 'In conclusion,' or 'Additionally'
+- Avoid superlatives like 'incredibly,' 'absolutely,' 'extremely,' or 'truly remarkable'
+- Don't feel compelled to cover every aspect - focus on 1-2 interesting points
+- Use contractions naturally (it's, don't, can't) where they fit
+- If relevant, include a minor imperfection, uncertainty, or casual aside
+- This content will be used for social media marketing to answer people's questions
+
+Please provide a natural, conversational response that someone could use on social media."""
+
+        try:
+            response = await self.client.messages.create(
+                model=self.model,
+                max_tokens=500,  # Shorter for social media
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+            )
+            
+            content = response.content[0].text.strip()
+            logger.info(f"Successfully generated question content ({len(content)} characters)")
+            return content
+            
+        except Exception as e:
+            logger.error(f"Error generating question content: {e}")
+            # Fallback content
+            return f"Here's a quick answer about {question}: This is something many people wonder about, and there are a few key things to know. The basics are actually pretty straightforward once you break it down. You might find it's not as complicated as it first seems."
+
 # Function to get the service instance (lazy loading)
 def get_claude_service():
     return ClaudeService.get_instance()
