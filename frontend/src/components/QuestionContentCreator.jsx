@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Label } from './ui/label';
-import { Textarea } from './ui/textarea';
 import { Loader2, MessageSquare, Copy, RefreshCw } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import axios from 'axios';
