@@ -220,6 +220,14 @@ const AdminDashboard = () => {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex justify-between items-start mb-8">
+          <div></div>
+          {/* Custom Pricing Widget - Top Right */}
+          <div className="w-80">
+            <CustomPricingWidget getAuthHeaders={getAuthHeaders} />
+          </div>
+        </div>
+        
         {isLoading && (
           <div className="flex items-center justify-center py-12">
             <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div>
