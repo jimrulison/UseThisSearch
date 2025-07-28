@@ -295,7 +295,7 @@ const StripeCheckout = ({ isOpen, onClose, initialPlan = 'professional' }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-none w-[1800px] max-h-[95vh] overflow-y-auto overflow-x-visible">
+      <DialogContent className="max-w-none w-[2000px] max-h-[95vh] overflow-y-auto overflow-x-visible">
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle>
