@@ -50,7 +50,10 @@ class BackendTester:
             "user_invitation_system": {"status": "pending", "details": ""},
             "user_limits_tracking": {"status": "pending", "details": ""},
             "billing_usage_api": {"status": "pending", "details": ""},
-            "multi_user_permissions": {"status": "pending", "details": ""}
+            "multi_user_permissions": {"status": "pending", "details": ""},
+            # New admin tests
+            "admin_authentication_system": {"status": "pending", "details": ""},
+            "admin_analytics_api": {"status": "pending", "details": ""}
         }
         self.session = requests.Session()
         self.session.timeout = 30
