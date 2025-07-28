@@ -12,6 +12,7 @@ import FAQGenerator from './FAQGenerator';
 import ContentBriefTemplates from './ContentBriefTemplates';
 import HashtagGenerator from './HashtagGenerator';
 import ContentGuide from './ContentGuide';
+import QuestionContentCreator from './QuestionContentCreator';
 import { Separator } from './ui/separator';
 import { useToast } from '../hooks/use-toast';
 
