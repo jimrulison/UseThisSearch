@@ -167,7 +167,7 @@ const AdminDashboard = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
               <div className="bg-gradient-to-r from-red-500 to-red-600 p-2 rounded-lg">
-                <Logo className="w-6 h-6 text-white" />
+                <Logo showText={false} className="w-6 h-6 text-white" />
               </div>
               <div>
                 <h1 className="text-white font-bold text-xl">Admin Panel</h1>
