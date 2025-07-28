@@ -37,7 +37,7 @@ const QuestionContentCreator = ({ searchTerm, results }) => {
     setIsGenerating(true);
     
     try {
-      const response = await axios.post(`${API}/generate-question-content`, {
+      const response = await axios.post(`${API}/api/generate-question-content`, {
         question: selectedQuestion
       });
 
