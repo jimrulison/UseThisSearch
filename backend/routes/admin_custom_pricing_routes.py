@@ -14,7 +14,7 @@ from models.billing_models import (
     get_plan_price,
     PRICING_CONFIG
 )
-from models.admin_models import AdminUser
+from models.admin_models import Admin
 from billing.stripe_service import get_stripe_service
 from billing.usage_tracker import get_usage_tracker
 from database import db
@@ -23,7 +23,7 @@ import uuid
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-async def get_admin_from_request(request: Request) -> AdminUser:
+async def get_admin_from_request(request: Request) -> Admin:
     """Extract admin user from request - reuse from admin_routes.py"""
     # For now, get from authorization header
     auth_header = request.headers.get("Authorization")
@@ -46,7 +46,7 @@ async def get_admin_from_request(request: Request) -> AdminUser:
     if not admin:
         raise HTTPException(status_code=401, detail="Admin user not found")
     
-    return AdminUser(**admin)
+    return Admin(**admin)
 
 @router.post("/apply", response_model=CustomPricing)
 async def apply_custom_pricing(
