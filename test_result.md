@@ -561,11 +561,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Admin Login Page"
-    - "Admin App Integration"
-  stuck_tasks:
-    - "Admin Login Page"
-    - "Admin App Integration"
+    - "Admin Authentication Context"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
