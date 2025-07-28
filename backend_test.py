@@ -1686,6 +1686,14 @@ class BackendTester:
         self.test_billing_usage_api()
         self.test_multi_user_permissions()
         
+        # Run new admin tests
+        print(f"\n{'='*60}")
+        print("ADMIN SYSTEM TESTS")
+        print(f"{'='*60}")
+        
+        self.test_admin_authentication_system()
+        self.test_admin_analytics_api()
+        
         total_time = time.time() - start_time
         
         # Summary
