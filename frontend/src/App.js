@@ -58,6 +58,17 @@ const ProtectedRoute = ({ children }) => {
   return isAuthenticated() ? children : <Navigate to="/login" replace />;
 };
 
+// Login Route Component
+const LoginRoute = () => {
+  const { login, isAuthenticated } = useAuth();
+  
+  if (isAuthenticated()) {
+    return <Navigate to="/" replace />;
+  }
+  
+  return <LoginPage onLogin={login} />;
+};
+
 // Admin Protected Route Component
 const AdminProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useAdminAuth();
