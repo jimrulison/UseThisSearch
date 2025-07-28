@@ -249,7 +249,7 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
         <Card className="border-0 shadow-lg">
           <CardContent className="p-6">
             <Tabs defaultValue="blog-titles" className="w-full">
-              <TabsList className="grid w-full grid-cols-6">
+              <TabsList className="grid w-full grid-cols-7">
                 <TabsTrigger value="blog-titles" className="flex items-center gap-1">
                   <span>✨</span>
                   Blog Titles
@@ -273,6 +273,10 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
                 <TabsTrigger value="content-briefs" className="flex items-center gap-1">
                   <span>📋</span>
                   Content Briefs
+                </TabsTrigger>
+                <TabsTrigger value="question-content" className="flex items-center gap-1">
+                  <span>💬</span>
+                  Create Question Content
                 </TabsTrigger>
               </TabsList>
               
