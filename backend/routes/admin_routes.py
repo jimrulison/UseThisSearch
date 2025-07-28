@@ -70,7 +70,7 @@ async def ensure_initial_admin():
         if not existing_admin:
             # Create initial admin
             admin = Admin(
-                email=INITIAL_ADMIN_EMAIL,
+                email=INITIAL_ADMIN_EMAIL.lower(),
                 password_hash=hash_password(INITIAL_ADMIN_PASSWORD),
                 name=INITIAL_ADMIN_NAME,
                 role="super_admin"
