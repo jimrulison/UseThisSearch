@@ -295,7 +295,7 @@ const StripeCheckout = ({ isOpen, onClose, initialPlan = 'professional' }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-7xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle>
@@ -305,6 +305,13 @@ const StripeCheckout = ({ isOpen, onClose, initialPlan = 'professional' }) => {
               <X className="h-4 w-4" />
             </Button>
           </div>
+          {!showCheckout && (
+            <div className="text-center mt-2">
+              <p className="text-gray-600 text-sm">
+                We will change your plan immediately and charge for the difference in your current plan versus your new plan.
+              </p>
+            </div>
+          )}
         </DialogHeader>
 
         {!showCheckout ? (
