@@ -127,7 +127,7 @@ const UpgradeButton = () => {
           className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold shadow-lg flex items-center gap-2"
         >
           <ArrowUp className="h-4 w-4" />
-          Subscribe Now
+          UPGRADE
         </Button>
         <StripeCheckout 
           isOpen={showUpgradeModal}
@@ -161,12 +161,12 @@ const UpgradeButton = () => {
         {isUpgrading ? (
           <>
             <Loader2 className="h-4 w-4 animate-spin" />
-            Upgrading...
+            UPGRADING...
           </>
         ) : (
           <>
             <ArrowUp className="h-4 w-4" />
-            Upgrade to {getTierName(nextTier)}
+            UPGRADE
           </>
         )}
       </Button>
