@@ -271,44 +271,69 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
         </div>
       )}
 
-      {/* Content Creation Tools - NEW FEATURES (completely isolated) */}
-      <div className="space-y-4">
+      {/* Content Creation Tools - Enhanced with Colors */}
+      <div className="space-y-6">
         <div className="text-center">
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">🚀 Content Creation Tools</h3>
-          <p className="text-gray-600">Transform your keyword research into ready-to-use content</p>
+          <h3 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+            🚀 AI-Powered Content Creation Tools
+          </h3>
+          <p className="text-gray-700 text-xl max-w-3xl mx-auto leading-relaxed">
+            Transform your keyword research into ready-to-use content with our advanced AI generators
+          </p>
         </div>
         
-        <Card className="border-0 shadow-lg">
-          <CardContent className="p-6">
+        <Card className="border-0 shadow-2xl bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+          <CardContent className="p-8">
             <Tabs defaultValue="blog-titles" className="w-full">
-              <TabsList className="grid w-full grid-cols-7">
-                <TabsTrigger value="blog-titles" className="flex items-center gap-1">
-                  <span>✨</span>
-                  Blog Titles
+              <TabsList className="grid w-full grid-cols-7 bg-gradient-to-r from-indigo-100 to-purple-100 p-3 rounded-2xl gap-2">
+                <TabsTrigger 
+                  value="blog-titles" 
+                  className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-400 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl"
+                >
+                  <span className="text-xl">✨</span>
+                  <span className="font-medium">Blog Titles</span>
                 </TabsTrigger>
-                <TabsTrigger value="meta-descriptions" className="flex items-center gap-1">
-                  <span>📝</span>
-                  Meta Descriptions
+                <TabsTrigger 
+                  value="meta-descriptions" 
+                  className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-400 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl"
+                >
+                  <span className="text-xl">📝</span>
+                  <span className="font-medium">Meta Descriptions</span>
                 </TabsTrigger>
-                <TabsTrigger value="social-media" className="flex items-center gap-1">
-                  <span>📱</span>
-                  Social Media
+                <TabsTrigger 
+                  value="social-media" 
+                  className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-400 data-[state=active]:to-rose-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl"
+                >
+                  <span className="text-xl">📱</span>
+                  <span className="font-medium">Social Media</span>
                 </TabsTrigger>
-                <TabsTrigger value="hashtags" className="flex items-center gap-1">
-                  <span>#️⃣</span>
-                  Hashtags
+                <TabsTrigger 
+                  value="hashtags" 
+                  className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-400 data-[state=active]:to-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl"
+                >
+                  <span className="text-xl">#️⃣</span>
+                  <span className="font-medium">Hashtags</span>
                 </TabsTrigger>
-                <TabsTrigger value="faq" className="flex items-center gap-1">
-                  <span>❓</span>
-                  FAQ
+                <TabsTrigger 
+                  value="faq" 
+                  className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-400 data-[state=active]:to-violet-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl"
+                >
+                  <span className="text-xl">❓</span>
+                  <span className="font-medium">FAQ</span>
                 </TabsTrigger>
-                <TabsTrigger value="content-briefs" className="flex items-center gap-1">
-                  <span>📋</span>
-                  Content Briefs
+                <TabsTrigger 
+                  value="content-briefs" 
+                  className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-400 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl"
+                >
+                  <span className="text-xl">📋</span>
+                  <span className="font-medium">Content Briefs</span>
                 </TabsTrigger>
-                <TabsTrigger value="question-content" className="flex items-center gap-1">
-                  <span>💬</span>
-                  Create Question Content
+                <TabsTrigger 
+                  value="question-content" 
+                  className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-400 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl"
+                >
+                  <span className="text-xl">💬</span>
+                  <span className="font-medium">Create Question Content</span>
                 </TabsTrigger>
               </TabsList>
               
