@@ -534,7 +534,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Multi-User Backend Implementation"
+    - "Admin Authentication System"
+    - "Admin Analytics API"
   stuck_tasks:
     []
   test_all: false
