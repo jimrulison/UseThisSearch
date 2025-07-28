@@ -228,6 +228,10 @@ Return ONLY the JSON object with this exact format:
 
     @async_to_sync
     async def generate_question_content(self, question: str) -> str:
+        """Generate conversational content for a specific question (sync wrapper)"""
+        return await self.generate_question_content_async(question)
+
+    async def generate_question_content_async(self, question: str) -> str:
         """Generate conversational content for a specific question"""
         logger.info(f"Generating question content for: {question}")
         
