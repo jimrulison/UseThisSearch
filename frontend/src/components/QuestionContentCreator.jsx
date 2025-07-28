@@ -174,10 +174,10 @@ const QuestionContentCreator = ({ searchTerm, results }) => {
             <div className="space-y-3">
               <Label className="text-sm font-medium">Generated Content for Social Media:</Label>
               <div className="relative">
-                <Textarea
+                <textarea
                   value={generatedContent}
                   onChange={(e) => setGeneratedContent(e.target.value)}
-                  className="min-h-32 pr-12"
+                  className="w-full min-h-32 p-3 pr-12 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
                   placeholder="Your conversational content will appear here..."
                 />
                 <Button
