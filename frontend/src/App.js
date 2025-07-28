@@ -253,31 +253,43 @@ function App() {
       <AuthProvider>
         <CompanyProvider>
           <BillingProvider>
-            <ToastProvider>
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/login" element={<LoginRoute />} />
-                  <Route path="/sales" element={<SalesSheetWithLogin />} />
-                  <Route 
-                    path="/dashboard" 
-                    element={
-                      <ProtectedRoute>
-                        <Dashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/" 
-                    element={
-                      <ProtectedRoute>
-                        <Home />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </BrowserRouter>
-            </ToastProvider>
+            <AdminAuthProvider>
+              <ToastProvider>
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/login" element={<LoginRoute />} />
+                    <Route path="/sales" element={<SalesSheetWithLogin />} />
+                    <Route 
+                      path="/dashboard" 
+                      element={
+                        <ProtectedRoute>
+                          <Dashboard />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/" 
+                      element={
+                        <ProtectedRoute>
+                          <Home />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    {/* Admin Routes */}
+                    <Route path="/admin/login" element={<AdminLoginRoute />} />
+                    <Route 
+                      path="/admin" 
+                      element={
+                        <AdminProtectedRoute>
+                          <AdminDashboard />
+                        </AdminProtectedRoute>
+                      } 
+                    />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                </BrowserRouter>
+              </ToastProvider>
+            </AdminAuthProvider>
           </BillingProvider>
         </CompanyProvider>
       </AuthProvider>
