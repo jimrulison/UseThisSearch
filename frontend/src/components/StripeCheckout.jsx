@@ -346,16 +346,17 @@ const StripeCheckout = ({ isOpen, onClose, initialPlan = 'professional' }) => {
             </div>
 
             {/* Plan Cards */}
-            <div className="grid grid-cols-4 gap-10 px-8 min-w-[1900px]">
+            <div className="flex flex-row justify-center gap-12 px-8">
               {Object.entries(PRICING_PLANS).map(([planKey, plan]) => (
-                <PlanCard
-                  key={planKey}
-                  planKey={planKey}
-                  plan={plan}
-                  selectedPlan={selectedPlan}
-                  setSelectedPlan={setSelectedPlan}
-                  billingPeriod={billingPeriod}
-                />
+                <div key={planKey} className="flex-shrink-0">
+                  <PlanCard
+                    planKey={planKey}
+                    plan={plan}
+                    selectedPlan={selectedPlan}
+                    setSelectedPlan={setSelectedPlan}
+                    billingPeriod={billingPeriod}
+                  />
+                </div>
               ))}
             </div>
 
