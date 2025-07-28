@@ -248,6 +248,7 @@ IMPORTANT GUIDELINES:
 Please provide a natural, conversational response that someone could use on social media."""
 
         try:
+            logger.info(f"Calling Claude API for question content generation...")
             response = await self.client.messages.create(
                 model=self.model,
                 max_tokens=500,  # Shorter for social media
@@ -259,12 +260,16 @@ Please provide a natural, conversational response that someone could use on soci
                 ]
             )
             
+            logger.info(f"Claude API response received: {type(response)}")
+            logger.info(f"Response content: {response.content}")
+            
             content = response.content[0].text.strip()
             logger.info(f"Successfully generated question content ({len(content)} characters)")
             return content
             
         except Exception as e:
             logger.error(f"Error generating question content: {e}")
+            logger.error(f"Exception type: {type(e)}")
             # Fallback content
             return f"Here's a quick answer about {question}: This is something many people wonder about, and there are a few key things to know. The basics are actually pretty straightforward once you break it down. You might find it's not as complicated as it first seems."
 
