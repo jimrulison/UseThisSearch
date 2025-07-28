@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Clone answerthepublic.com - A keyword research tool that generates questions and suggestions based on search queries using Claude AI"
+user_problem_statement: "Implement an administrative platform with the following exact requirements: 1. keep the current design and layout of the user platform exactly as it is 2. add in a login form for an administrator with an email and password. I want the administrative panel to give me access to any and all of the users platform. When I let the admin platform know a persons email address, I want to see the type of results they are getting and how much usage they are using. Then I also want to see metrics of all the users combined."
 
 backend:
   - task: "Multi-User Backend Implementation"
