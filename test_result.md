@@ -105,6 +105,18 @@
 user_problem_statement: "I need you to create a place on the admin panel where I can offer a user a different price than we have listed, but still set them up as a user. I should be able to choose the pricing level and I want to be able to set the price on the spot. I need you to implement the system without changing the current design and layout. DO not change any existing buttons, colors or layouts."
 
 backend:
+  - task: "Admin Custom Pricing System"
+    implemented: true
+    working: false
+    file: "backend/routes/admin_custom_pricing_routes.py, backend/models/billing_models.py, backend/billing/stripe_service.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented comprehensive admin custom pricing system allowing admins to set custom prices for specific users. Added CustomPricing model with monthly/yearly custom pricing, CustomPricingCreate request model, CustomPricingHistory for audit trail. Created admin API endpoints: POST /api/admin/custom-pricing/apply (apply custom pricing to user), GET /api/admin/custom-pricing/user/{email} (get user's custom pricing), GET /api/admin/custom-pricing/history (get pricing history), GET /api/admin/custom-pricing/active (get all active custom pricing), DELETE /api/admin/custom-pricing/user/{email} (cancel custom pricing). Updated StripeService with create_custom_subscription method for custom pricing. System overrides user's current subscription and creates new custom-priced subscription in Stripe. Includes proper authentication, error handling, and audit logging."
+        
   - task: "Admin Authentication System"
     implemented: true
     working: true
