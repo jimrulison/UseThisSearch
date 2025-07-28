@@ -155,6 +155,7 @@ const Dashboard = () => {
               <ArrowLeft className="h-4 w-4" />
               Back to Search
             </Button>
+            <UpgradeButton />
             <CompanySelector />
             <UserDropdown />
           </div>
