@@ -94,6 +94,10 @@ api_router.include_router(user_management_router, prefix="/users", tags=["user-m
 api_router.include_router(billing_router, prefix="/billing", tags=["billing"])
 api_router.include_router(safe_billing_router, prefix="/safe", tags=["safe-billing"])
 
+# NEW: Include admin routes (additive)
+api_router.include_router(admin_router, prefix="/admin", tags=["admin"])
+api_router.include_router(admin_analytics_router, prefix="/admin/analytics", tags=["admin-analytics"])
+
 # Include the router in the main app
 app.include_router(api_router)
 
