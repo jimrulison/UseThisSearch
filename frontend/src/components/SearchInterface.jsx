@@ -34,7 +34,6 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm }) => 
             <LayoutDashboard className="h-4 w-4" />
             Dashboard
           </Button>
-          <UpgradeButton />
         </div>
         <UserDropdown />
       </div>
