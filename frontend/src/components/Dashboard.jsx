@@ -156,7 +156,10 @@ const Dashboard = () => {
               Back to Search
             </Button>
             <CompanySelector />
-            <UserDropdown />
+            <div className="flex items-center gap-3">
+              <UpgradeButton />
+              <UserDropdown />
+            </div>
           </div>
         </div>
 
