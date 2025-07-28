@@ -111,25 +111,6 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm, viewM
           </form>
         </CardContent>
       </Card>
-
-      {/* Quick Examples */}
-      <div className="text-center">
-        <p className="text-sm text-muted-foreground mb-3">Try these popular keywords:</p>
-        <div className="flex flex-wrap justify-center gap-2">
-          {['digital marketing', 'coffee', 'fitness', 'crypto', 'AI', 'sustainability'].map((keyword) => (
-            <Button
-              key={keyword}
-              variant="outline"
-              size="sm"
-              onClick={() => setSearchTerm(keyword)}
-              className="hover:bg-blue-50 hover:border-blue-300 transition-colors"
-              disabled={isLoading}
-            >
-              {keyword}
-            </Button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };
