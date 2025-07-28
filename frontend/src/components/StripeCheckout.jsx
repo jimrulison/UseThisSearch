@@ -295,10 +295,10 @@ const StripeCheckout = ({ isOpen, onClose, initialPlan = 'professional' }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-none w-[2000px] max-h-[95vh] overflow-y-auto overflow-x-visible">
+      <DialogContent className="max-w-none w-[2200px] max-h-[95vh] overflow-y-auto overflow-x-hidden">
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle>
+            <DialogTitle className="text-2xl">
               {showCheckout ? 'Complete Your Subscription' : 'Choose Your Plan'}
             </DialogTitle>
             <Button variant="ghost" size="sm" onClick={onClose}>
@@ -306,7 +306,7 @@ const StripeCheckout = ({ isOpen, onClose, initialPlan = 'professional' }) => {
             </Button>
           </div>
           {!showCheckout && (
-            <div className="text-center mt-3 mb-4">
+            <div className="text-center mt-3 mb-6">
               <p className="text-gray-700 text-base font-medium">
                 We will change your plan immediately and charge for the difference in your current plan versus your new plan.
               </p>
