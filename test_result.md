@@ -336,15 +336,18 @@ backend:
 frontend:
   - task: "Custom Pricing Widget Frontend"
     implemented: true
-    working: false
+    working: true
     file: "frontend/src/components/CustomPricingWidget.jsx, frontend/src/components/AdminDashboard.jsx"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented CustomPricingWidget component positioned in top-right area of AdminDashboard as requested. Widget includes user email input, plan type selection (Solo/Professional/Agency/Enterprise) with feature descriptions, custom monthly/yearly price inputs, optional notes textarea, and apply button with loading states. Features form validation, error handling, success feedback via toast notifications, and proper integration with admin authentication. Widget maintains existing admin panel design with dark theme, red accents, and backdrop blur styling. Added to AdminDashboard.jsx without modifying existing layout or functionality."
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Custom Pricing Widget Frontend working perfectly! ✅ Widget Positioning: Correctly positioned in top-right area of admin dashboard with proper width class (w-80) ✅ Form Fields: All form fields functional - user email input (accepts email), plan selection dropdown with all 4 plans (Solo, Professional, Agency, Enterprise), monthly/yearly price inputs (accept numeric values), optional notes textarea ✅ Plan Selection: Dropdown shows all plan options with feature descriptions displayed below selection (e.g., 'Features: 5 users, Unlimited companies, 2000 searches' for Agency Plan) ✅ Form Validation: Apply button properly disabled when required fields are empty, form accepts valid inputs ✅ Widget Design: Perfect dark theme integration with backdrop blur (.bg-white/10, .backdrop-blur-sm), red accents on button and focus states, maintains admin panel aesthetic ✅ User Experience: Form fields have appropriate placeholders, proper focus states, responsive design ✅ Integration: Widget properly integrated into AdminDashboard without affecting existing layout, uses admin authentication context ✅ API Integration: Form submission triggers API calls with proper authentication headers. Custom Pricing Widget frontend is fully functional and matches design requirements. Note: Admin routing issue exists (admin login redirects to regular login) but widget functionality confirmed by manual token setup."
         
   - task: "Admin Authentication Context"
     implemented: true
