@@ -108,27 +108,25 @@ const QuestionContentCreator = ({ searchTerm, results }) => {
             <Label htmlFor="question-select" className="text-sm font-medium mb-2 block">
               Select a Question ({allQuestions.length} available)
             </Label>
-            <Select value={selectedQuestion} onValueChange={handleQuestionSelect}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Choose a question from your search results..." />
-              </SelectTrigger>
-              <SelectContent className="max-h-60">
-                {allQuestions.map((question, index) => {
-                  const questionText = typeof question === 'object' ? question.text : question;
-                  const popularity = typeof question === 'object' ? question.popularity : 'MEDIUM';
-                  const popularityEmoji = popularity === 'HIGH' ? '🔥' : popularity === 'MEDIUM' ? '🔸' : '🔹';
-                  
-                  return (
-                    <SelectItem key={index} value={questionText}>
-                      <div className="flex items-center gap-2">
-                        <span>{popularityEmoji}</span>
-                        <span className="truncate max-w-md">{questionText}</span>
-                      </div>
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
+            <select
+              id="question-select"
+              value={selectedQuestion}
+              onChange={(e) => handleQuestionSelect(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Choose a question from your search results...</option>
+              {allQuestions.map((question, index) => {
+                const questionText = typeof question === 'object' ? question.text : question;
+                const popularity = typeof question === 'object' ? question.popularity : 'MEDIUM';
+                const popularityEmoji = popularity === 'HIGH' ? '🔥' : popularity === 'MEDIUM' ? '🔸' : '🔹';
+                
+                return (
+                  <option key={index} value={questionText}>
+                    {popularityEmoji} {questionText}
+                  </option>
+                );
+              })}
+            </select>
           </div>
 
           {/* Selected Question Display */}
