@@ -86,27 +86,6 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm, viewM
                   )}
                 </Button>
               </div>
-              
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant={viewMode === 'graph' ? 'default' : 'outline'}
-                  onClick={() => setViewMode('graph')}
-                  className="flex items-center gap-2"
-                >
-                  <BarChart3 className="h-4 w-4" />
-                  Graph View
-                </Button>
-                <Button
-                  type="button"
-                  variant={viewMode === 'list' ? 'default' : 'outline'}
-                  onClick={() => setViewMode('list')}
-                  className="flex items-center gap-2"
-                >
-                  <List className="h-4 w-4" />
-                  List View
-                </Button>
-              </div>
             </div>
           </form>
         </CardContent>
