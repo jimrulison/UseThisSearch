@@ -124,10 +124,11 @@ async def apply_custom_pricing(
         
         # Create a custom subscription with the new pricing
         # Start with monthly by default - user can change later
-        custom_subscription = await stripe_service.create_subscription(
+        custom_subscription = await stripe_service.create_custom_subscription(
             customer_id=stripe_customer_id,
             plan_type=pricing_data.plan_type,
             billing_period=BillingPeriod.MONTHLY,
+            custom_price=pricing_data.custom_price_monthly,
             trial_days=0  # No trial for custom pricing
         )
         
