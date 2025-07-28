@@ -19,6 +19,9 @@ from database import db, ensure_personal_company
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+class QuestionContentRequest(BaseModel):
+    question: str
+
 def get_user_id_from_request(request: Request) -> str:
     """Extract user ID from request headers"""
     user_id = request.headers.get("X-User-ID")
