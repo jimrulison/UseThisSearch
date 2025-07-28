@@ -257,6 +257,18 @@ function App() {
               <ToastProvider>
                 <BrowserRouter>
                   <Routes>
+                    {/* Admin Routes - Must come first to avoid conflicts */}
+                    <Route path="/admin/login" element={<AdminLoginRoute />} />
+                    <Route 
+                      path="/admin" 
+                      element={
+                        <AdminProtectedRoute>
+                          <AdminDashboard />
+                        </AdminProtectedRoute>
+                      } 
+                    />
+                    
+                    {/* User Routes */}
                     <Route path="/login" element={<LoginRoute />} />
                     <Route path="/sales" element={<SalesSheetWithLogin />} />
                     <Route 
@@ -273,16 +285,6 @@ function App() {
                         <ProtectedRoute>
                           <Home />
                         </ProtectedRoute>
-                      } 
-                    />
-                    {/* Admin Routes */}
-                    <Route path="/admin/login" element={<AdminLoginRoute />} />
-                    <Route 
-                      path="/admin" 
-                      element={
-                        <AdminProtectedRoute>
-                          <AdminDashboard />
-                        </AdminProtectedRoute>
                       } 
                     />
                     <Route path="*" element={<Navigate to="/" replace />} />
