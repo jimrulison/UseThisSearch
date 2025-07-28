@@ -48,6 +48,68 @@ class StripeService:
             logger.error(f"Error creating Stripe customer: {e}")
             raise
     
+    async def create_custom_subscription(
+        self, 
+        customer_id: str, 
+        plan_type: PlanType,
+        billing_period: BillingPeriod,
+        custom_price: int,
+        trial_days: int = 0
+    ) -> Dict[str, Any]:
+        """Create a subscription with custom pricing"""
+        try:
+            # Create price object in Stripe with custom amount
+            price = stripe.Price.create(
+                unit_amount=custom_price * 100,  # Convert to cents
+                currency='usd',
+                recurring={
+                    'interval': 'month' if billing_period == BillingPeriod.MONTHLY else 'year'
+                },
+                product_data={
+                    'name': f'Use This Search - {plan_type.value.title()} Plan (Custom)',
+                    'metadata': {
+                        'plan_type': plan_type.value,
+                        'billing_period': billing_period.value,
+                        'custom_pricing': 'true',
+                        'custom_price': str(custom_price)
+                    }
+                }
+            )
+            
+            # Create subscription
+            subscription_params = {
+                'customer': customer_id,
+                'items': [{'price': price.id}],
+                'expand': ['latest_invoice.payment_intent'],
+                'metadata': {
+                    'plan_type': plan_type.value,
+                    'billing_period': billing_period.value,
+                    'custom_pricing': 'true',
+                    'custom_price': str(custom_price)
+                }
+            }
+            
+            # Add trial if specified
+            if trial_days > 0:
+                subscription_params['trial_period_days'] = trial_days
+            
+            subscription = stripe.Subscription.create(**subscription_params)
+            
+            logger.info(f"Created custom subscription {subscription.id} for customer {customer_id} with price ${custom_price}")
+            
+            return {
+                'subscription_id': subscription.id,
+                'status': subscription.status,
+                'current_period_start': datetime.fromtimestamp(subscription.current_period_start),
+                'current_period_end': datetime.fromtimestamp(subscription.current_period_end),
+                'trial_end': datetime.fromtimestamp(subscription.trial_end) if subscription.trial_end else None,
+                'client_secret': subscription.latest_invoice.payment_intent.client_secret if subscription.latest_invoice else None
+            }
+            
+        except Exception as e:
+            logger.error(f"Error creating custom subscription: {e}")
+            raise
+    
     async def create_subscription(
         self, 
         customer_id: str, 
