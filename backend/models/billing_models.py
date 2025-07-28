@@ -238,3 +238,48 @@ def has_feature(plan_type: PlanType, feature: str) -> bool:
     """Check if a plan has a specific feature"""
     plan_config = PRICING_CONFIG.get(plan_type.value, PRICING_CONFIG["solo"])
     return feature in plan_config.get("features", [])
+
+class CustomPricing(BaseModel):
+    """Admin-set custom pricing for specific users"""
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_email: str = Field(..., description="Email of user receiving custom pricing")
+    plan_type: PlanType = Field(..., description="Plan tier (features)")
+    custom_price_monthly: int = Field(..., description="Custom monthly price in dollars")
+    custom_price_yearly: int = Field(..., description="Custom yearly price in dollars")
+    applied_by: str = Field(..., description="Admin email who applied this pricing")
+    stripe_customer_id: Optional[str] = None
+    stripe_subscription_id: Optional[str] = None
+    status: str = Field(default="active", description="active, canceled, expired")
+    notes: Optional[str] = Field(default="", description="Admin notes about this custom pricing")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    expires_at: Optional[datetime] = None
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "user_email": "special@customer.com",
+                "plan_type": "professional",
+                "custom_price_monthly": 50,
+                "custom_price_yearly": 40,
+                "applied_by": "admin@company.com",
+                "notes": "Special pricing for enterprise customer"
+            }
+        }
+
+class CustomPricingCreate(BaseModel):
+    user_email: str = Field(..., description="Email of user to apply custom pricing")
+    plan_type: PlanType = Field(..., description="Plan tier")
+    custom_price_monthly: int = Field(..., description="Custom monthly price in dollars")
+    custom_price_yearly: int = Field(..., description="Custom yearly price in dollars")
+    notes: Optional[str] = Field(default="", description="Optional notes")
+
+class CustomPricingHistory(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    custom_pricing_id: str = Field(..., description="Reference to CustomPricing record")
+    user_email: str = Field(..., description="User who received the pricing")
+    action: str = Field(..., description="applied, updated, canceled")
+    applied_by: str = Field(..., description="Admin who performed the action")
+    previous_values: Optional[dict] = Field(default={}, description="Previous values before change")
+    new_values: dict = Field(..., description="New values after change")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
