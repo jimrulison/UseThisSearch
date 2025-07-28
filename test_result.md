@@ -331,6 +331,18 @@ backend:
         comment: "POST-UI UPDATE VERIFICATION: Health check endpoint confirmed working after UI updates. Returns proper JSON response with healthy status."
 
 frontend:
+  - task: "Custom Pricing Widget Frontend"
+    implemented: true
+    working: false
+    file: "frontend/src/components/CustomPricingWidget.jsx, frontend/src/components/AdminDashboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented CustomPricingWidget component positioned in top-right area of AdminDashboard as requested. Widget includes user email input, plan type selection (Solo/Professional/Agency/Enterprise) with feature descriptions, custom monthly/yearly price inputs, optional notes textarea, and apply button with loading states. Features form validation, error handling, success feedback via toast notifications, and proper integration with admin authentication. Widget maintains existing admin panel design with dark theme, red accents, and backdrop blur styling. Added to AdminDashboard.jsx without modifying existing layout or functionality."
+        
   - task: "Admin Authentication Context"
     implemented: true
     working: true
