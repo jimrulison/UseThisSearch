@@ -585,7 +585,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Admin Authentication Context"
+    - "Admin Custom Pricing System"
+    - "Custom Pricing Widget Frontend"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
