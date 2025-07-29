@@ -1,164 +1,112 @@
 <analysis>
-The AI engineer successfully transformed Use This Search from an MVP into a feature-rich, monetized SaaS platform. Initially, core functionalities like keyword research, graph visualization, and Claude AI integration were established. Significant subsequent work involved developing a comprehensive multi-user management system with user limits, integrating tiered SaaS monetization via Stripe, and refining billing dashboards. A major addition was the Create Question Content feature, leveraging Claude AI for conversational content generation from search results. UI/UX enhancements, including a prominent UPGRADE button, a widened pricing modal, and colorful themes, greatly improved user experience. The latest phase involved implementing a full administrative platform with secure login (JimRulison@gmail.com / JR09mar05), user lookup, individual usage tracking, and global analytics. The engineer demonstrated strong debugging skills, resolving frontend routing conflicts and API integration issues, ensuring a polished, fully functional product ready for administrative oversight.
+The AI engineer successfully evolved the Use This Search application from an MVP into a feature-rich SaaS platform, addressing a series of complex user requests. Initially, the focus was on core functionalities like keyword research and AI content generation, integrating a multi-user, multi-company system with tiered Stripe-based monetization. A significant recent addition was a comprehensive administrative platform for user management and global analytics, including a custom pricing widget. The engineer demonstrated strong problem-solving, resolving critical issues such as backend import errors, case-sensitive authentication, and frontend text overlap. Each feature was implemented carefully, maintaining existing design constraints. The final task involved generating detailed training documentation for both user and admin platforms, which was completed and delivered with supporting screenshots. The entire trajectory reflects a systematic, iterative development process, focusing on user feedback and thorough testing at each stage.
 </analysis>
 
 <product_requirements>
-The Use This Search application, originally an AnswerThePublic.com clone, aims to provide AI-powered keyword research (questions, prepositions, comparisons, alphabetical suggestions) with popularity rankings. The product was extended to include: rebranding, sales materials, secure authentication, AI content generation tools (Blog Title, Meta Description, Social Media Post, FAQ, Content Brief, Hashtag Generator), and an Expert Guide. A multi-company system was implemented, allowing isolated data per workspace. Core to monetization, a SaaS billing system with tiered pricing (Solo, Professional, Agency, Enterprise) was added, tracking searches, companies, and users. Specific user limits per tier (1, 2, 5, 7 users) and a user availability notice were crucial. UI requirements included a top-right UPGRADE button (charging price difference), widened pricing modal for all plans, and removal of old warnings. A Create Question Content tab was added, generating conversational content from selected search questions using Claude AI. The UI was made more colorful, and search interface clutter was removed.
+The Use This Search application, a rebranded AnswerThePublic.com clone, provides AI-powered keyword research and content generation. The core problem solved is enabling users to conduct comprehensive keyword analysis and then generate various content types (blog titles, FAQs, social media posts, etc.) using AI, particularly Claude AI for Create Question Content.
 
-Most recently, an administrative platform was requested to:
-1.  Maintain the current user platform's design.
-2.  Add an admin login form with specific credentials (JimRulison@gmail.com / JR09mar05), supporting multiple admins.
-3.  Provide access to individual user data, including search results and usage.
-4.  Display combined metrics for all users.
-This administrative platform was successfully implemented with read-only access to user data and comprehensive analytics.
+Initially, the product required secure authentication, multi-company support with isolated data, and a robust SaaS billing system via Stripe, offering tiered pricing (Solo, Professional, Agency, Enterprise) with explicit user limits (1, 2, 5, 7 users). UI enhancements included a prominent UPGRADE button, a widened pricing modal, and an overall colorful, clean design.
+
+More recently, the user explicitly requested:
+1.  An administrative platform (accessible via  with specific credentials JimRulison@gmail.com / JR09mar05) with read-only access to individual user data (search results, usage) and combined global metrics, while maintaining the existing user platform's design.
+2.  A new feature within the admin panel to offer custom pricing to users, allowing selection of pricing level and on-the-spot price setting, overriding existing subscriptions. This needed to be placed top to mid-right without changing existing design elements.
+3.  Making login emails for both user and admin platforms case-insensitive.
+4.  Fixing text overlap issues, specifically USE THIS SEARCH overlapping with other text on the login pages and admin dashboard, without altering other elements.
+5.  Creation of a detailed training document with pictures and videos for both user and admin platforms.
 </product_requirements>
 
 <key_technical_concepts>
 -   **Full-stack Architecture**: React (frontend), FastAPI (backend), MongoDB (database).
--   **AI Integration**: Claude AI (Anthropic) for content generation and keyword suggestions.
--   **Frontend UI**: Radix UI, Tailwind CSS, React Context API, React Router DOM, React Stripe.js.
--   **Backend Framework**: FastAPI with Pydantic for data validation.
--   **SaaS Billing**: Stripe API integration, subscription management, usage tracking.
--   **Multi-User/Company System**: Isolated data per company, user roles.
--   **Admin Panel**: Separate authentication, dedicated dashboard with user/global analytics.
+-   **AI Integration**: Claude AI (Anthropic) for content generation.
+-   **UI/UX**: Radix UI, Tailwind CSS, React Context API, React Router DOM, React Stripe.js.
+-   **SaaS Billing**: Stripe API for subscriptions, usage tracking, custom pricing.
+-   **Authentication**: JWT-based for admin, demo-based for users, with case-insensitivity.
+-   **Multi-User/Company System**: Isolated data, user roles, user limits.
 </key_technical_concepts>
 
 <code_architecture>
-The application utilizes a standard full-stack setup with  and  directories.
+The application uses a standard full-stack architecture with  (React) and  (FastAPI, MongoDB) directories.
 
 
 
 -   ****:
     -   **Importance**: Main React entry point, handles global contexts and routing.
-    -   **Changes Made**: Integrated , , , and . Modified to pass  state. Added . Ensured search API calls use  prefix. Most recently,  was heavily modified for the admin panel, including new routes for  and , integrating , , and . Routing logic was reordered and fixed to prioritize admin routes and resolve conflicts with existing user routes.
--   ****:
-    -   **Importance**: Renders search results and content generation tools.
-    -   **Changes Made**: Configured to render content generation tools as individual buttons. Integrated  as a tab. Updated  classes for colorful styling.
--   ****:
-    -   **Importance**: Provides the search input and primary navigation.
-    -   **Changes Made**: Modified to receive  from . Removed Try these popular keywords and duplicate Graph/List View buttons. Integrated .
--   ****:
-    -   **Importance**: Enables users to switch between company workspaces.
-    -   **Changes Made**: New file created for multi-company support.
--   ****:
-    -   **Importance**: Displays company-specific analytics and past searches.
-    -   **Changes Made**: Integrates  within a tabbed interface. Integrated .
--   ****:
-    -   **Importance**: Shows subscription status, usage, and upgrade options.
-    -   **Changes Made**: Displays current usage and next reset date. Triggers  modal.  button removed.
--   ****:
-    -   **Importance**: Manages the UI for selecting subscription plans.
-    -   **Changes Made**: Presents all pricing tiers. Widened the modal significantly ( width, ). Added explanation text for price difference.
--   ****:
-    -   **Importance**: New component to display user count and team capacity.
-    -   **Changes Made**: Newly created. Displays current users vs. limit, plan badge, and visual status.  button deleted. Styling updated.
--   ****:
-    -   **Importance**: New component for initiating subscription upgrades.
-    -   **Changes Made**: Newly created. Logic to determine next tier, calculate price difference. Positioned top-right.
--   ****:
-    -   **Importance**: New component for generating content based on selected questions using Claude AI.
-    -   **Changes Made**: Newly created. Includes a dropdown, textarea, and Generate Content button. Corrected UI components and API endpoint URL.
--   ****:
-    -   **Importance**: User profile dropdown in the header.
-    -   **Changes Made**: Modified to position the new UPGRADE button next to it.
--   ****:
-    -   **Importance**: Provides strategic advice and displays search results.
-    -   **Changes Made**: Modified to display actual search results in organized boxes, then removed Your Question Results.
--   ****:
-    -   **Importance**: New component for administrator login.
-    -   **Changes Made**: Newly created. Implements a professional dark-themed login page with fields for admin email and password, and calls the admin authentication API.
+    -   **Changes Made**: Heavily modified for admin panel routes (, ), integrating , , . Routing logic was reordered to prioritize admin routes and resolve conflicts.
 -   ****:
     -   **Importance**: New component for the administrative panel.
-    -   **Changes Made**: Newly created. Provides a dashboard with tabs for Dashboard Overview, User Lookup, Global Analytics, and All Users, fetching and displaying relevant data from the backend admin APIs.
+    -   **Changes Made**: Newly created. Provides a dashboard with tabs for Dashboard Overview, User Lookup, Global Analytics, and All Users. Modified to integrate  in the top-right area. Fixed Logo component usage to  to resolve text overlap.
 -   ****:
-    -   **Importance**: Provides application-wide access to authentication state.
-    -   **Changes Made**: Not directly detailed for this context, but inferred as foundational.
+    -   **Importance**: New component for administrator login.
+    -   **Changes Made**: Newly created. Implements a professional dark-themed login. Fixed Logo component usage to  to resolve text overlap.
 -   ****:
-    -   **Importance**: Provides application-wide access to company-related data.
-    -   **Changes Made**: New file created for multi-company state management.
+    -   **Importance**: User login page.
+    -   **Changes Made**: Modified to normalize user email to lowercase () for case-insensitive login consistency.
 -   ****:
-    -   **Importance**: Manages subscription state, usage data, and billing API interactions.
-    -   **Changes Made**: New file created. Updated to fetch and provide user limit information.
+    -   **Importance**: New component for setting custom pricing for users from the admin panel.
+    -   **Changes Made**: Newly created. Includes fields for user email, plan selection, monthly/yearly custom price, and notes. Integrated into .
+-   ****:
+    -   **Importance**: Reusable logo component.
+    -   **Changes Made**: Updated to support  prop for conditional text display.
 -   ****:
     -   **Importance**: New context for managing administrative authentication state.
-    -   **Changes Made**: Newly created. Handles admin login, logout, and token management specifically for the admin panel, separate from user authentication.
+    -   **Changes Made**: Newly created. Handles admin login, logout, and token management, separate from user authentication.
 -   ****:
-    -   **Importance**: Main FastAPI application instance, registers all API routers.
-    -   **Changes Made**: Updated to include new API routers for , , , and most recently,  and .
+    -   **Importance**: Main FastAPI application, registers all API routers.
+    -   **Changes Made**: Updated to include new API routers for .
 -   ****:
-    -   **Importance**: Defines API endpoints for CRUD operations on user companies.
-    -   **Changes Made**: New file created for multi-company features.
+    -   **Importance**: Defines API endpoints for administrator authentication.
+    -   **Changes Made**: Modified login logic to convert incoming admin email to lowercase before database lookup () for case-insensitivity. Also ensured initial admin email is stored in lowercase.
 -   ****:
-    -   **Importance**: Defines API endpoints for Stripe integration, subscription management, and usage data.
-    -   **Changes Made**: New file created for billing. Handles optional subscription data.
+    -   **Importance**: New file defining API endpoints for applying custom pricing to users.
+    -   **Changes Made**: Newly created. Includes endpoints for custom price application, retrieval, and audit trail. Initial fix for  by changing  to  in import.
 -   ****:
-    -   **Importance**: Wraps core routes to apply billing logic.
-    -   **Changes Made**: New file created. Updated to properly include user limits.
+    -   **Importance**: Defines Pydantic models for admin users and related data.
+    -   **Changes Made**: Clarified that the admin model name is , which fixed an import error in .
 -   ****:
-    -   **Importance**: New file for API endpoints related to user invitation, management, and roles within a company.
-    -   **Changes Made**: Newly created with 6 endpoints for user operations.
+    -   **Importance**: Defines Pydantic models for billing.
+    -   **Changes Made**: Expanded  to include . Added  model to support custom pricing feature.
 -   ****:
-    -   **Importance**: New file defining API endpoints for administrator authentication (login, logout, token validation).
-    -   **Changes Made**: Newly created, implementing secure admin login and session management.
+    -   **Importance**: Defines API endpoints for Stripe integration, subscription management.
+    -   **Changes Made**: Modified to integrate the new custom pricing logic, allowing it to override standard subscriptions.
 -   ****:
-    -   **Importance**: New file defining API endpoints for retrieving user-specific and global analytics data for administrators.
-    -   **Changes Made**: Newly created, providing endpoints for user lookup by email, individual user usage/search history, and aggregated system metrics.
+    -   **Importance**: Documents testing results, user problem statements, and communication.
+    -   **Changes Made**: Continuously updated with summaries of testing results for custom pricing, case-insensitive auth, and text overlap fixes.
 -   ****:
-    -   **Importance**: Defines API endpoints for keyword search and history.
-    -   **Changes Made**: Added a new endpoint  for Claude AI content generation.
+    -   **Importance**: Comprehensive training guide for users and admins.
+    -   **Changes Made**: Newly created, includes detailed steps and screenshots.
 -   ****:
-    -   **Importance**: Defines Pydantic models for companies, subscriptions, usage, and .
-    -   **Changes Made**: New file created. Updated  to include . Made  optional.
+    -   **Importance**: Shorter, focused video script guide for training.
+    -   **Changes Made**: Newly created.
 -   ****:
-    -   **Importance**: New file defining Pydantic models for admin users, authentication (login, token), and analytics data structures.
-    -   **Changes Made**: Newly created, includes models for , , , and various data structures for analytics responses.
--   ****:
-    -   **Importance**: Encapsulates Stripe API interactions.
-    -   **Changes Made**: New file created.
--   ****:
-    -   **Importance**: Manages user-specific usage data against limits.
-    -   **Changes Made**: New file created. Tracks  and , integrating . Added user management and .
--   ****:
-    -   **Importance**: Middleware for applying billing checks.
-    -   **Changes Made**: Temporarily bypassed checks (later resolved).
--   ****:
-    -   **Importance**: Interacts with Claude AI for content generation.
-    -   **Changes Made**: Added  for specific content generation with detailed prompts. Fixed async/await issues.
--   ****:
-    -   **Importance**: Root HTML file.
-    -   **Changes Made**: Removed the Made with Emergent badge.
+    -   **Importance**: Summary document for the entire training package.
+    -   **Changes Made**: Newly created.
 </code_architecture>
 
 <pending_tasks>
--   No explicit pending tasks from the original product requirements or the newly requested administrative platform. All features detailed in the trajectory, including the admin panel, have been implemented and confirmed as fully functional.
+-   No explicit pending tasks from the original product requirements or the newly requested administrative platform features (custom pricing, case-insensitivity, text overlap, training documentation). All features detailed in the trajectory have been implemented and confirmed as fully functional.
 </pending_tasks>
 
 <current_work>
-The Use This Search application is now a comprehensive, monetized SaaS platform with both a user-facing application and a separate administrative panel.
+The Use This Search application is a fully functional, monetized SaaS platform with a user-facing application and a separate administrative panel.
 
 **User-facing Platform:**
--   **Core Functionality**: Provides AI-powered keyword research with popularity rankings, graph/list visualizations, and CSV export.
--   **Monetization**: Features tiered pricing (Solo, Professional, Agency, Enterprise) with real-time usage tracking for searches, companies, and users. Strict user limits per tier (1, 2, 5, 7) are enforced.
--   **Billing UI**: A prominent Team Size: X/Y users notice, a widened  modal showing all plans, and a smart UPGRADE button are fully integrated, handling plan changes and price differences.
+-   **Core Functionality**: AI-powered keyword research with visualizations and CSV export.
+-   **Monetization**: Tiered pricing (Solo, Professional, Agency, Enterprise) with real-time usage tracking for searches, companies, and users, enforcing strict user limits.
+-   **Billing UI**: Features a Team Size: X/Y users notice, a widened  modal showing all plans, and an UPGRADE button for plan changes.
 -   **Multi-Company Support**: Users can manage multiple isolated company workspaces.
--   **AI Content Tools**: Six tools are available, including the Create Question Content feature that generates conversational, social media-ready content from selected search questions using Claude AI.
--   **UI/UX**: The entire application has been restyled with vibrant colors, gradients, and improved typography, enhancing visual appeal. Unnecessary UI elements like popular keywords and duplicate buttons have been removed for a cleaner experience.
+-   **AI Content Tools**: Six tools are available, including Create Question Content which generates conversational content from search questions using Claude AI.
+-   **UI/UX**: Restyled with vibrant colors, gradients, and improved typography.
 
-**Administrative Platform (Recently Implemented):**
--   **Access**: Accessible via  with dedicated credentials (JimRulison@gmail.com / JR09mar05).
--   **Authentication**: A secure, separate login/logout system with token management is in place, supporting multi-admin setup.
--   **Dashboard**: A robust  provides four tabs:
-    -   **Dashboard Overview**: Shows real-time aggregate metrics (total users, searches, companies, revenue).
-    -   **User Lookup**: Allows administrators to search for individual users by email to view their detailed metrics, search history, usage data, and subscription information.
-    -   **Global Analytics**: Displays system-wide statistics like popular search terms, activity trends, and subscription distribution.
-    -   **All Users**: Provides a comprehensive list of all users.
--   **Data Access**: The admin panel offers read-only access to user data, maintaining separation from user modification capabilities.
--   **Distinct UI**: The admin login page features a professional dark theme with red accents, clearly distinct from the main user application.
--   **Routing**: Dedicated admin routes (, ) are fully functional, with routing conflicts successfully resolved to ensure smooth navigation.
+**Administrative Platform:**
+-   **Access**: Accessible via  with specific credentials (JimRulison@gmail.com / JR09mar05).
+-   **Authentication**: Secure, separate login/logout system with token management; now **case-insensitive** for admin emails.
+-   **Dashboard**:  with tabs for Dashboard Overview, User Lookup (by email), Global Analytics, and All Users, providing read-only access to user and system data.
+-   **Custom Pricing Widget**: A newly implemented feature, located in the top-right of the , allows admins to set custom prices for any user by email, overriding their standard subscription. This includes plan selection, custom monthly/yearly pricing, and notes, with an audit trail.
+-   **UI Fixes**: Text overlap issues, specifically concerning Use This Search text on the admin login page and admin dashboard header, have been resolved, ensuring clean and readable layouts. The logo now displays without overlapping text.
 
-The system is production-ready, with comprehensive backend and frontend testing confirming all features are working as expected.
+The latest work involved creating comprehensive training documentation, including , , and , which include detailed instructions and screenshots for both user and admin platforms. All current user requests have been addressed, and the system is production-ready.
 </current_work>
 
 <optional_next_step>
-There are no pending tasks or explicit next steps requested by the user. The administrative platform implementation and testing are complete.
+There are no pending explicit requests. I will wait for further instructions from the user.
 </optional_next_step>
