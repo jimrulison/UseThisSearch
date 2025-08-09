@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 
 const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm, viewMode, setViewMode }) => {
   const navigate = useNavigate();
+  const { t, changeLanguage } = useLanguage();
 
   const handleSubmit = (e) => {
     e.preventDefault();
