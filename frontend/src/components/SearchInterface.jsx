@@ -83,12 +83,12 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm, viewM
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Generating Ideas...
+                      {t('searching')}
                     </>
                   ) : (
                     <>
                       <Search className="mr-2 h-5 w-5" />
-                      Get Questions
+                      {t('getQuestions')}
                     </>
                   )}
                 </Button>
