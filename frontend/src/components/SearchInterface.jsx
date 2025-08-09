@@ -8,6 +8,8 @@ import Logo from './Logo';
 import UserDropdown from './UserDropdown';
 import CompanySelector from './CompanySelector';
 import UpgradeButton from './UpgradeButton';
+import LanguageSelector from './LanguageSelector';
+import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 
 const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm, viewMode, setViewMode }) => {
