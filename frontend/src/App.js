@@ -251,51 +251,53 @@ const Home = () => {
 function App() {
   return (
     <div className="App">
-      <AuthProvider>
-        <CompanyProvider>
-          <BillingProvider>
-            <AdminAuthProvider>
-              <ToastProvider>
-                <BrowserRouter>
-                  <Routes>
-                    {/* Admin Routes - Must come first to avoid conflicts */}
-                    <Route path="/admin/login" element={<AdminLoginRoute />} />
-                    <Route 
-                      path="/admin" 
-                      element={
-                        <AdminProtectedRoute>
-                          <AdminDashboard />
-                        </AdminProtectedRoute>
-                      } 
-                    />
-                    
-                    {/* User Routes */}
-                    <Route path="/login" element={<LoginRoute />} />
-                    <Route path="/sales" element={<SalesSheetWithLogin />} />
-                    <Route 
-                      path="/dashboard" 
-                      element={
-                        <ProtectedRoute>
-                          <Dashboard />
-                        </ProtectedRoute>
-                      } 
-                    />
-                    <Route 
-                      path="/" 
-                      element={
-                        <ProtectedRoute>
-                          <Home />
-                        </ProtectedRoute>
-                      } 
-                    />
-                    <Route path="*" element={<Navigate to="/" replace />} />
-                  </Routes>
-                </BrowserRouter>
-              </ToastProvider>
-            </AdminAuthProvider>
-          </BillingProvider>
-        </CompanyProvider>
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <CompanyProvider>
+            <BillingProvider>
+              <AdminAuthProvider>
+                <ToastProvider>
+                  <BrowserRouter>
+                    <Routes>
+                      {/* Admin Routes - Must come first to avoid conflicts */}
+                      <Route path="/admin/login" element={<AdminLoginRoute />} />
+                      <Route 
+                        path="/admin" 
+                        element={
+                          <AdminProtectedRoute>
+                            <AdminDashboard />
+                          </AdminProtectedRoute>
+                        } 
+                      />
+                      
+                      {/* User Routes */}
+                      <Route path="/login" element={<LoginRoute />} />
+                      <Route path="/sales" element={<SalesSheetWithLogin />} />
+                      <Route 
+                        path="/dashboard" 
+                        element={
+                          <ProtectedRoute>
+                            <Dashboard />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route 
+                        path="/" 
+                        element={
+                          <ProtectedRoute>
+                            <Home />
+                          </ProtectedRoute>
+                        } 
+                      />
+                      <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
+                  </BrowserRouter>
+                </ToastProvider>
+              </AdminAuthProvider>
+            </BillingProvider>
+          </CompanyProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </div>
   );
 }
