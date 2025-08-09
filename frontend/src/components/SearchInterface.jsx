@@ -54,9 +54,7 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm, viewM
           <Logo size="hero" showText={true} />
         </div>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          Discover what questions people are asking about your keywords. Generate 
-          content ideas, SEO insights, and uncover search trends with AI-powered 
-          keyword research.
+          {t('discoverQuestions')}
         </p>
       </div>
 
