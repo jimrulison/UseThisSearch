@@ -39,19 +39,19 @@ const LoginPage = ({ onLogin }) => {
     const newErrors = {};
     
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('emailRequired');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = t('validEmail');
     }
     
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = t('passwordRequired');
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = t('passwordLength');
     }
     
     if (!isLogin && !formData.name) {
-      newErrors.name = 'Name is required';
+      newErrors.name = t('nameRequired');
     }
     
     setErrors(newErrors);
