@@ -143,6 +143,17 @@ const translations = {
     useThisSearch: "Utilisez Cette Recherche",
     aiKeywordResearch: "Recherche de Mots-clés par IA",
     
+    // Dashboard & Search Interface
+    dashboard: "Tableau de Bord",
+    discoverQuestions: "Découvrez quelles questions les gens posent sur vos mots-clés. Générez des idées de contenu, des insights SEO et découvrez les tendances de recherche avec la recherche de mots-clés alimentée par l'IA.",
+    enterKeyword: "Entrez votre mot-clé (ex., marketing digital, café, fitness)",
+    getQuestions: "Obtenir des Questions",
+    searching: "Recherche...",
+    viewModes: "Modes de Vue",
+    visualMode: "Visuel",
+    listMode: "Liste",
+    export: "Exporter",
+    
     // Common
     language: "Langue",
     selectLanguage: "Sélectionner la Langue"
