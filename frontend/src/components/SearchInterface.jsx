@@ -35,10 +35,14 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm, viewM
             className="flex items-center gap-2 text-blue-600 hover:bg-blue-50 border-blue-200 hover:border-blue-300 transition-all duration-200"
           >
             <LayoutDashboard className="h-4 w-4" />
-            Dashboard
+            {t('dashboard')}
           </Button>
         </div>
         <div className="flex items-center gap-3">
+          <LanguageSelector 
+            onLanguageChange={changeLanguage}
+            className=""
+          />
           <UpgradeButton />
           <UserDropdown />
         </div>
