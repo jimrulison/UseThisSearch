@@ -5,6 +5,8 @@ import { Input } from './ui/input';
 import { Badge } from './ui/badge';
 import { User, Lock, Mail, Eye, EyeOff } from 'lucide-react';
 import Logo from './Logo';
+import LanguageSelector from './LanguageSelector';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const LoginPage = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
