@@ -82,7 +82,7 @@ class VadooAIVideoGenerator:
             topic="🔥 STOP wasting time on basic keyword research! Use This Search's AI finds HIDDEN opportunities that AnswerThePublic misses. Get 10x more content ideas, SEO insights, and profit from keywords your competitors don't even know exist!",
             voice="Emily",  # Energetic voice
             theme="MrBeast_1",  # Engaging viral theme
-            duration="15-20"
+            duration="30-60"  # Standard duration format
         )
         videos.append({"style": "Flashy/Viral", "length": "15-20s", **video1})
         time.sleep(3)  # Rate limiting
@@ -93,7 +93,7 @@ class VadooAIVideoGenerator:
             topic="Transform your content strategy with Use This Search - the professional AI-powered keyword research platform. Unlike basic tools, we provide complete workflow solutions: from keyword discovery to blog titles, FAQs, and social media content. Trusted by agencies and enterprises for multi-user collaboration, advanced analytics, and superior results.",
             voice="Charlie",  # Professional voice
             theme="Hormozi_1",  # Business theme
-            duration="30-45"
+            duration="30-60"  # Standard duration format
         )
         videos.append({"style": "Professional/Business", "length": "30-45s", **video2})
         time.sleep(3)
@@ -104,7 +104,7 @@ class VadooAIVideoGenerator:
             topic="Meet your new keyword research superhero! 🦸‍♂️ Use This Search doesn't just find keywords - it creates your entire content strategy! Generate blog titles, FAQs, hashtags, and social posts with AI magic. It's like having a content team in your pocket! Ready to level up your SEO game?",
             voice="Alice",  # Friendly, animated voice
             theme="Joe_Rogan_1",  # Creative theme
-            duration="20-30"
+            duration="30-60"  # Standard duration format
         )
         videos.append({"style": "Animated/Fun", "length": "20-30s", **video3})
         time.sleep(3)
@@ -115,7 +115,7 @@ class VadooAIVideoGenerator:
             topic="Here's why Use This Search outperforms AnswerThePublic: 7 AI content generation tools, multi-user team management, unlimited company workspaces, advanced analytics, and enterprise-grade features. We don't just show you keywords - we generate blog titles, meta descriptions, FAQs, and complete content briefs. Save 10+ hours per week while creating better content that actually ranks and converts.",
             voice="Dave",  # Educational voice
             theme="Hormozi_1",  # Professional educational theme
-            duration="45-60"
+            duration="60-90"  # Longer for educational content
         )
         videos.append({"style": "Data-Driven/Educational", "length": "45-60s", **video4})
         time.sleep(3)
@@ -126,7 +126,7 @@ class VadooAIVideoGenerator:
             topic="POV: You discover Use This Search and realize you've been wasting time on basic keyword tools 😱 AI generates your blog titles, FAQs, social posts AND finds hidden keywords your competitors miss. This is the content creation cheat code! 🚀",
             voice="Emily",  # Quick, energetic
             theme="MrBeast_1",  # Social media optimized
-            duration="15"
+            duration="30-60"  # Standard duration format
         )
         videos.append({"style": "Quick Hook/TikTok", "length": "15s", **video5})
         
