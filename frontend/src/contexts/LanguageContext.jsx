@@ -94,6 +94,17 @@ const translations = {
     useThisSearch: "Usa Esta Búsqueda",
     aiKeywordResearch: "Investigación de Palabras Clave con IA",
     
+    // Dashboard & Search Interface
+    dashboard: "Panel de Control",
+    discoverQuestions: "Descubre qué preguntas están haciendo las personas sobre tus palabras clave. Genera ideas de contenido, insights SEO y descubre tendencias de búsqueda con investigación de palabras clave impulsada por IA.",
+    enterKeyword: "Ingresa tu palabra clave (ej., marketing digital, café, fitness)",
+    getQuestions: "Obtener Preguntas",
+    searching: "Buscando...",
+    viewModes: "Modos de Vista",
+    visualMode: "Visual",
+    listMode: "Lista",
+    export: "Exportar",
+    
     // Common
     language: "Idioma",
     selectLanguage: "Seleccionar Idioma"
