@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CompanyProvider, useCompany } from './contexts/CompanyContext';
 import { BillingProvider, useBilling } from './contexts/BillingContext'; // NEW: Added BillingProvider
 import { AdminAuthProvider, useAdminAuth } from './contexts/AdminAuthContext'; // NEW: Added AdminAuthProvider
+import { LanguageProvider } from './contexts/LanguageContext'; // NEW: Added LanguageProvider
 import SearchInterface from './components/SearchInterface';
 import ResultsDisplay from './components/ResultsDisplay';
 import SalesSheet from './components/SalesSheet';
