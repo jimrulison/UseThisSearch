@@ -1,0 +1,53 @@
+{
+  "campaign_name": "Use This Search Social Media Campaign",
+  "created_at": "2025-08-09T15:30:49.819106",
+  "total_videos": 5,
+  "api_key_used": "VtvMYaKRdl...",
+  "videos": [
+    {
+      "style": "Flashy/Viral",
+      "length": "15-20s",
+      "error": "API Error: 400",
+      "details": "Invalid duration provided"
+    },
+    {
+      "style": "Professional/Business",
+      "length": "30-45s",
+      "error": "API Error: 400",
+      "details": "Invalid duration provided"
+    },
+    {
+      "style": "Animated/Fun",
+      "length": "20-30s",
+      "error": "API Error: 400",
+      "details": "Invalid duration provided"
+    },
+    {
+      "style": "Data-Driven/Educational",
+      "length": "45-60s",
+      "error": "API Error: 400",
+      "details": "Invalid duration provided"
+    },
+    {
+      "style": "Quick Hook/TikTok",
+      "length": "15s",
+      "error": "API Error: 400",
+      "details": "Invalid duration provided"
+    }
+  ],
+  "estimated_completion": "2-3 minutes from creation",
+  "platforms_optimized": [
+    "Instagram",
+    "TikTok",
+    "YouTube Shorts",
+    "LinkedIn",
+    "Twitter"
+  ],
+  "campaign_objectives": [
+    "Increase brand awareness",
+    "Showcase competitive advantages",
+    "Drive platform signups",
+    "Highlight AI capabilities",
+    "Target different audience segments"
+  ]
+}
