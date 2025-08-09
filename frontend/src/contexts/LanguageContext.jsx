@@ -192,6 +192,17 @@ const translations = {
     useThisSearch: "Verwenden Sie Diese Suche",
     aiKeywordResearch: "KI-gestützte Keyword-Recherche",
     
+    // Dashboard & Search Interface
+    dashboard: "Dashboard",
+    discoverQuestions: "Entdecken Sie, welche Fragen Menschen zu Ihren Keywords stellen. Generieren Sie Content-Ideen, SEO-Einblicke und entdecken Sie Suchtrends mit KI-gestützter Keyword-Recherche.",
+    enterKeyword: "Geben Sie Ihr Keyword ein (z.B. digitales Marketing, Kaffee, Fitness)",
+    getQuestions: "Fragen Abrufen",
+    searching: "Suche läuft...",
+    viewModes: "Ansichtsmodi",
+    visualMode: "Visuell",
+    listMode: "Liste",
+    export: "Exportieren",
+    
     // Common
     language: "Sprache",
     selectLanguage: "Sprache auswählen"
