@@ -45,6 +45,17 @@ const translations = {
     useThisSearch: "Use This Search",
     aiKeywordResearch: "AI-Powered Keyword Research",
     
+    // Dashboard & Search Interface
+    dashboard: "Dashboard",
+    discoverQuestions: "Discover what questions people are asking about your keywords. Generate content ideas, SEO insights, and uncover search trends with AI-powered keyword research.",
+    enterKeyword: "Enter your keyword (e.g., digital marketing, coffee, fitness)",
+    getQuestions: "Get Questions",
+    searching: "Searching...",
+    viewModes: "View Modes",
+    visualMode: "Visual",
+    listMode: "List",
+    export: "Export",
+    
     // Common
     language: "Language",
     selectLanguage: "Select Language"
