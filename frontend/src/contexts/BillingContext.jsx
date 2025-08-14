@@ -305,6 +305,7 @@ export const BillingProvider = ({ children }) => {
     cancelSubscription,
     acknowledgeAlert,
     getPricingConfig,
+    checkFeatureAccess,
     loadBillingData,
     getUserId
   };
