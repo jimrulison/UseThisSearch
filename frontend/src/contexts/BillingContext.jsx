@@ -263,6 +263,33 @@ export const BillingProvider = ({ children }) => {
     }
   };
 
+  const checkFeatureAccess = (featureName) => {
+    if (!subscription || subscription.status !== 'active') {
+      return false;
+    }
+
+    const planFeatures = {
+      'solo': ['basic_search', 'csv_export', 'personal_workspace'],
+      'professional': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics'],
+      'agency': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label'],
+      'enterprise': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label', 'admin_dashboard', 'custom_pricing', 'api_access'],
+      
+      // Annual-only features
+      'professional_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'keyword_clustering'],
+      'agency_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label', 'keyword_clustering'],
+      'enterprise_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label', 'admin_dashboard', 'custom_pricing', 'api_access', 'keyword_clustering']
+    };
+
+    // Determine plan key based on plan type and billing cycle
+    let planKey = subscription.plan_type;
+    if (subscription.billing_cycle === 'annual' && ['professional', 'agency', 'enterprise'].includes(subscription.plan_type)) {
+      planKey = `${subscription.plan_type}_annual`;
+    }
+
+    const features = planFeatures[planKey] || [];
+    return features.includes(featureName);
+  };
+
   const value = {
     subscription,
     usage,
