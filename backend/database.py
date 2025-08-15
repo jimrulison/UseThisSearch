@@ -101,6 +101,10 @@ async def ensure_personal_company(user_id: str) -> str:
         logger.error(f"Error ensuring personal company for user {user_id}: {e}")
         raise
 
+async def get_database():
+    """Get database instance"""
+    return db
+
 async def close_database():
     """Close database connection"""
     try:
