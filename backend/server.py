@@ -103,6 +103,9 @@ api_router.include_router(admin_router, prefix="/admin", tags=["admin"])
 api_router.include_router(admin_analytics_router, prefix="/admin/analytics", tags=["admin-analytics"])
 api_router.include_router(admin_custom_pricing_router, prefix="/admin/custom-pricing", tags=["admin-custom-pricing"])
 
+# NEW: Include clustering routes (additive)
+api_router.include_router(clustering_router, prefix="/clustering", tags=["clustering"])
+
 # Include the router in the main app
 app.include_router(api_router)
 
