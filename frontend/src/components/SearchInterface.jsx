@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Download, BarChart3, List, Loader2, LayoutDashboard } from 'lucide-react';
+import { Search, Download, BarChart3, List, Loader2, LayoutDashboard, BookOpen } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
@@ -9,6 +9,7 @@ import UserDropdown from './UserDropdown';
 import CompanySelector from './CompanySelector';
 import UpgradeButton from './UpgradeButton';
 import LanguageSelector from './LanguageSelector';
+import EducationCenter from './EducationCenter';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 
