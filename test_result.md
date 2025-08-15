@@ -705,7 +705,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "KeywordClustering Component UI Updates"
+    - "Education Center Implementation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
