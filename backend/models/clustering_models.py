@@ -132,7 +132,7 @@ CLUSTER_USAGE_COLLECTION = "cluster_usage"
 CLUSTER_STATS_COLLECTION = "cluster_stats"
 
 # Access control constants
-CLUSTERING_REQUIRED_PLANS = ["professional_annual", "agency_annual", "enterprise_annual"]
+CLUSTERING_REQUIRED_PLANS = ["professional_annual", "agency_annual", "enterprise_annual", "annual_gift"]
 CLUSTERING_FEATURE_NAME = "keyword_clustering"
 
 # Default limits by plan
@@ -148,5 +148,11 @@ CLUSTERING_LIMITS = {
     "enterprise_annual": {
         "monthly_analyses": 1000,
         "keywords_per_analysis": 2000
+    },
+    "annual_gift": {
+        "monthly_analyses": 100,  # Enhanced limits for gift recipients
+        "keywords_per_analysis": 1000,
+        "bonus_credits": 500,
+        "priority_processing": True
     }
 }
