@@ -54,7 +54,14 @@ class BackendTester:
             # New admin tests
             "admin_authentication_system": {"status": "pending", "details": ""},
             "admin_analytics_api": {"status": "pending", "details": ""},
-            "admin_custom_pricing_system": {"status": "pending", "details": ""}
+            "admin_custom_pricing_system": {"status": "pending", "details": ""},
+            # New clustering tests
+            "clustering_access_control": {"status": "pending", "details": ""},
+            "clustering_algorithm": {"status": "pending", "details": ""},
+            "clustering_api_endpoints": {"status": "pending", "details": ""},
+            "clustering_usage_limits": {"status": "pending", "details": ""},
+            "clustering_export_functionality": {"status": "pending", "details": ""},
+            "clustering_data_models": {"status": "pending", "details": ""}
         }
         self.session = requests.Session()
         self.session.timeout = 30
