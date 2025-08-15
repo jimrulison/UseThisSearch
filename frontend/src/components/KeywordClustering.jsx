@@ -681,6 +681,17 @@ const KeywordClustering = ({ searchResults }) => {
           </CardContent>
         </Card>
       )}
+
+      {/* What is Keyword Clustering - Explanation Box */}
+      <Card className="bg-red-100 border-red-200">
+        <CardContent className="pt-6">
+          <div className="text-center">
+            <p className="text-gray-800 text-sm leading-relaxed">
+              Keyword clustering actually groups related keywords together so you can create one comprehensive piece of content that ranks for multiple search terms instead of dozens of separate posts.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
