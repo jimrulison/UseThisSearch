@@ -285,109 +285,147 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
         
         <Card className="border-0 shadow-2xl bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
           <CardContent className="p-8">
-            <Tabs defaultValue="blog-titles" className="w-full">
-              <TabsList className="grid w-full grid-cols-7 bg-gradient-to-r from-indigo-100 to-purple-100 p-3 rounded-2xl gap-2">
-                <TabsTrigger 
-                  value="blog-titles" 
-                  className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-400 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl"
+            {/* Content Tool Buttons */}
+            <div className="mb-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                <Button
+                  onClick={() => setActiveContentTool('blog-titles')}
+                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl ${
+                    activeContentTool === 'blog-titles'
+                      ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg transform scale-105'
+                      : 'bg-white hover:bg-gradient-to-r hover:from-yellow-50 hover:to-orange-50 text-gray-700 border-2 hover:border-orange-200'
+                  }`}
                 >
-                  <span className="text-xl">✨</span>
-                  <span className="font-medium">Blog Titles</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="meta-descriptions" 
-                  className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-400 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl"
+                  <span className="text-2xl">✨</span>
+                  <span className="font-medium text-sm text-center">Blog Titles</span>
+                </Button>
+                
+                <Button
+                  onClick={() => setActiveContentTool('meta-descriptions')}
+                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl ${
+                    activeContentTool === 'meta-descriptions'
+                      ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg transform scale-105'
+                      : 'bg-white hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 text-gray-700 border-2 hover:border-emerald-200'
+                  }`}
                 >
-                  <span className="text-xl">📝</span>
-                  <span className="font-medium">Meta Descriptions</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="social-media" 
-                  className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-400 data-[state=active]:to-rose-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl"
+                  <span className="text-2xl">📝</span>
+                  <span className="font-medium text-sm text-center">Meta Descriptions</span>
+                </Button>
+                
+                <Button
+                  onClick={() => setActiveContentTool('social-media')}
+                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl ${
+                    activeContentTool === 'social-media'
+                      ? 'bg-gradient-to-r from-pink-400 to-rose-500 text-white shadow-lg transform scale-105'
+                      : 'bg-white hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 text-gray-700 border-2 hover:border-rose-200'
+                  }`}
                 >
-                  <span className="text-xl">📱</span>
-                  <span className="font-medium">Social Media</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="hashtags" 
-                  className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-400 data-[state=active]:to-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl"
+                  <span className="text-2xl">📱</span>
+                  <span className="font-medium text-sm text-center">Social Media</span>
+                </Button>
+                
+                <Button
+                  onClick={() => setActiveContentTool('hashtags')}
+                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl ${
+                    activeContentTool === 'hashtags'
+                      ? 'bg-gradient-to-r from-indigo-400 to-blue-500 text-white shadow-lg transform scale-105'
+                      : 'bg-white hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 text-gray-700 border-2 hover:border-blue-200'
+                  }`}
                 >
-                  <span className="text-xl">#️⃣</span>
-                  <span className="font-medium">Hashtags</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="faq" 
-                  className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-400 data-[state=active]:to-violet-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl"
+                  <span className="text-2xl">#️⃣</span>
+                  <span className="font-medium text-sm text-center">Hashtags</span>
+                </Button>
+                
+                <Button
+                  onClick={() => setActiveContentTool('faq')}
+                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl ${
+                    activeContentTool === 'faq'
+                      ? 'bg-gradient-to-r from-purple-400 to-violet-500 text-white shadow-lg transform scale-105'
+                      : 'bg-white hover:bg-gradient-to-r hover:from-purple-50 hover:to-violet-50 text-gray-700 border-2 hover:border-violet-200'
+                  }`}
                 >
-                  <span className="text-xl">❓</span>
-                  <span className="font-medium">FAQ</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="content-briefs" 
-                  className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-400 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl"
+                  <span className="text-2xl">❓</span>
+                  <span className="font-medium text-sm text-center">FAQ</span>
+                </Button>
+                
+                <Button
+                  onClick={() => setActiveContentTool('content-briefs')}
+                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl ${
+                    activeContentTool === 'content-briefs'
+                      ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-white shadow-lg transform scale-105'
+                      : 'bg-white hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 text-gray-700 border-2 hover:border-cyan-200'
+                  }`}
                 >
-                  <span className="text-xl">📋</span>
-                  <span className="font-medium">Content Briefs</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="question-content" 
-                  className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-400 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-300 hover:scale-105 rounded-xl"
+                  <span className="text-2xl">📋</span>
+                  <span className="font-medium text-sm text-center">Content Briefs</span>
+                </Button>
+                
+                <Button
+                  onClick={() => setActiveContentTool('question-content')}
+                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl ${
+                    activeContentTool === 'question-content'
+                      ? 'bg-gradient-to-r from-red-400 to-pink-500 text-white shadow-lg transform scale-105'
+                      : 'bg-white hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 text-gray-700 border-2 hover:border-pink-200'
+                  }`}
                 >
-                  <span className="text-xl">💬</span>
-                  <span className="font-medium">Create Question Content</span>
-                </TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="blog-titles" className="mt-4">
+                  <span className="text-2xl">💬</span>
+                  <span className="font-medium text-sm text-center">Question Content</span>
+                </Button>
+              </div>
+            </div>
+            
+            {/* Content Tool Display */}
+            <div className="mt-6">
+              {activeContentTool === 'blog-titles' && (
                 <BlogTitleGenerator 
                   searchTerm={searchTerm} 
                   onError={handleFeatureError}
                 />
-              </TabsContent>
+              )}
               
-              <TabsContent value="meta-descriptions" className="mt-4">
+              {activeContentTool === 'meta-descriptions' && (
                 <MetaDescriptionGenerator 
                   searchTerm={searchTerm} 
                   onError={handleFeatureError}
                 />
-              </TabsContent>
+              )}
               
-              <TabsContent value="social-media" className="mt-4">
+              {activeContentTool === 'social-media' && (
                 <SocialMediaPostCreator 
                   searchTerm={searchTerm} 
                   onError={handleFeatureError}
                 />
-              </TabsContent>
+              )}
               
-              <TabsContent value="hashtags" className="mt-4">
+              {activeContentTool === 'hashtags' && (
                 <HashtagGenerator 
                   searchTerm={searchTerm} 
                   onError={handleFeatureError}
                 />
-              </TabsContent>
+              )}
               
-              <TabsContent value="faq" className="mt-4">
+              {activeContentTool === 'faq' && (
                 <FAQGenerator 
                   searchTerm={searchTerm} 
                   onError={handleFeatureError}
                 />
-              </TabsContent>
+              )}
               
-              <TabsContent value="content-briefs" className="mt-4">
+              {activeContentTool === 'content-briefs' && (
                 <ContentBriefTemplates 
                   searchTerm={searchTerm} 
                   onError={handleFeatureError}
                 />
-              </TabsContent>
+              )}
               
-              <TabsContent value="question-content" className="mt-4">
+              {activeContentTool === 'question-content' && (
                 <QuestionContentCreator 
                   searchTerm={searchTerm} 
                   results={results}
                   onError={handleFeatureError}
                 />
-              </TabsContent>
-            </Tabs>
+              )}
+            </div>
           </CardContent>
         </Card>
       </div>
