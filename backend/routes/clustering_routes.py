@@ -13,15 +13,15 @@ import csv
 import io
 import uuid
 
-from ..models.clustering_models import (
+from models.clustering_models import (
     KeywordClusterRequest, ClusterAnalysisResult, ClusterExportRequest,
     ClusterUpdateRequest, ClusterStats, ClusteringUsageLimit,
     CLUSTERING_REQUIRED_PLANS, CLUSTERING_LIMITS, CLUSTERING_FEATURE_NAME,
     CLUSTER_ANALYSES_COLLECTION, CLUSTER_USAGE_COLLECTION
 )
-from ..services.clustering_service import cluster_keywords_async
-from ..database import get_database
-from ..billing.billing_middleware import require_subscription_plan
+from services.clustering_service import cluster_keywords_async
+from database import get_database
+from billing.billing_middleware import require_subscription_plan
 
 router = APIRouter(prefix="/api/clustering", tags=["clustering"])
 
