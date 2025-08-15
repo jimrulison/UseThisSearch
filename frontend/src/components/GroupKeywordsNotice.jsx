@@ -84,6 +84,13 @@ const GroupKeywordsNotice = () => {
             </div>
           </div>
         </div>
+
+        {/* Explanation Box */}
+        <div className="mt-4 p-4 bg-red-100 border border-red-200 rounded-lg">
+          <p className="text-gray-800 text-sm leading-relaxed text-center">
+            Keyword clustering actually groups related keywords together so you can create one comprehensive piece of content that ranks for multiple search terms instead of dozens of separate posts.
+          </p>
+        </div>
       </CardContent>
     </Card>
   );
