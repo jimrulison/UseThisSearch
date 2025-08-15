@@ -235,6 +235,11 @@ const Home = () => {
           setViewMode={setViewMode}
         />
         
+        {/* GROUP KEYWORDS Notice for Annual Purchasers */}
+        {!results && (
+          <GroupKeywordsNotice />
+        )}
+        
         {/* Results Display */}
         {results && (
           <>
