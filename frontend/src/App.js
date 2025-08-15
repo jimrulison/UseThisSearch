@@ -237,12 +237,23 @@ const Home = () => {
         
         {/* Results Display */}
         {results && (
-          <ResultsDisplay 
-            results={results} 
-            searchTerm={searchTerm}
-            viewMode={viewMode}
-            setViewMode={setViewMode}
-          />
+          <>
+            <ResultsDisplay 
+              results={results} 
+              searchTerm={searchTerm}
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+            />
+            
+            {/* Keyword Clustering - Premium Feature */}
+            <KeywordClustering 
+              searchResults={{
+                suggestions: {
+                  questions: results.questions || []
+                }
+              }}
+            />
+          </>
         )}
       </div>
     </div>
