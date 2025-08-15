@@ -93,6 +93,32 @@ PRICING_CONFIG = {
             "Phone support",
             "Custom branding"
         ]
+    },
+    "annual_gift": {
+        "monthly": 0,  # Gift plan - no monthly option
+        "yearly": 0,   # Free when gifted, actual cost managed separately
+        "search_limit": 1000,  # Premium limits
+        "company_limit": 10,   # Enhanced workspace limit
+        "user_limit": 5,       # Multi-user support
+        "gift_duration_months": 12,  # Valid for 12 months
+        "includes_clustering": True,  # Premium clustering access
+        "bonus_credits": 500,  # Extra search credits
+        "features": [
+            "🎁 Annual Gift Subscription",
+            "1000+ searches per month",
+            "10 company workspaces", 
+            "5 user accounts",
+            "All 6 content generators",
+            "🔥 Keyword Clustering Engine",
+            "Advanced analytics",
+            "Priority processing",
+            "Bonus 500 search credits",
+            "White-label options",
+            "API access",
+            "Team collaboration", 
+            "Priority support",
+            "12-month gift duration"
+        ]
     }
 }
 
