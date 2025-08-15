@@ -9,6 +9,7 @@ class PlanType(str, Enum):
     PROFESSIONAL = "professional"
     AGENCY = "agency"
     ENTERPRISE = "enterprise"
+    ANNUAL_GIFT = "annual_gift"  # NEW: Annual Gift Plan
 
 class SubscriptionStatus(str, Enum):
     ACTIVE = "active"
