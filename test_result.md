@@ -424,6 +424,18 @@ backend:
         comment: "POST-UI UPDATE VERIFICATION: Health check endpoint confirmed working after UI updates. Returns proper JSON response with healthy status."
 
 frontend:
+  - task: "KeywordClustering Component UI Updates"
+    implemented: true
+    working: "NA"
+    file: "frontend/src/components/KeywordClustering.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Updated KeywordClustering component title from 'Keyword Clustering Engine' to 'Group Keywords' as requested. Added solid light red explanation box (bg-red-100 border-red-200) containing the explanatory text: 'Keyword clustering actually groups related keywords together so you can create one comprehensive piece of content that ranks for multiple search terms instead of dozens of separate posts.' Added the explanation box to both the premium access gate (for non-annual users) and the full component (for annual users) so all users understand what the feature does. Maintained all existing functionality while updating terminology and adding educational content."
+
   - task: "Custom Pricing Widget Frontend"
     implemented: true
     working: true
