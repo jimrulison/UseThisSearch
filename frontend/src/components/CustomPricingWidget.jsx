@@ -152,8 +152,18 @@ const CustomPricingWidget = ({ getAuthHeaders }) => {
             ))}
           </select>
           {selectedPlan && (
-            <div className="mt-1 text-xs text-gray-400">
-              Features: {selectedPlan.features.join(', ')}
+            <div className="mt-2 p-3 bg-white/5 rounded-lg border border-white/10">
+              <div className={`text-xs ${selectedPlan.isGift ? 'text-yellow-300' : 'text-gray-400'} mb-1`}>
+                {selectedPlan.isGift ? '🎁 Gift Plan Features:' : 'Plan Features:'}
+              </div>
+              <div className={`text-xs ${selectedPlan.isGift ? 'text-yellow-200' : 'text-gray-300'}`}>
+                {selectedPlan.features.join(' • ')}
+              </div>
+              {selectedPlan.description && (
+                <div className="text-xs text-yellow-400 mt-1 italic">
+                  {selectedPlan.description}
+                </div>
+              )}
             </div>
           )}
         </div>
