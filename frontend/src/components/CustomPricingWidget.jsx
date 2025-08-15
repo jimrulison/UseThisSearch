@@ -172,33 +172,59 @@ const CustomPricingWidget = ({ getAuthHeaders }) => {
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-gray-300 text-sm font-medium mb-2">
-              Monthly Price ($)
+              {selectedPlan?.isGift ? 'Gift Value ($)' : 'Monthly Price ($)'}
             </label>
             <input
               type="number"
               value={customPriceMonthly}
               onChange={(e) => setCustomPriceMonthly(e.target.value)}
-              placeholder="47"
-              min="1"
+              placeholder={selectedPlan?.isGift ? "0" : "47"}
+              min={selectedPlan?.isGift ? "0" : "1"}
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
               disabled={isLoading}
             />
+            {selectedPlan?.isGift && (
+              <div className="text-xs text-yellow-400 mt-1">
+                💡 Set to 0 for free gift
+              </div>
+            )}
           </div>
           <div>
             <label className="block text-gray-300 text-sm font-medium mb-2">
-              Yearly Price ($)
+              {selectedPlan?.isGift ? 'Annual Gift Price ($)' : 'Yearly Price ($)'}
             </label>
             <input
               type="number"
               value={customPriceYearly}
               onChange={(e) => setCustomPriceYearly(e.target.value)}
-              placeholder="37"
-              min="1"
+              placeholder={selectedPlan?.isGift ? "0" : "37"}
+              min={selectedPlan?.isGift ? "0" : "1"}
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
               disabled={isLoading}
             />
+            {selectedPlan?.isGift && (
+              <div className="text-xs text-yellow-400 mt-1">
+                🎁 12-month gift duration
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Gift Plan Special Info */}
+        {selectedPlan?.isGift && (
+          <div className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-lg p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg">🎁</span>
+              <span className="text-yellow-300 font-medium text-sm">Annual Gift Plan Benefits</span>
+            </div>
+            <div className="text-xs text-yellow-200 space-y-1">
+              <div>• Premium Keyword Clustering Engine access</div>
+              <div>• 500 bonus search credits included</div>
+              <div>• 12-month duration (non-renewable)</div>
+              <div>• Perfect for client gifts or promotional campaigns</div>
+            </div>
+          </div>
+        )}
 
         {/* Notes Input */}
         <div>
