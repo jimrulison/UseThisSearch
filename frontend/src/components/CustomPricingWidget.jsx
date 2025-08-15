@@ -234,7 +234,7 @@ const CustomPricingWidget = ({ getAuthHeaders }) => {
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Special pricing reason..."
+            placeholder={selectedPlan?.isGift ? "Gift recipient info, campaign details, expiration notes..." : "Special pricing reason..."}
             rows={2}
             className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm resize-none"
             disabled={isLoading}
