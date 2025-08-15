@@ -18,6 +18,7 @@ import { useToast } from '../hooks/use-toast';
 
 const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [activeContentTool, setActiveContentTool] = useState('blog-titles'); // NEW: State for active tool
   const { toast } = useToast();
 
   if (!results || Object.keys(results).length === 0) {
