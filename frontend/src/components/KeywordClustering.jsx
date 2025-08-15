@@ -286,7 +286,7 @@ const KeywordClustering = ({ searchResults }) => {
             <div>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="w-6 h-6 text-purple-600" />
-                Keyword Clustering Engine
+                Group Keywords
                 <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
                   PREMIUM
                 </Badge>
