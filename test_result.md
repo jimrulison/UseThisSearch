@@ -680,13 +680,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Keyword Clustering Engine - Access Control"
-    - "Keyword Clustering Engine - ML Algorithm"
-    - "Keyword Clustering Engine - API Endpoints"
-    - "Keyword Clustering Engine - Usage Limits"
-    - "Keyword Clustering Engine - Export Functionality"
-    - "Keyword Clustering Engine - Data Models"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
