@@ -21,7 +21,6 @@ from models.clustering_models import (
 )
 from services.clustering_service import cluster_keywords_async
 from database import get_database
-from billing.billing_middleware import require_subscription_plan
 
 router = APIRouter(prefix="/api/clustering", tags=["clustering"])
 
