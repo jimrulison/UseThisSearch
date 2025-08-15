@@ -39,6 +39,14 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm, viewM
             <LayoutDashboard className="h-4 w-4" />
             {t('dashboard')}
           </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => setIsEducationOpen(true)}
+            className="flex items-center gap-2 text-green-600 hover:bg-green-50 border-green-200 hover:border-green-300 transition-all duration-200"
+          >
+            <BookOpen className="h-4 w-4" />
+            Education
+          </Button>
         </div>
         <div className="flex items-center gap-3">
           <LanguageSelector 
