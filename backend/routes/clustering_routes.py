@@ -22,7 +22,7 @@ from models.clustering_models import (
 from services.clustering_service import cluster_keywords_async
 from database import get_database
 
-router = APIRouter(prefix="/api/clustering", tags=["clustering"])
+router = APIRouter(tags=["clustering"])
 
 async def verify_clustering_access(user_id: str, company_id: str):
     """Verify user has access to clustering features"""
