@@ -2763,6 +2763,18 @@ class BackendTester:
         self.test_admin_analytics_api()
         self.test_admin_custom_pricing_system()
         
+        # Run new clustering tests
+        print(f"\n{'='*60}")
+        print("CLUSTERING SYSTEM TESTS")
+        print(f"{'='*60}")
+        
+        self.test_clustering_access_control()
+        self.test_clustering_algorithm()
+        self.test_clustering_api_endpoints()
+        self.test_clustering_usage_limits()
+        self.test_clustering_export_functionality()
+        self.test_clustering_data_models()
+        
         total_time = time.time() - start_time
         
         # Summary
