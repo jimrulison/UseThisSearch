@@ -287,89 +287,89 @@ const ResultsDisplay = ({ results, searchTerm, viewMode, setViewMode }) => {
           <CardContent className="p-8">
             {/* Content Tool Buttons */}
             <div className="mb-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
                 <Button
                   onClick={() => setActiveContentTool('blog-titles')}
-                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl ${
+                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl min-h-[90px] ${
                     activeContentTool === 'blog-titles'
                       ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg transform scale-105'
                       : 'bg-white hover:bg-gradient-to-r hover:from-yellow-50 hover:to-orange-50 text-gray-700 border-2 hover:border-orange-200'
                   }`}
                 >
                   <span className="text-2xl">✨</span>
-                  <span className="font-medium text-sm text-center">Blog Titles</span>
+                  <span className="font-medium text-xs text-center leading-tight">Blog Titles</span>
                 </Button>
                 
                 <Button
                   onClick={() => setActiveContentTool('meta-descriptions')}
-                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl ${
+                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl min-h-[90px] ${
                     activeContentTool === 'meta-descriptions'
                       ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg transform scale-105'
                       : 'bg-white hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 text-gray-700 border-2 hover:border-emerald-200'
                   }`}
                 >
                   <span className="text-2xl">📝</span>
-                  <span className="font-medium text-sm text-center">Meta Descriptions</span>
+                  <span className="font-medium text-xs text-center leading-tight">Meta Descriptions</span>
                 </Button>
                 
                 <Button
                   onClick={() => setActiveContentTool('social-media')}
-                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl ${
+                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl min-h-[90px] ${
                     activeContentTool === 'social-media'
                       ? 'bg-gradient-to-r from-pink-400 to-rose-500 text-white shadow-lg transform scale-105'
                       : 'bg-white hover:bg-gradient-to-r hover:from-pink-50 hover:to-rose-50 text-gray-700 border-2 hover:border-rose-200'
                   }`}
                 >
                   <span className="text-2xl">📱</span>
-                  <span className="font-medium text-sm text-center">Social Media</span>
+                  <span className="font-medium text-xs text-center leading-tight">Social Media</span>
                 </Button>
                 
                 <Button
                   onClick={() => setActiveContentTool('hashtags')}
-                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl ${
+                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl min-h-[90px] ${
                     activeContentTool === 'hashtags'
                       ? 'bg-gradient-to-r from-indigo-400 to-blue-500 text-white shadow-lg transform scale-105'
                       : 'bg-white hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 text-gray-700 border-2 hover:border-blue-200'
                   }`}
                 >
                   <span className="text-2xl">#️⃣</span>
-                  <span className="font-medium text-sm text-center">Hashtags</span>
+                  <span className="font-medium text-xs text-center leading-tight">Hashtags</span>
                 </Button>
                 
                 <Button
                   onClick={() => setActiveContentTool('faq')}
-                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl ${
+                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl min-h-[90px] ${
                     activeContentTool === 'faq'
                       ? 'bg-gradient-to-r from-purple-400 to-violet-500 text-white shadow-lg transform scale-105'
                       : 'bg-white hover:bg-gradient-to-r hover:from-purple-50 hover:to-violet-50 text-gray-700 border-2 hover:border-violet-200'
                   }`}
                 >
                   <span className="text-2xl">❓</span>
-                  <span className="font-medium text-sm text-center">FAQ</span>
+                  <span className="font-medium text-xs text-center leading-tight">FAQ</span>
                 </Button>
                 
                 <Button
                   onClick={() => setActiveContentTool('content-briefs')}
-                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl ${
+                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl min-h-[90px] ${
                     activeContentTool === 'content-briefs'
                       ? 'bg-gradient-to-r from-teal-400 to-cyan-500 text-white shadow-lg transform scale-105'
                       : 'bg-white hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 text-gray-700 border-2 hover:border-cyan-200'
                   }`}
                 >
                   <span className="text-2xl">📋</span>
-                  <span className="font-medium text-sm text-center">Content Briefs</span>
+                  <span className="font-medium text-xs text-center leading-tight">Content Briefs</span>
                 </Button>
                 
                 <Button
                   onClick={() => setActiveContentTool('question-content')}
-                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl ${
+                  className={`flex flex-col items-center gap-2 h-auto py-4 px-3 transition-all duration-300 hover:scale-105 rounded-xl min-h-[90px] ${
                     activeContentTool === 'question-content'
                       ? 'bg-gradient-to-r from-red-400 to-pink-500 text-white shadow-lg transform scale-105'
                       : 'bg-white hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 text-gray-700 border-2 hover:border-pink-200'
                   }`}
                 >
                   <span className="text-2xl">💬</span>
-                  <span className="font-medium text-sm text-center">Question Content</span>
+                  <span className="font-medium text-xs text-center leading-tight">Question Content</span>
                 </Button>
               </div>
             </div>
