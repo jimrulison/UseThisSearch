@@ -129,6 +129,26 @@ const EducationCenter = ({ isOpen, onClose }) => {
       pages: '8',
       icon: Users,
       content: 'Advanced strategies for teams and power users'
+    },
+    {
+      id: 'starting-ideas-guide',
+      title: 'Google Search Optimization Guide',
+      description: 'Master question-based content that ranks in Google',
+      type: 'PDF',
+      size: '1.2 MB',
+      pages: '18',
+      icon: Search,
+      content: 'Question recognition, answer architecture, and Google ranking strategies'
+    },
+    {
+      id: 'beautiful-onboarding',
+      title: 'Getting Started Masterclass',
+      description: 'Beautiful step-by-step guide to platform success',
+      type: 'PDF',
+      size: '900 KB',
+      pages: '15',
+      icon: Play,
+      content: 'Transform from newcomer to expert in 15-20 minutes'
     }
   ];
 
