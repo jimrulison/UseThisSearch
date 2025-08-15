@@ -107,6 +107,12 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm, viewM
           </form>
         </CardContent>
       </Card>
+
+      {/* Education Center Modal */}
+      <EducationCenter 
+        isOpen={isEducationOpen} 
+        onClose={() => setIsEducationOpen(false)} 
+      />
     </div>
   );
 };
