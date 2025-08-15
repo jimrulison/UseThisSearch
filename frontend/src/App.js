@@ -10,6 +10,7 @@ import { LanguageProvider } from './contexts/LanguageContext'; // NEW: Added Lan
 import SearchInterface from './components/SearchInterface';
 import ResultsDisplay from './components/ResultsDisplay';
 import KeywordClustering from './components/KeywordClustering';
+import GroupKeywordsNotice from './components/GroupKeywordsNotice';
 import SalesSheet from './components/SalesSheet';
 import LoginPage from './components/LoginPage';
 import AdminLoginPage from './components/AdminLoginPage'; // NEW: Added AdminLoginPage
