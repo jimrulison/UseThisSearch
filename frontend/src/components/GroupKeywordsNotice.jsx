@@ -1,0 +1,92 @@
+import React from 'react';
+import { Card, CardContent } from './ui/card';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { Layers, Crown, Sparkles, ArrowRight } from 'lucide-react';
+import { useBilling } from '../contexts/BillingContext';
+
+const GroupKeywordsNotice = () => {
+  const { subscription, checkFeatureAccess } = useBilling();
+  
+  const hasGroupKeywords = checkFeatureAccess('keyword_clustering');
+  const isAnnualSubscriber = subscription?.billing_cycle === 'annual';
+  const canUseGroupKeywords = hasGroupKeywords && isAnnualSubscriber;
+
+  return (
+    <Card className="mt-8 border-2 border-dashed border-purple-200 bg-gradient-to-r from-purple-50 to-blue-50">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="flex-shrink-0">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
+                <Layers className="w-6 h-6 text-white" />
+              </div>
+            </div>
+            
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                  GROUP KEYWORDS
+                </h3>
+                <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs">
+                  <Crown className="w-3 h-3 mr-1" />
+                  ANNUAL ONLY
+                </Badge>
+              </div>
+              
+              {canUseGroupKeywords ? (
+                <p className="text-gray-600 text-sm">
+                  <Sparkles className="w-4 h-4 inline mr-1 text-yellow-500" />
+                  Transform your keyword research into strategic content clusters! 
+                  <span className="font-medium text-purple-600 ml-1">Available after your search.</span>
+                </p>
+              ) : (
+                <p className="text-gray-600 text-sm">
+                  Organize related keywords into strategic content groups with AI-powered analysis. 
+                  <span className="font-medium text-purple-600">Upgrade to annual plan to unlock.</span>
+                </p>
+              )}
+            </div>
+          </div>
+          
+          <div className="flex-shrink-0">
+            {canUseGroupKeywords ? (
+              <div className="text-center">
+                <div className="text-green-600 font-medium text-sm">✓ ACTIVE</div>
+                <div className="text-xs text-gray-500">Ready to use</div>
+              </div>
+            ) : (
+              <Button 
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                onClick={() => window.location.href = '/billing'}
+              >
+                Upgrade Now
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </Button>
+            )}
+          </div>
+        </div>
+        
+        {/* Feature Preview */}
+        <div className="mt-4 pt-4 border-t border-purple-200">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+            <div className="flex items-center gap-2 text-gray-600">
+              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <span>Smart keyword clustering</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span>Content strategy insights</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span>Priority scoring & gaps</span>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default GroupKeywordsNotice;
