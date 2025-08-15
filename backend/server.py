@@ -27,6 +27,9 @@ from routes.admin_routes import router as admin_router
 from routes.admin_analytics_routes import router as admin_analytics_router
 from routes.admin_custom_pricing_routes import router as admin_custom_pricing_router
 
+# NEW: Import clustering routes (additive)
+from routes.clustering_routes import router as clustering_router
+
 from database import init_database, close_database
 
 ROOT_DIR = Path(__file__).parent
