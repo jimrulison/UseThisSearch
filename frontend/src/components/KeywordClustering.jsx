@@ -215,7 +215,7 @@ const KeywordClustering = ({ searchResults }) => {
             <Crown className="w-8 h-8 text-white" />
           </div>
           <CardTitle className="text-2xl bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-            Keyword Clustering Engine
+            Group Keywords Engine
           </CardTitle>
           <p className="text-gray-600 mt-2">Transform scattered keywords into strategic content pillars</p>
         </CardHeader>
