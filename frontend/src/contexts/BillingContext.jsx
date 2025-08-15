@@ -277,7 +277,10 @@ export const BillingProvider = ({ children }) => {
       // Annual-only features
       'professional_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'keyword_clustering'],
       'agency_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label', 'keyword_clustering'],
-      'enterprise_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label', 'admin_dashboard', 'custom_pricing', 'api_access', 'keyword_clustering']
+      'enterprise_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label', 'admin_dashboard', 'custom_pricing', 'api_access', 'keyword_clustering'],
+      
+      // Gift plan with premium features
+      'annual_gift': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'keyword_clustering', 'bonus_credits', 'priority_processing']
     };
 
     // Determine plan key based on plan type and billing cycle
