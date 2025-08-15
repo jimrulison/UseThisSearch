@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "I need you to create a place on the admin panel where I can offer a user a different price than we have listed, but still set them up as a user. I should be able to choose the pricing level and I want to be able to set the price on the spot. I need you to implement the system without changing the current design and layout. DO not change any existing buttons, colors or layouts."
+user_problem_statement: "Update the KeywordClustering component to use the term 'Group Keywords' instead of 'clustering' as per the user's latest request. Update the KeywordClustering component to use the term 'GROUP KEYWORDS'. Make that box on the bottom a solid light red so it stands out more."
 
 backend:
   - task: "Admin Custom Pricing System"
