@@ -47,17 +47,17 @@
 ## 🌐 **LIVE APPLICATION URLS**
 
 ### **🔗 Main Application (Protected):**
-**https://9705eff1-54ae-44cb-a619-3239586536cd.preview.emergentagent.com**
+**https://seopower-hub.preview.emergentagent.com**
 - **Requires login** to access
 - **Demo credentials**: Any valid email + password (6+ characters)
 
 ### **📊 Sales Sheet (Public):**
-**https://9705eff1-54ae-44cb-a619-3239586536cd.preview.emergentagent.com/sales**
+**https://seopower-hub.preview.emergentagent.com/sales**
 - **Public access** - no login required
 - **"Sign In to Access Tool"** button in top-right corner
 
 ### **🔑 Login Page:**
-**https://9705eff1-54ae-44cb-a619-3239586536cd.preview.emergentagent.com/login**
+**https://seopower-hub.preview.emergentagent.com/login**
 - **Professional login/signup form**
 - **Demo mode** - accepts any valid credentials
 
