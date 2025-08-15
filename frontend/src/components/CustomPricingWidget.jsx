@@ -245,15 +245,15 @@ const CustomPricingWidget = ({ getAuthHeaders }) => {
         <Button
           type="submit"
           disabled={isLoading || !userEmail.trim() || !customPriceMonthly || !customPriceYearly}
-          className="w-full bg-red-600 hover:bg-red-700 text-white font-medium"
+          className={`w-full font-medium ${selectedPlan?.isGift ? 'bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700' : 'bg-red-600 hover:bg-red-700'} text-white`}
         >
           {isLoading ? (
             <div className="flex items-center">
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-              Applying...
+              {selectedPlan?.isGift ? 'Setting up Gift...' : 'Applying...'}
             </div>
           ) : (
-            'Apply Custom Pricing'
+            selectedPlan?.isGift ? '🎁 Apply Gift Plan' : 'Apply Custom Pricing'
           )}
         </Button>
       </form>
