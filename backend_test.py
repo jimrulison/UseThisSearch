@@ -3556,6 +3556,18 @@ class BackendTester:
         self.test_clustering_export_functionality()
         self.test_clustering_data_models()
         
+        # Run new support system tests
+        print(f"\n{'='*60}")
+        print("SUPPORT SYSTEM TESTS")
+        print(f"{'='*60}")
+        
+        self.test_support_faq_system()
+        self.test_support_chat_messages()
+        self.test_support_tickets()
+        self.test_admin_support_dashboard()
+        self.test_admin_support_faq_management()
+        self.test_admin_support_ticket_management()
+        
         total_time = time.time() - start_time
         
         # Summary
