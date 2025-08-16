@@ -167,8 +167,8 @@
 ### 📞 **NEXT STEPS**
 
 #### **Try Use This Search:**
-- **Main Application**: https://usethissearch.preview.emergentagent.com
-- **Sales Sheet**: https://usethissearch.preview.emergentagent.com/sales
+- **Main Application**: https://ai-keyword-master.preview.emergentagent.com
+- **Sales Sheet**: https://ai-keyword-master.preview.emergentagent.com/sales
 
 #### **Contact Information:**
 - **Demo**: Available instantly on the platform

@@ -1,34 +1,52 @@
 <analysis>
-The previous AI engineer successfully transformed the Use This Search application from an MVP into a feature-rich SaaS platform. Key achievements include adding an administrative panel with user management and custom pricing, implementing case-insensitive authentication, and resolving UI text overlap issues. The engineer then delivered comprehensive training documentation. Subsequent work focused on integrating a multilingual interface, which is now functional on both login and dashboard pages. A major new feature, the Keyword Clustering Engine, was developed as a premium, annual-subscriber-only module, with its backend confirmed to be working. The engineer also implemented an ANNUAL GIFT plan within the admin custom pricing, linking it to the new clustering feature. The most recent task involves updating the main dashboard's UI by adding a notice for the new GROUP KEYWORDS feature and converting existing result display tabs into buttons. The engineer demonstrates a systematic approach, often self-correcting by using backend APIs when frontend issues arise and creating detailed summary documents for completed features.
+The previous AI engineer effectively transitioned the Use This Search application from an MVP to a robust SaaS platform. This involved implementing core features like AI-powered content generation, secure authentication, and Stripe-based billing. Key additions included a comprehensive admin panel for user and custom pricing management, a multilingual interface, and a GROUP KEYWORDS feature.
+
+Recent efforts focused on:
+1.  **Education Center:** Fixed document viewing, reordered content, and implemented robust PDF download functionality.
+2.  **Support System:** Built a multi-channel support solution (FAQ, User Chat, Internal Ticket System) with backend APIs and admin moderation.
+3.  **Admin UI & Features:** Optimized admin dashboard layout, eliminating dead space, and developed a complete announcement system for admin-to-user communication.
+4.  **7-Day Free Trial:** Implemented a comprehensive trial system including no-credit-card sign-up, daily search limits, feature restrictions (no GROUP KEYWORDS), automated email reminders, and a 30-day data retention policy.
+
+The engineer diligently debugged issues like broken PDF downloads and frontend/backend integration errors. The work paused while debugging a critical admin panel login issue that arose during the implementation of custom pricing expiration and trial user admin controls.
 </analysis>
 
 <product_requirements>
-The Use This Search application, a rebranded AnswerThePublic.com clone, provides AI-powered keyword research and content generation. The core problem is empowering users with comprehensive keyword analysis and AI-driven content creation (blog titles, FAQs, social posts). Initial requirements included secure authentication, multi-company support with data isolation, and a Stripe-based SaaS billing system with tiered pricing and user limits. UI enhancements aimed for a colorful, clean design with an UPGRADE button.
+The Use This Search application is an AI-powered keyword research and content generation SaaS platform, similar to AnswerThePublic.com. The core problem addressed is providing comprehensive keyword analysis and AI-driven content creation.
 
-Recent explicit requests included:
-1.  **Administrative Platform**:  access for user data, global metrics, and custom pricing.
-2.  **Custom Pricing Feature**: Within the admin panel, allowing custom price setting for users, overriding subscriptions.
-3.  **Case-Insensitive Login**: For both user and admin platforms.
-4.  **UI Fixes**: Resolving USE THIS SEARCH text overlap on login pages and admin dashboard.
-5.  **Training Documentation**: Detailed guides with pictures and videos for user and admin platforms.
-6.  **Content Generation**: For Asbestos, mold, lead, OSHA terms, extract high/medium questions, answer in a non-AI, layperson tone.
-7.  **Landing Page**: Create a landing page showcasing features and benefits.
-8.  **Detailed Feature/Pricing List**: Provide a comprehensive breakdown of features, benefits, comparisons, and pricing.
-9.  **Language Selector**: Add a language selection option on the login page and then on the main dashboard.
-10. **Vadoo AI Integration**: Create 5 social media promotion videos with different styles and lengths.
-11. **Keyword Clustering Engine (GROUP KEYWORDS)**: Implement as an annual-subscription-only module, providing strategic content planning.
-12. **Annual Gift Plan**: Add a special ANNUAL GIFT option to the admin custom pricing.
-13. **UI Enhancements**: Add a GROUP KEYWORDS notice on the main page for annual purchasers, and convert result tabs (e.g., BLOG TITLES) into buttons.
+Key product requirements implemented or in progress include:
+*   **Administrative Platform:**  for user data, global metrics, and custom pricing.
+*   **Custom Pricing:** Admin feature to set custom prices, with a new requirement to add an expiration date.
+*   **Case-Insensitive Login:** For both user and admin.
+*   **UI Fixes:** Resolution of USE THIS SEARCH text overlap.
+*   **Training Documentation:** Detailed guides, including new educational materials ( files), accessible via an Education Center with document viewing and PDF download.
+*   **Safety Content Generation:** Capability for layperson answers (e.g., Asbestos, Mold).
+*   **Landing Page:** A marketing landing page.
+*   **Detailed Feature/Pricing List:** Comprehensive breakdown.
+*   **Language Selector:** Multi-language support on login and dashboard.
+*   **Vadoo AI Integration:** For social media promotion videos.
+*   **Keyword Clustering Engine (GROUP KEYWORDS):** An annual-subscription premium module with explanatory UI.
+*   **Annual Gift Plan:** A special ANNUAL GIFT option in admin custom pricing.
+*   **UI Enhancements:** GROUP KEYWORDS notice, content result tabs converted to buttons with icons and text.
+*   **Comprehensive Support System:** A SUPPORT button with:
+    1.  **Common Questions (FAQ):** Editable via admin panel.
+    2.  **User Chat:** Persistent forum with admin moderation and notifications.
+    3.  **Contact Support:** Form-based internal ticket system, with admin notifications and replies.
+*   **Announcement System:** Admin can create announcements to appear on user login pages.
+*   **Admin Layout Optimization:** Reorganize admin dashboard to reduce dead space and display more information upfront.
+*   **7-Day Free Trial:** No credit card required, 25 searches/day, no GROUP KEYWORDS access, data saved 30 days then deleted, with email and pop-up reminders (days 4, 7, and daily after).
+*   **Admin Trial Controls:** Admin management for trial users and settings.
+*   **Usage Analytics:** Tracking trial conversion rates.
 </product_requirements>
 
 <key_technical_concepts>
 -   **Full-stack Architecture**: React (frontend), FastAPI (backend), MongoDB (database).
--   **AI Integration**: Claude AI (Anthropic) for content generation, Vadoo AI for video.
--   **UI/UX**: Radix UI, Tailwind CSS, React Context API, React Router DOM, React Stripe.js.
--   **SaaS Billing**: Stripe API for subscriptions, usage tracking, custom pricing.
--   **Authentication**: JWT-based (admin), demo-based (users), with case-insensitivity.
--   **Data Processing**: , ,  for keyword clustering.
+-   **AI Integration**: Claude AI for content, Vadoo AI for video.
+-   **UI/UX**: Radix UI, Tailwind CSS, React Context API, React Router DOM, Shadcn UI, jsPDF, html2canvas.
+-   **SaaS Billing**: Stripe API, custom pricing, usage tracking, trial management.
+-   **Authentication**: JWT-based (user/admin), case-insensitive login, bcrypt, PyJWT.
+-   **Data Processing**: scikit-learn, nltk, spacy for keyword clustering.
 -   **Internationalization**: React Context for multi-language support.
+-   **Scheduled Tasks**: Backend scheduling for trial reminders.
 </key_technical_concepts>
 
 <code_architecture>
@@ -36,128 +54,54 @@ The application uses a standard full-stack architecture with  (React) and  (Fast
 
 
 
--   ****:
-    -   **Importance**: Main React entry point, handles global contexts and routing.
-    -   **Changes Made**: Heavily modified for admin panel routes (, ), integrating , , . Routing logic was reordered. Also wrapped the entire app with  and integrated  for the new GROUP KEYWORDS feature.
--   ****:
-    -   **Importance**: New component for the administrative panel.
-    -   **Changes Made**: Newly created. Provides a dashboard with tabs. Modified to integrate . Fixed  component usage.
--   ****:
-    -   **Importance**: New component for administrator login.
-    -   **Changes Made**: Newly created. Implements a professional dark-themed login. Fixed  component usage.
--   ****:
-    -   **Importance**: User login page.
-    -   **Changes Made**: Modified to normalize user email to lowercase for case-insensitive login. Integrated  and  for multi-language support.
--   ****:
-    -   **Importance**: New component for setting custom pricing for users from the admin panel.
-    -   **Changes Made**: Newly created. Integrated into . Modified to include the ANNUAL GIFT plan option with special golden styling, gift-specific labels, and updated button text.
--   ****:
-    -   **Importance**: Reusable logo component.
-    -   **Changes Made**: Updated to support  prop for conditional text display.
--   ****:
-    -   **Importance**: New component for language selection.
-    -   **Changes Made**: Newly created. Provides a dropdown for 12 languages with flags, integrated into  and .
--   ****:
-    -   **Importance**: New frontend component for the Keyword Clustering feature.
-    -   **Changes Made**: Newly created. Integrated into  to display clustering results for annual subscribers.
--   ****:
-    -   **Importance**: New component to display a notice about the GROUP KEYWORDS feature.
-    -   **Changes Made**: Newly created and integrated into .
--   ****:
-    -   **Importance**: Displays various content generation results.
-    -   **Changes Made**: Tabs for content categories (e.g., BLOG TITLES) were converted into a button-based interface for improved UI.
--   ****:
-    -   **Importance**: Main search input and keyword research interface.
-    -   **Changes Made**: Integrated  and updated text to use translations from .
--   ****:
-    -   **Importance**: New context for managing administrative authentication state.
-    -   **Changes Made**: Newly created. Handles admin login, logout, and token management.
--   ****:
-    -   **Importance**: New context for managing global language state and translations.
-    -   **Changes Made**: Newly created. Provides a  function for translations and supports 12 languages with initial translations for English, Spanish, French, and German.
--   ****:
-    -   **Importance**: Manages billing data and feature access based on subscription.
-    -   **Changes Made**: Added  function to determine access to premium features like Keyword Clustering, also updated to recognize  plans for clustering access.
--   ****:
-    -   **Importance**: Main FastAPI application, registers all API routers.
-    -   **Changes Made**: Updated to include new API routers for  and .
--   ****:
-    -   **Importance**: Defines API endpoints for administrator authentication.
-    -   **Changes Made**: Modified login logic to convert incoming admin email to lowercase for case-insensitivity.
--   ****:
-    -   **Importance**: New file defining API endpoints for applying custom pricing to users.
-    -   **Changes Made**: Newly created. Includes endpoints for custom price application, retrieval, and audit trail. Initial fix for .
--   ****:
-    -   **Importance**: New file defining API endpoints for the Keyword Clustering feature.
-    -   **Changes Made**: Newly created. Handles requests for clustering keywords.
--   ****:
-    -   **Importance**: Defines Pydantic models for admin users and related data.
-    -   **Changes Made**: Clarified that the admin model name is .
--   ****:
-    -   **Importance**: Defines Pydantic models for billing.
-    -   **Changes Made**: Expanded  to include  and added  model. Added  to  enum and  with associated benefits.
--   ****:
-    -   **Importance**: New file defining Pydantic models for Keyword Clustering data (clusters, keywords, content suggestions).
-    -   **Changes Made**: Newly created.
--   ****:
-    -   **Importance**: Defines API endpoints for Stripe integration, subscription management.
-    -   **Changes Made**: Modified to integrate the new custom pricing logic, allowing it to override standard subscriptions.
--   ****:
-    -   **Importance**: New service responsible for the core keyword clustering logic.
-    -   **Changes Made**: Newly created, implementing semantic analysis for keyword grouping.
--   ****:
-    -   **Importance**: Lists Python dependencies for the backend.
-    -   **Changes Made**: Added , ,  for keyword clustering.
--   ****:
-    -   **Importance**: Comprehensive content guide generated for specific safety topics.
-    -   **Changes Made**: Newly created, contains detailed, layperson-friendly answers for Asbestos, Mold, Lead, and OSHA.
--   ****:
-    -   **Importance**: HTML file for the marketing landing page.
-    -   **Changes Made**: Newly created, showcases features, benefits, and pricing, with a comparison to AnswerThePublic.
--   ****:
-    -   **Importance**: Python script for Vadoo AI integration to generate social media videos.
-    -   **Changes Made**: Newly created, designed to interact with Vadoo AI API.
--   ****:
-    -   **Importance**: Document outlining the social media video campaign strategy.
-    -   **Changes Made**: Newly created, contains concepts, scripts, and strategy for 5 promotional videos.
--   ****:
-    -   **Importance**: JSON file summarizing the Vadoo AI video campaign details.
-    -   **Changes Made**: Newly created.
--   ****:
-    -   **Importance**: Summary document detailing the implementation of the Keyword Clustering Engine.
-    -   **Changes Made**: Newly created.
--   ****:
-    -   **Importance**: Summary document detailing the implementation of the ANNUAL GIFT plan.
-    -   **Changes Made**: Newly created.
+-   ****: Main React entry point. Modified for admin routes, language, and the Group Keywords notice.
+-   ****: Administrative panel. Extensively modified to include custom pricing, support, and announcement tabs. Layout significantly compacted.
+-   ****: User login. Displays global announcements at the top.
+-   ****: Admin custom pricing. Enhanced for ANNUAL GIFT plan. *Needs update to display expiration date field.*
+-   ****: Frontend for Group Keywords feature. Title updated; explanatory text box added.
+-   ****: New component for educational materials. Implemented document viewing (from markdown content) and PDF download functionality using jsPDF. Documents reordered.
+-   ****: Newly created. Implements the user-facing FAQ, chat, and support ticket system.
+-   ****: Main search interface. Added EDUCATIONAL and SUPPORT buttons.
+-   ****: Newly created. For trial pop-up reminders.
+-   ****: Newly created. For displaying trial status.
+-   ****: Manages billing. Updated  to include  and restrict GROUP KEYWORDS for trial users.
+-   ****: Main FastAPI app. Registers all new API routes (support, admin support, auth, trial) and integrates background scheduled tasks.
+-   ****: Newly created. User-facing APIs for support (FAQ, chat, tickets) and retrieving active announcements.
+-   ****: Newly created. Admin-facing APIs for managing support and announcements.
+-   ****: Newly created. Centralized authentication, including user registration for trial initiation.
+-   ****: Newly created. APIs for managing trial users.
+-   ****: Updated  model with  field and  models.
+-   ****: Newly created. Defines models for FAQ, chat, support tickets, announcements, and trial users.
+-   ****: Newly created. Handles sending automated emails, particularly for trial reminders.
+-   ****: Newly created. Manages background tasks for trial reminders and data cleanup.
+-   ****: Updated to include , , , , .
 </code_architecture>
 
 <pending_tasks>
--   Update the  component to use the term GROUP KEYWORDS instead of clustering as per the user's latest request.
+-   Update  to display the expiration date field in the admin custom pricing form.
+-   Debug and fix the admin panel login issue to restore admin access.
+-   Implement admin controls on the frontend for managing trial users.
+-   Add usage analytics to track trial conversion rates and other relevant metrics.
 </pending_tasks>
 
 <current_work>
-The Use This Search application is a robust, monetized SaaS platform. It features a fully functional user-facing application for AI-powered keyword research and content generation, and a separate administrative panel.
+The Use This Search application is currently a robust SaaS platform. The previous AI engineer has recently focused on several major feature additions and refinements:
 
-**Key Features Implemented:**
-*   **Core Functionality**: AI-powered keyword research with visualizations, CSV export, and six AI content tools, including Create Question Content using Claude AI.
-*   **Monetization**: Tiered pricing (Solo, Professional, Agency, Enterprise) with Stripe integration, real-time usage tracking, and user limits.
-*   **Admin Panel**: Accessible via , offering secure authentication (now case-insensitive), user lookup, global analytics, and a Custom Pricing Widget for setting personalized user pricing.
-*   **Annual Gift Plan**: A new ANNUAL GIFT option has been integrated into the Custom Pricing Widget, offering premium features like Keyword Clustering access for non-renewable 12-month periods, with special UI styling.
-*   **Keyword Clustering Engine (GROUP KEYWORDS)**: A major premium feature implemented for annual subscribers only. The backend (, , ) is fully functional and tested, with frontend components () integrated.
-*   **Multilingual Support**: A language selector is fully functional on both the  and  (main dashboard). It supports 12 languages (English, Spanish, French, German are fully translated), with preferences saved in localStorage.
-*   **Content Generation**: The system was used to generate and compile a Safety Topics Content Guide for Asbestos, Mold, Lead, and OSHA.
-*   **Marketing Assets**: A comprehensive HTML landing page () and a detailed features/benefits/pricing guide have been created.
-*   **Social Media Campaign**: Video concepts and a full campaign strategy have been prepared (, ) using Vadoo AI integration, though video generation is currently blocked by Vadoo AI account limits.
+1.  **7-Day Free Trial System**: A comprehensive, no-credit-card required trial system has been implemented.
+    *   **Backend**: This includes new database models and API routes (, , and modifications to  and ). It enforces a 25-search/day limit for trial users and blocks access to the GROUP KEYWORDS feature. Backend services (, ) are set up for automated email reminders and data cleanup after a 30-day grace period. Backend testing confirmed 100% functionality.
+    *   **Frontend**: Components like  and  were created, and  was updated to manage trial access, but their full integration into the UI (e.g., dashboard widget, pop-ups) is still pending.
 
-**Current UI/UX Updates:**
-*   Text overlap issues on login/admin pages are resolved.
-*   The system includes a prominent UPGRADE button and a widened Stripe checkout modal.
-*   Result display tabs (e.g., BLOG TITLES) are in the process of being converted into buttons.
-*   A notice about the GROUP KEYWORDS feature for annual purchasers is being added to the main page.
+2.  **Admin Dashboard Layout Optimization**: The  has undergone aggressive styling changes to remove dead space, making the layout more compact and professional. This involved significant reductions in padding and spacing for various sections and cards.
 
-The product is in a production-ready state with several major features added, and the immediate work involves refining the UI for the new GROUP KEYWORDS feature.
+3.  **Announcement System**: A full announcement system has been implemented:
+    *   **Backend**: New models () and API routes (, ) allow admins to create and manage announcements.
+    *   **Frontend**: A new Announcements tab in  provides the admin interface, and the  displays these announcements prominently to users.
+
+4.  **Custom Pricing Expiration**: The backend  has been updated to include an  field for custom pricing. However, the corresponding UI field in  in the admin panel has not yet been added.
+
+The immediate critical issue is that **admin panel login is currently non-functional**. The previous engineer's last action was attempting to debug this admin authentication issue, having received a user report and screenshot confirming the inability to log in to .
 </current_work>
 
 <optional_next_step>
-Update the  component to use the term GROUP KEYWORDS.
+My immediate next step is to debug and fix the admin panel login issue that is currently preventing access to the administrative dashboard.
 </optional_next_step>
