@@ -379,6 +379,7 @@ class CustomPricingCreate(BaseModel):
     custom_price_monthly: int = Field(..., description="Custom monthly price in dollars")
     custom_price_yearly: int = Field(..., description="Custom yearly price in dollars")
     notes: Optional[str] = Field(default="", description="Optional notes")
+    expires_at: Optional[datetime] = Field(default=None, description="Optional expiration date for custom pricing")
 
 class CustomPricingHistory(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
