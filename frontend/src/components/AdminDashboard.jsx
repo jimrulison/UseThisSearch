@@ -514,9 +514,9 @@ const AdminDashboard = () => {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         {/* Top Row - Custom Pricing and Support Dashboard */}
-        <div className="flex gap-6 mb-6">
+        <div className="flex gap-4 mb-4">
           {/* Custom Pricing Widget - Left Side */}
           <div className="w-80 flex-shrink-0">
             <CustomPricingWidget getAuthHeaders={getAuthHeaders} />
@@ -525,9 +525,9 @@ const AdminDashboard = () => {
           {/* Support Dashboard Stats - Right Side */}
           <div className="flex-1">
             {supportDashboard && (
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-white">Support Overview</h3>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-base font-semibold text-white">Support Overview</h3>
                   <div className="flex items-center gap-2">
                     {supportDashboard.unread_notifications > 0 && (
                       <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
@@ -542,26 +542,26 @@ const AdminDashboard = () => {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-3">
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-white">{supportDashboard.open_tickets}</p>
+                    <p className="text-xl font-bold text-white">{supportDashboard.open_tickets}</p>
                     <p className="text-gray-300 text-xs">Open Tickets</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-white">{supportDashboard.unread_notifications}</p>
+                    <p className="text-xl font-bold text-white">{supportDashboard.unread_notifications}</p>
                     <p className="text-gray-300 text-xs">Notifications</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-white">{supportDashboard.new_chat_messages}</p>
+                    <p className="text-xl font-bold text-white">{supportDashboard.new_chat_messages}</p>
                     <p className="text-gray-300 text-xs">New Messages</p>
                   </div>
                 </div>
                 
-                <div className="mt-4">
+                <div className="mt-2">
                   <Button
                     onClick={() => setActiveTab('support')}
                     size="sm"
-                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-sm py-1"
                   >
                     Manage Support
                   </Button>
