@@ -668,11 +668,13 @@ This manual provides everything you need to effectively manage the Use This Sear
     }
   };
 
-  const handleDownloadPDF = (materialId) => {
+  const handleDownloadPDF = async (materialId) => {
     const material = educationalMaterials.find(m => m.id === materialId);
     if (material && material.docContent) {
       try {
-        const pdf = new jsPDF();
+        console.log(`Starting PDF generation for: ${material.title}`);
+        
+        const pdf = new jsPDF('p', 'mm', 'a4');
         let yPosition = 20;
         
         // Set up PDF properties
@@ -716,7 +718,6 @@ This manual provides everything you need to effectively manage the Use This Sear
         const pageHeight = pdf.internal.pageSize.height;
         const margin = 20;
         const lineHeight = 6;
-        const maxLinesPerPage = Math.floor((pageHeight - margin * 2) / lineHeight);
         
         const contentLines = pdf.splitTextToSize(cleanContent, 170);
         
@@ -739,11 +740,34 @@ This manual provides everything you need to effectively manage the Use This Sear
           pdf.text(`Page ${i} of ${pageCount}`, 170, pageHeight - 10);
         }
         
-        // Download the PDF
+        // Generate filename
         const fileName = material.title.replace(/[^a-z0-9\s]/gi, '').replace(/\s+/g, '_').toLowerCase();
-        pdf.save(`${fileName}.pdf`);
         
-        console.log(`PDF downloaded successfully: ${material.title}`);
+        console.log(`PDF generated, attempting download as: ${fileName}.pdf`);
+        
+        // Try multiple download methods for better compatibility
+        try {
+          // Method 1: Direct save (most common)
+          pdf.save(`${fileName}.pdf`);
+          console.log(`PDF download initiated using pdf.save()`);
+        } catch (saveError) {
+          console.log(`pdf.save() failed, trying alternative method:`, saveError);
+          
+          // Method 2: Blob download as fallback
+          const pdfBlob = pdf.output('blob');
+          const url = URL.createObjectURL(pdfBlob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${fileName}.pdf`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+          console.log(`PDF download initiated using blob method`);
+        }
+        
+        // Show success message
+        alert(`PDF "${material.title}" has been generated and should start downloading shortly.`);
         
       } catch (error) {
         console.error('Error generating PDF:', error);
