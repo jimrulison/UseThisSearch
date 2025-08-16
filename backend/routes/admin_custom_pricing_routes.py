@@ -116,7 +116,8 @@ async def apply_custom_pricing(
             custom_price_yearly=pricing_data.custom_price_yearly,
             applied_by=admin.email,
             stripe_customer_id=stripe_customer_id,
-            notes=pricing_data.notes
+            notes=pricing_data.notes,
+            expires_at=pricing_data.expires_at
         )
         
         # Insert custom pricing record
