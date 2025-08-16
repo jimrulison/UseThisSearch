@@ -50,6 +50,8 @@ const AdminDashboard = () => {
       loadAllUsers();
     } else if (activeTab === 'support') {
       loadSupportData();
+    } else if (activeTab === 'announcements') {
+      loadAnnouncements();
     }
   }, [activeTab]);
 
