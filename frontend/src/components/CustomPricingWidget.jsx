@@ -74,6 +74,7 @@ const CustomPricingWidget = ({ getAuthHeaders }) => {
         plan_type: planType,
         custom_price_monthly: monthlyPrice,
         custom_price_yearly: yearlyPrice,
+        expires_at: expirationDate || null,
         notes: notes.trim()
       }, {
         headers: getAuthHeaders()
