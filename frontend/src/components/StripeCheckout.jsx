@@ -393,23 +393,22 @@ const StripeCheckout = ({ isOpen, onClose, initialPlan = 'professional' }) => {
             </div>
 
             {/* Selected Plan Summary */}
-            {selectedPlan && (
-              <div className="bg-blue-50 rounded-lg p-4">
-                <h4 className="font-semibold mb-2">Selected Plan:</h4>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">{PRICING_PLANS[selectedPlan].name} Plan</p>
-                    <p className="text-sm text-gray-600">
-                      ${billingPeriod === 'yearly' ? PRICING_PLANS[selectedPlan].yearly : PRICING_PLANS[selectedPlan].monthly}
-                      /{billingPeriod === 'yearly' ? 'year' : 'month'}
-                    </p>
-                  </div>
-                  <Button onClick={handleProceedToCheckout}>
-                    Continue to Payment
-                  </Button>
+            <div className="bg-blue-50 rounded-lg p-4">
+              <h4 className="font-semibold mb-2">Selected Plan:</h4>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">{PRICING_PLAN.name} Plan</p>
+                  <p className="text-sm text-gray-600">
+                    ${billingPeriod === 'yearly' ? PRICING_PLAN.sale.yearly : PRICING_PLAN.sale.monthly}
+                    /{billingPeriod === 'yearly' ? 'year' : 'month'}
+                  </p>
+                  <p className="text-xs text-green-600">🎉 Sale Price Active!</p>
                 </div>
+                <Button onClick={handleProceedToCheckout}>
+                  Continue to Payment
+                </Button>
               </div>
-            )}
+            </div>
           </div>
         ) : (
           <Elements stripe={stripePromise}>
