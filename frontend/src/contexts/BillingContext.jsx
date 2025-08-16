@@ -275,24 +275,43 @@ export const BillingProvider = ({ children }) => {
       return trialFeatures.includes(featureName);
     }
 
+    // New single plan structure - 'standard' plan
     const planFeatures = {
-      'solo': ['basic_search', 'csv_export', 'personal_workspace'],
+      'standard': [
+        'basic_search', 
+        'csv_export', 
+        'personal_workspace',
+        'multiple_workspaces', 
+        'team_collaboration', 
+        'usage_analytics',
+        'advanced_analytics'
+      ],
+      
+      // Annual billing gets GROUP KEYWORDS
+      'standard_annual': [
+        'basic_search', 
+        'csv_export', 
+        'personal_workspace',
+        'multiple_workspaces', 
+        'team_collaboration', 
+        'usage_analytics',
+        'advanced_analytics',
+        'keyword_clustering' // GROUP KEYWORDS feature
+      ],
+      
+      // Legacy support for existing plans during transition
       'professional': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics'],
       'agency': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label'],
       'enterprise': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label', 'admin_dashboard', 'custom_pricing', 'api_access'],
-      
-      // Annual-only features
       'professional_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'keyword_clustering'],
       'agency_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label', 'keyword_clustering'],
       'enterprise_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label', 'admin_dashboard', 'custom_pricing', 'api_access', 'keyword_clustering'],
-      
-      // Gift plan with premium features
       'annual_gift': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'keyword_clustering', 'bonus_credits', 'priority_processing']
     };
 
     // Determine plan key based on plan type and billing cycle
     let planKey = subscription.plan_type;
-    if (subscription.billing_cycle === 'annual' && ['professional', 'agency', 'enterprise'].includes(subscription.plan_type)) {
+    if (subscription.billing_cycle === 'annual' && ['standard', 'professional', 'agency', 'enterprise'].includes(subscription.plan_type)) {
       planKey = `${subscription.plan_type}_annual`;
     }
 
