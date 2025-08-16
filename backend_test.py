@@ -3952,6 +3952,17 @@ class BackendTester:
         self.test_admin_analytics_api()
         self.test_admin_custom_pricing_system()
         
+        # Run new admin trial management tests
+        print(f"\n{'='*60}")
+        print("ADMIN TRIAL MANAGEMENT TESTS")
+        print(f"{'='*60}")
+        
+        self.test_admin_trial_management_authentication()
+        self.test_admin_trial_users_api()
+        self.test_admin_trial_analytics_api()
+        self.test_admin_trial_extend_functionality()
+        self.test_admin_trial_convert_functionality()
+        
         # Run new clustering tests
         print(f"\n{'='*60}")
         print("CLUSTERING SYSTEM TESTS")
