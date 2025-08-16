@@ -49,7 +49,7 @@ const PRICING_PLAN = {
   color: 'purple'
 };
 
-const CheckoutForm = ({ selectedPlan, billingPeriod, onSuccess, onCancel }) => {
+const CheckoutForm = ({ billingPeriod, addOns = {}, onSuccess, onCancel }) => {
   const stripe = useStripe();
   const elements = useElements();
   const { createSubscription } = useBilling();
@@ -57,6 +57,31 @@ const CheckoutForm = ({ selectedPlan, billingPeriod, onSuccess, onCancel }) => {
   
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState(null);
+
+  const calculatePrice = () => {
+    const isUsingSalePrice = true; // For now, using sale prices
+    const pricing = isUsingSalePrice ? PRICING_PLAN.sale : PRICING_PLAN.regular;
+    
+    let basePrice = billingPeriod === 'yearly' ? pricing.yearly : pricing.monthly;
+    
+    // Add addon costs
+    if (addOns.extraUsers > 0) {
+      const userPrice = isUsingSalePrice ? PRICING_PLAN.addOns.user.sale : PRICING_PLAN.addOns.user.regular;
+      basePrice += (addOns.extraUsers * userPrice * (billingPeriod === 'yearly' ? 12 : 1));
+    }
+    
+    if (addOns.extraCompanies > 0) {
+      const companyPrice = isUsingSalePrice ? PRICING_PLAN.addOns.company.sale : PRICING_PLAN.addOns.company.regular;
+      basePrice += (addOns.extraCompanies * companyPrice * (billingPeriod === 'yearly' ? 12 : 1));
+    }
+    
+    if (addOns.extraWorkspaces > 0) {
+      const workspacePrice = isUsingSalePrice ? PRICING_PLAN.addOns.workspace.sale : PRICING_PLAN.addOns.workspace.regular;
+      basePrice += (addOns.extraWorkspaces * workspacePrice * (billingPeriod === 'yearly' ? 12 : 1));
+    }
+    
+    return basePrice;
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -68,10 +93,9 @@ const CheckoutForm = ({ selectedPlan, billingPeriod, onSuccess, onCancel }) => {
     setIsProcessing(true);
     setPaymentError(null);
 
-    const cardElement = elements.getElement(CardElement);
-
     try {
-      // Create payment method
+      const cardElement = elements.getElement(CardElement);
+      
       const { error, paymentMethod } = await stripe.createPaymentMethod({
         type: 'card',
         card: cardElement,
@@ -79,21 +103,20 @@ const CheckoutForm = ({ selectedPlan, billingPeriod, onSuccess, onCancel }) => {
 
       if (error) {
         setPaymentError(error.message);
-        setIsProcessing(false);
         return;
       }
 
-      // Create subscription
       const result = await createSubscription(
-        selectedPlan,
+        'standard', // New single plan type
         billingPeriod,
-        paymentMethod.id
+        paymentMethod.id,
+        addOns
       );
 
       if (result.success) {
         toast({
           title: "Subscription Created!",
-          description: `Successfully subscribed to ${PRICING_PLANS[selectedPlan].name} plan.`,
+          description: `Successfully subscribed to ${PRICING_PLAN.name} plan.`,
           duration: 5000,
         });
         onSuccess(result.subscription);
@@ -108,18 +131,25 @@ const CheckoutForm = ({ selectedPlan, billingPeriod, onSuccess, onCancel }) => {
     }
   };
 
-  const plan = PRICING_PLANS[selectedPlan];
-  const price = billingPeriod === 'yearly' ? plan.yearly : plan.monthly;
-  const annualSavings = billingPeriod === 'yearly' ? (plan.monthly * 12) - (plan.yearly * 12) : 0;
+  const totalPrice = calculatePrice();
+  const regularPrice = billingPeriod === 'yearly' ? PRICING_PLAN.regular.yearly : PRICING_PLAN.regular.monthly;
+  const savings = regularPrice - totalPrice;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="text-center">
         <h3 className="text-lg font-semibold">
-          {plan.name} Plan - ${price}/{billingPeriod === 'yearly' ? 'year' : 'month'}
+          {PRICING_PLAN.name} - ${totalPrice}/{billingPeriod === 'yearly' ? 'year' : 'month'}
         </h3>
-        {billingPeriod === 'yearly' && annualSavings > 0 && (
-          <p className="text-sm text-green-600">Save ${annualSavings}/year with annual billing!</p>
+        {savings > 0 && (
+          <p className="text-sm text-green-600">
+            🎉 Sale Price - Save ${savings}/{billingPeriod === 'yearly' ? 'year' : 'month'}!
+          </p>
+        )}
+        {billingPeriod === 'yearly' && (
+          <p className="text-sm text-blue-600">
+            ✨ Includes 2 months FREE + GROUP KEYWORDS!
+          </p>
         )}
       </div>
 
