@@ -7,7 +7,7 @@ import uuid
 from datetime import datetime, timedelta
 
 from models.billing_models import UserTrialInfo, TrialStatus, PlanType
-from database import get_database
+from database import db
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -50,10 +50,9 @@ def create_access_token(user_email: str, user_id: str) -> str:
 @router.post("/register", response_model=AuthResponse)
 async def register_user(user_data: UserRegister):
     """Register a new user with 7-day free trial"""
-    db = get_database()
     
     # Check if user already exists
-    existing_user = db.users.find_one({"email": user_data.email.lower()})
+    existing_user = await db.users.find_one({"email": user_data.email.lower()})
     if existing_user:
         raise HTTPException(status_code=400, detail="User with this email already exists")
     
@@ -81,7 +80,7 @@ async def register_user(user_data: UserRegister):
     }
     
     # Insert user into database
-    result = db.users.insert_one(new_user)
+    result = await db.users.insert_one(new_user)
     if not result.inserted_id:
         raise HTTPException(status_code=500, detail="Failed to create user")
     
@@ -111,10 +110,9 @@ async def register_user(user_data: UserRegister):
 @router.post("/login", response_model=AuthResponse)
 async def login_user(login_data: UserLogin):
     """Login existing user"""
-    db = get_database()
     
     # Find user (case insensitive)
-    user = db.users.find_one({"email": login_data.email.lower()})
+    user = await db.users.find_one({"email": login_data.email.lower()})
     if not user:
         raise HTTPException(status_code=401, detail="Invalid email or password")
     
@@ -146,7 +144,7 @@ async def login_user(login_data: UserLogin):
                 trial_info.data_retention_start = datetime.utcnow()
                 
                 # Update in database
-                db.users.update_one(
+                await db.users.update_one(
                     {"email": user["email"]},
                     {"$set": {"trial_info": trial_info.dict()}}
                 )
