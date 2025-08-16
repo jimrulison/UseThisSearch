@@ -1,10 +1,11 @@
-from fastapi import APIRouter, HTTPException, Request, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Request, BackgroundTasks, Depends
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List, Optional
 import time
 import logging
 from datetime import datetime, timedelta
+import httpx
 
 from models.search_models import (
     SearchRequest, 
@@ -13,8 +14,10 @@ from models.search_models import (
     SearchHistory,
     SearchStats
 )
+from models.billing_models import UserTrialInfo
 from services.claude_service import get_claude_service
 from database import db, ensure_personal_company
+from billing.billing_middleware import get_current_user
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
