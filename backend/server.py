@@ -90,7 +90,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Use This Search - AI Keyword Research Tool",
     description="AI-powered keyword research and question generation API for content creators and marketers",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Create a router with the /api prefix
