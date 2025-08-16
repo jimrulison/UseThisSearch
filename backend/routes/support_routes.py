@@ -14,7 +14,7 @@ from models.support_models import (
 from database import get_database
 from billing.billing_middleware import get_current_user
 
-router = APIRouter(prefix="/api/support", tags=["support"])
+router = APIRouter(prefix="/support", tags=["support"])
 
 # FAQ Routes
 @router.get("/faq", response_model=List[FAQItem])
