@@ -104,11 +104,12 @@ export const BillingProvider = ({ children }) => {
   const hasUsageLeft = () => {
     if (!usage) return true; // Default to allowing usage if data not loaded
     
-    // Check search limits
-    if (usage.search_limit !== -1 && usage.searches_remaining <= 0) {
-      return false;
+    // Trial users have limited searches (25 per day)
+    if (subscription?.plan_type === 'trial') {
+      return usage.searches_remaining > 0;
     }
     
+    // All paid plans have UNLIMITED searches
     return true;
   };
 
