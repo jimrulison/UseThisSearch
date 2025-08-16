@@ -99,7 +99,7 @@ const UserAvailabilityNotice = () => {
                 className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg transition-all duration-200 hover:scale-105"
               >
                 <ArrowUp className="h-4 w-4" />
-                Upgrade for {getUpgradeOptions().users} users
+                Add User - ${getUpgradeOptions().salePrice}/month
               </Button>
             )}
           </div>
