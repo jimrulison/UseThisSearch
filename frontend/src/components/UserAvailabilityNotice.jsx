@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Users, AlertTriangle, CheckCircle, ArrowUp } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { useBilling } from '../contexts/BillingContext';
 import { useAuth } from '../contexts/AuthContext';
+import StripeCheckout from './StripeCheckout';
 
 const UserAvailabilityNotice = () => {
   const { usage, subscription } = useBilling();
