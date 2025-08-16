@@ -330,6 +330,128 @@ const AdminDashboard = () => {
     }
   };
 
+  // Announcement management functions
+  const loadAnnouncements = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(`${ADMIN_API}/support/announcements`, {
+        headers: getAuthHeaders()
+      });
+      setAnnouncements(response.data);
+    } catch (error) {
+      console.error('Error loading announcements:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load announcements",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCreateAnnouncement = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const announcementData = {
+        ...announcementForm,
+        start_date: announcementForm.start_date ? new Date(announcementForm.start_date).toISOString() : null,
+        end_date: announcementForm.end_date ? new Date(announcementForm.end_date).toISOString() : null
+      };
+
+      const response = await axios.post(`${ADMIN_API}/support/announcements`, announcementData, {
+        headers: getAuthHeaders()
+      });
+
+      setAnnouncements(prev => [response.data, ...prev]);
+      setAnnouncementForm({
+        title: '',
+        message: '',
+        type: 'info',
+        start_date: '',
+        end_date: ''
+      });
+
+      toast({
+        title: "Announcement Created",
+        description: "The announcement has been created and will be visible to users",
+        duration: 3000,
+      });
+
+    } catch (error) {
+      console.error('Error creating announcement:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create announcement",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleToggleAnnouncement = async (announcementId, isActive) => {
+    try {
+      const response = await axios.put(`${ADMIN_API}/support/announcements/${announcementId}`, {
+        is_active: !isActive
+      }, {
+        headers: getAuthHeaders()
+      });
+
+      setAnnouncements(prev => 
+        prev.map(announcement => 
+          announcement.id === announcementId ? response.data : announcement
+        )
+      );
+
+      toast({
+        title: "Announcement Updated",
+        description: `Announcement ${!isActive ? 'activated' : 'deactivated'}`,
+        duration: 3000,
+      });
+
+    } catch (error) {
+      console.error('Error toggling announcement:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update announcement",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
+
+  const handleDeleteAnnouncement = async (announcementId) => {
+    if (window.confirm('Are you sure you want to delete this announcement?')) {
+      try {
+        await axios.delete(`${ADMIN_API}/support/announcements/${announcementId}`, {
+          headers: getAuthHeaders()
+        });
+
+        setAnnouncements(prev => prev.filter(announcement => announcement.id !== announcementId));
+
+        toast({
+          title: "Announcement Deleted",
+          description: "The announcement has been deleted",
+          duration: 3000,
+        });
+
+      } catch (error) {
+        console.error('Error deleting announcement:', error);
+        toast({
+          title: "Error",
+          description: "Failed to delete announcement",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
