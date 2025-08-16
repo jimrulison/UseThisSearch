@@ -123,6 +123,18 @@ backend:
         agent: "testing"
         comment: "COMPREHENSIVE ADMIN AND PRICING SYSTEM TESTING WITH NEW PLAN STRUCTURE COMPLETE! ✅ Admin Authentication: Successfully tested admin login (JimRulison@gmail.com / JR09mar05) and obtained valid admin token for all testing ✅ Admin Custom Pricing with New Plan Types: Tested POST /api/admin/custom-pricing/apply - 'solo' plan type accepted and processed correctly, but 'annual', 'additional_user', 'additional_workspace', 'additional_company' plan types are rejected with HTTP 422 validation errors, indicating backend needs updates to support these new plan types ✅ Admin Trial Management with New Plans: Tested POST /api/admin/trial/convert/{email} - ALL new plan types ('solo', 'annual', 'additional_user', 'additional_workspace', 'additional_company') are properly accepted by the trial conversion endpoint ✅ Feature Access Validation: Confirmed trial users have limited access (blocked from GROUP KEYWORDS/clustering with HTTP 403), annual plan users can access clustering endpoints, and all paid plans are designed for unlimited searches ✅ API Response Structure: All admin endpoints return proper JSON structures with required fields and handle authentication correctly. CRITICAL FINDING: The backend admin trial conversion system supports the new plan structure, but the custom pricing system only accepts 'solo' and rejects the other new plan types. The PlanType enum in billing_models.py needs to be updated to include the new plan types for full compatibility."
         
+  - task: "New Plan Structure Implementation"
+    implemented: false
+    working: false
+    file: "backend/models/billing_models.py, backend/routes/admin_custom_pricing_routes.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "CRITICAL ISSUE IDENTIFIED: New plan structure partially implemented. ✅ Admin Trial Conversion: All new plan types ('solo', 'annual', 'additional_user', 'additional_workspace', 'additional_company') are accepted by POST /api/admin/trial/convert/{email} endpoint ❌ Admin Custom Pricing: Only 'solo' plan type is accepted by POST /api/admin/custom-pricing/apply endpoint, while 'annual', 'additional_user', 'additional_workspace', 'additional_company' are rejected with HTTP 422 validation errors ❌ PlanType Enum: The PlanType enum in billing_models.py only includes traditional plan types (TRIAL, SOLO, PROFESSIONAL, AGENCY, ENTERPRISE, ANNUAL_GIFT) and does not include the new simplified plan structure ❌ Feature Access: Only 'annual' plan type should get GROUP KEYWORDS (keyword_clustering) access, but current clustering access control still uses old plan names ('professional_annual', 'agency_annual', 'enterprise_annual', 'annual_gift'). REQUIRED FIXES: 1) Update PlanType enum to include new plan types, 2) Update custom pricing validation to accept new plan types, 3) Update clustering access control to recognize 'annual' plan type for GROUP KEYWORDS access, 4) Ensure all paid plans ('solo', 'annual', 'additional_user', 'additional_workspace', 'additional_company') have unlimited searches."
+        
   - task: "Admin Authentication System"
     implemented: true
     working: true
