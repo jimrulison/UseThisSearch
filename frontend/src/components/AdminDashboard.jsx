@@ -794,6 +794,176 @@ const AdminDashboard = () => {
           </div>
         )}
 
+        {/* Announcements Tab */}
+        {activeTab === 'announcements' && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-white mb-6">User Announcements</h2>
+
+            {/* Create Announcement Form */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+              <h3 className="text-lg font-semibold text-white mb-4">Create New Announcement</h3>
+              <form onSubmit={handleCreateAnnouncement} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Title</label>
+                    <input
+                      type="text"
+                      required
+                      value={announcementForm.title}
+                      onChange={(e) => setAnnouncementForm({...announcementForm, title: e.target.value})}
+                      placeholder="e.g., New Training Available!"
+                      className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Type</label>
+                    <select
+                      value={announcementForm.type}
+                      onChange={(e) => setAnnouncementForm({...announcementForm, type: e.target.value})}
+                      className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                    >
+                      <option value="info">Info</option>
+                      <option value="success">Success</option>
+                      <option value="warning">Warning</option>
+                      <option value="promotion">Promotion</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Message</label>
+                  <textarea
+                    required
+                    rows={3}
+                    value={announcementForm.message}
+                    onChange={(e) => setAnnouncementForm({...announcementForm, message: e.target.value})}
+                    placeholder="Enter your announcement message... This will appear to all users when they log in."
+                    className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 resize-vertical"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Start Date (Optional)</label>
+                    <input
+                      type="datetime-local"
+                      value={announcementForm.start_date}
+                      onChange={(e) => setAnnouncementForm({...announcementForm, start_date: e.target.value})}
+                      className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">End Date (Optional)</label>
+                    <input
+                      type="datetime-local"
+                      value={announcementForm.end_date}
+                      onChange={(e) => setAnnouncementForm({...announcementForm, end_date: e.target.value})}
+                      className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+                    />
+                  </div>
+                </div>
+
+                <Button 
+                  type="submit" 
+                  disabled={isLoading}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  {isLoading ? 'Creating...' : 'Create Announcement'}
+                </Button>
+              </form>
+            </div>
+
+            {/* Existing Announcements */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+              <h3 className="text-lg font-semibold text-white mb-4">Existing Announcements</h3>
+              
+              {announcements.length > 0 ? (
+                <div className="space-y-4">
+                  {announcements.map((announcement) => (
+                    <div 
+                      key={announcement.id} 
+                      className={`rounded-lg p-4 border ${
+                        announcement.is_active 
+                          ? 'bg-white/5 border-white/20' 
+                          : 'bg-gray-500/20 border-gray-500/50'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h4 className={`font-medium ${
+                              announcement.is_active ? 'text-white' : 'text-gray-400'
+                            }`}>
+                              {announcement.title}
+                            </h4>
+                            <span className={`px-2 py-1 text-xs rounded-full ${
+                              announcement.type === 'info' ? 'bg-blue-500 text-white' :
+                              announcement.type === 'success' ? 'bg-green-500 text-white' :
+                              announcement.type === 'warning' ? 'bg-yellow-500 text-black' :
+                              'bg-purple-500 text-white'
+                            }`}>
+                              {announcement.type.toUpperCase()}
+                            </span>
+                            {announcement.is_active ? (
+                              <span className="px-2 py-1 text-xs bg-green-500 text-white rounded-full">
+                                ACTIVE
+                              </span>
+                            ) : (
+                              <span className="px-2 py-1 text-xs bg-gray-500 text-white rounded-full">
+                                INACTIVE
+                              </span>
+                            )}
+                          </div>
+                          <p className={`text-sm mb-2 ${
+                            announcement.is_active ? 'text-gray-300' : 'text-gray-500'
+                          }`}>
+                            {announcement.message}
+                          </p>
+                          <div className="flex items-center gap-4 text-xs text-gray-400">
+                            <span>Created: {formatDate(announcement.created_at)}</span>
+                            {announcement.start_date && (
+                              <span>Starts: {formatDate(announcement.start_date)}</span>
+                            )}
+                            {announcement.end_date && (
+                              <span>Ends: {formatDate(announcement.end_date)}</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex gap-2 ml-4">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleToggleAnnouncement(announcement.id, announcement.is_active)}
+                            className={`${
+                              announcement.is_active 
+                                ? 'text-orange-400 border-orange-400 hover:bg-orange-400 hover:text-white'
+                                : 'text-green-400 border-green-400 hover:bg-green-400 hover:text-white'
+                            }`}
+                          >
+                            {announcement.is_active ? 'Deactivate' : 'Activate'}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDeleteAnnouncement(announcement.id)}
+                            className="text-red-400 border-red-400 hover:bg-red-400 hover:text-white"
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-400">No announcements created yet</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Support Center Tab */}
         {activeTab === 'support' && (
           <div className="space-y-6">
