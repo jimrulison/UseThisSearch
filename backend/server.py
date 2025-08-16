@@ -28,6 +28,7 @@ from billing.safe_billing_routes import router as safe_billing_router
 from routes.admin_routes import router as admin_router
 from routes.admin_analytics_routes import router as admin_analytics_router
 from routes.admin_custom_pricing_routes import router as admin_custom_pricing_router
+from routes.admin_trial_routes import router as admin_trial_router
 
 # NEW: Import clustering routes (additive)
 from routes.clustering_routes import router as clustering_router
