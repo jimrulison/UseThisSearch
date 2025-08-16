@@ -29,6 +29,17 @@ const AdminDashboard = () => {
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [newAdminMessage, setNewAdminMessage] = useState('');
   const [selectedTab, setSelectedTab] = useState('tickets');
+  
+  // Announcements management state
+  const [announcements, setAnnouncements] = useState([]);
+  const [announcementForm, setAnnouncementForm] = useState({
+    title: '',
+    message: '',
+    type: 'info',
+    start_date: '',
+    end_date: ''
+  });
+  const [editingAnnouncement, setEditingAnnouncement] = useState(null);
 
   useEffect(() => {
     if (activeTab === 'dashboard') {
