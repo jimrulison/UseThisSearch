@@ -584,28 +584,28 @@ const AdminDashboard = () => {
             <h2 className="text-xl font-bold text-white mb-4">Dashboard Overview</h2>
             
             {/* Key Metrics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <h3 className="text-gray-300 text-sm font-medium">Total Users</h3>
-                <p className="text-3xl font-bold text-white mt-2">
+                <p className="text-2xl font-bold text-white mt-1">
                   {formatNumber(dashboardData.global_analytics.total_users)}
                 </p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <h3 className="text-gray-300 text-sm font-medium">Total Searches</h3>
-                <p className="text-3xl font-bold text-white mt-2">
+                <p className="text-2xl font-bold text-white mt-1">
                   {formatNumber(dashboardData.global_analytics.total_searches)}
                 </p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <h3 className="text-gray-300 text-sm font-medium">Total Companies</h3>
-                <p className="text-3xl font-bold text-white mt-2">
+                <p className="text-2xl font-bold text-white mt-1">
                   {formatNumber(dashboardData.global_analytics.total_companies)}
                 </p>
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
                 <h3 className="text-gray-300 text-sm font-medium">Monthly Revenue</h3>
-                <p className="text-3xl font-bold text-white mt-2">
+                <p className="text-2xl font-bold text-white mt-1">
                   ${formatNumber(dashboardData.global_analytics.subscription_revenue.current_month)}
                 </p>
               </div>
