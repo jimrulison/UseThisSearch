@@ -64,7 +64,7 @@ async def get_all_trial_users(admin: Admin = Depends(get_admin_from_request)):
 async def extend_trial(
     user_email: str,
     extension_days: int,
-    admin: AdminSessionResponse = Depends(get_admin_from_request)
+    admin: Admin = Depends(get_admin_from_request)
 ):
     """Extend a user's trial period"""
     
