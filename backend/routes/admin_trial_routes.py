@@ -149,7 +149,7 @@ async def convert_trial_to_paid_admin(
 @router.delete("/cleanup/{user_email}")
 async def cleanup_trial_user_data(
     user_email: str,
-    admin: AdminSessionResponse = Depends(get_admin_from_request)
+    admin: Admin = Depends(get_admin_from_request)
 ):
     """Manually cleanup expired trial user data"""
     
