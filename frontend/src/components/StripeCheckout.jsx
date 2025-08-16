@@ -216,57 +216,6 @@ const CheckoutForm = ({ billingPeriod, addOns = {}, onSuccess, onCancel }) => {
   );
 };
 
-const PlanCard = ({ planKey, plan, selectedPlan, setSelectedPlan, billingPeriod }) => {
-  const price = billingPeriod === 'yearly' ? plan.yearly : plan.monthly;
-  const monthlyPrice = plan.monthly;
-  const savings = billingPeriod === 'yearly' ? Math.round(((monthlyPrice * 12) - (price * 12)) / (monthlyPrice * 12) * 100) : 0;
-
-  return (
-    <Card 
-      className={`relative cursor-pointer transition-all hover:shadow-lg ${
-        selectedPlan === planKey ? 'ring-2 ring-blue-500 shadow-lg' : ''
-      } ${plan.popular ? 'border-purple-500' : ''}`}
-      onClick={() => setSelectedPlan(planKey)}
-    >
-      {plan.popular && (
-        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-          <Badge className="bg-purple-500 text-white px-3 py-1">
-            Most Popular
-          </Badge>
-        </div>
-      )}
-      
-      <CardHeader className="text-center">
-        <CardTitle className="flex items-center justify-center gap-2">
-          {selectedPlan === planKey && <Check className="h-5 w-5 text-green-500" />}
-          {plan.name}
-        </CardTitle>
-        <div className="space-y-1">
-          <div className="text-3xl font-bold">
-            ${price}
-            <span className="text-lg font-normal text-gray-500">
-              /{billingPeriod === 'yearly' ? 'year' : 'month'}
-            </span>
-          </div>
-          {billingPeriod === 'yearly' && savings > 0 && (
-            <p className="text-sm text-green-600">Save {savings}% annually</p>
-          )}
-        </div>
-      </CardHeader>
-      
-      <CardContent>
-        <ul className="space-y-2">
-          {plan.features.map((feature, index) => (
-            <li key={index} className="flex items-center gap-2 text-sm">
-              <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
-              {feature}
-            </li>
-          ))}
-        </ul>
-      </CardContent>
-    </Card>
-  );
-};
 
 const StripeCheckout = ({ isOpen, onClose }) => {
   const [billingPeriod, setBillingPeriod] = useState('monthly');
