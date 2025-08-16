@@ -3,7 +3,7 @@ from typing import List, Optional
 from datetime import datetime
 import uuid
 
-from ..models.support_models import (
+from models.support_models import (
     FAQItem, FAQItemCreate, FAQItemUpdate,
     ChatMessage, ChatMessageCreate, ChatMessageResponse,
     SupportTicket, SupportTicketCreate, SupportTicketUpdate,
@@ -11,8 +11,8 @@ from ..models.support_models import (
     AdminNotification, AdminNotificationResponse,
     SupportDashboard, SupportCategory, SupportTicketStatus
 )
-from ..database import get_database
-from ..billing.billing_middleware import get_current_user
+from database import get_database
+from billing.billing_middleware import get_current_user
 
 router = APIRouter(prefix="/api/support", tags=["support"])
 
