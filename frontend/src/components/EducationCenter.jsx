@@ -766,8 +766,20 @@ This manual provides everything you need to effectively manage the Use This Sear
           console.log(`PDF download initiated using blob method`);
         }
         
-        // Show success message
-        alert(`PDF "${material.title}" has been generated and should start downloading shortly.`);
+        // Show success message with troubleshooting info
+        setTimeout(() => {
+          alert(`✅ PDF "${material.title}" has been generated successfully!
+
+📥 Check your browser's download folder or look for a download notification.
+
+💡 If download didn't start:
+• Check if your browser blocked downloads 
+• Look for a download icon in your browser's address bar
+• Check your browser's download settings
+• Try right-clicking the button and selecting "Save As"
+
+📁 Filename: ${fileName}.pdf`);
+        }, 500);
         
       } catch (error) {
         console.error('Error generating PDF:', error);
