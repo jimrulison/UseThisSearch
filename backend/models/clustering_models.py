@@ -132,7 +132,7 @@ CLUSTER_USAGE_COLLECTION = "cluster_usage"
 CLUSTER_STATS_COLLECTION = "cluster_stats"
 
 # Access control constants
-CLUSTERING_REQUIRED_PLANS = ["professional_annual", "agency_annual", "enterprise_annual", "annual_gift"]
+CLUSTERING_REQUIRED_PLANS = ["annual", "professional_annual", "agency_annual", "enterprise_annual", "annual_gift"]
 CLUSTERING_FEATURE_NAME = "keyword_clustering"
 
 # Default limits by plan
