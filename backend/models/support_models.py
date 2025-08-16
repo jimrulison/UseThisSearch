@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 from enum import Enum
+import uuid
 
 class SupportCategory(str, Enum):
     BILLING = "Billing"
