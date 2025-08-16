@@ -673,30 +673,81 @@ This manual provides everything you need to effectively manage the Use This Sear
     if (material && material.docContent) {
       try {
         const pdf = new jsPDF();
+        let yPosition = 20;
         
         // Set up PDF properties
         pdf.setFont("helvetica");
-        pdf.setFontSize(16);
         
         // Add title
-        pdf.text(material.title, 20, 20);
+        pdf.setFontSize(18);
+        pdf.setFont("helvetica", "bold");
+        pdf.text(material.title, 20, yPosition);
+        yPosition += 15;
         
         // Add description
         pdf.setFontSize(12);
-        pdf.text(material.description, 20, 35);
+        pdf.setFont("helvetica", "normal");
+        const descLines = pdf.splitTextToSize(material.description, 170);
+        pdf.text(descLines, 20, yPosition);
+        yPosition += (descLines.length * 6) + 10;
         
-        // Add content
+        // Add separator line
+        pdf.line(20, yPosition, 190, yPosition);
+        yPosition += 10;
+        
+        // Clean and format content
+        let cleanContent = material.docContent || '';
+        
+        // Remove markdown symbols and clean up
+        cleanContent = cleanContent
+          .replace(/#{1,6}\s*/g, '') // Remove markdown headers
+          .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold markdown
+          .replace(/\*(.*?)\*/g, '$1') // Remove italic markdown
+          .replace(/`(.*?)`/g, '$1') // Remove code markdown
+          .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove links, keep text
+          .replace(/^\s*[-*+]\s+/gm, '• ') // Convert markdown lists to bullets
+          .replace(/^\s*\d+\.\s+/gm, '• ') // Convert numbered lists to bullets
+          .trim();
+        
+        // Add content with proper pagination
         pdf.setFontSize(10);
-        const lines = pdf.splitTextToSize(material.docContent, 170);
-        pdf.text(lines, 20, 50);
+        pdf.setFont("helvetica", "normal");
+        
+        const pageHeight = pdf.internal.pageSize.height;
+        const margin = 20;
+        const lineHeight = 6;
+        const maxLinesPerPage = Math.floor((pageHeight - margin * 2) / lineHeight);
+        
+        const contentLines = pdf.splitTextToSize(cleanContent, 170);
+        
+        for (let i = 0; i < contentLines.length; i++) {
+          // Check if we need a new page
+          if (yPosition > pageHeight - margin) {
+            pdf.addPage();
+            yPosition = margin;
+          }
+          
+          pdf.text(contentLines[i], 20, yPosition);
+          yPosition += lineHeight;
+        }
+        
+        // Add page numbers
+        const pageCount = pdf.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+          pdf.setPage(i);
+          pdf.setFontSize(8);
+          pdf.text(`Page ${i} of ${pageCount}`, 170, pageHeight - 10);
+        }
         
         // Download the PDF
-        pdf.save(`${material.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`);
+        const fileName = material.title.replace(/[^a-z0-9\s]/gi, '').replace(/\s+/g, '_').toLowerCase();
+        pdf.save(`${fileName}.pdf`);
         
-        console.log(`PDF downloaded: ${material.title}`);
+        console.log(`PDF downloaded successfully: ${material.title}`);
+        
       } catch (error) {
         console.error('Error generating PDF:', error);
-        alert('Error generating PDF. Please try again.');
+        alert(`Error generating PDF: ${error.message}. Please try again.`);
       }
     } else {
       console.log(`Document content not available: ${materialId}`);
