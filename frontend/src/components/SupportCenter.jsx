@@ -110,13 +110,9 @@ const SupportCenter = ({ isOpen, onClose }) => {
 
   const loadSupportData = async () => {
     try {
-      // Load FAQ items
       await loadFAQItems();
-      // Load chat messages  
       await loadChatMessages();
-      // Load user tickets
       await loadUserTickets();
-      // Load user data
       loadUserData();
     } catch (error) {
       console.error('Error loading support data:', error);
@@ -129,12 +125,10 @@ const SupportCenter = ({ isOpen, onClose }) => {
       if (response.data && response.data.length > 0) {
         setFaqItems(response.data);
       } else {
-        // Use default FAQ if none exist in backend
         setFaqItems(defaultFAQ);
       }
     } catch (error) {
       console.error('Error loading FAQ:', error);
-      // Fall back to default FAQ
       setFaqItems(defaultFAQ);
     }
   };
@@ -164,16 +158,7 @@ const SupportCenter = ({ isOpen, onClose }) => {
     }
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      setFaqItems(defaultFAQ);
-      // Load user data when opening support
-      loadUserData();
-    }
-  }, [isOpen]);
-
   const loadUserData = () => {
-    // Get user info from auth context or localStorage
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     setSupportForm(prev => ({
       ...prev,
@@ -199,25 +184,26 @@ const SupportCenter = ({ isOpen, onClose }) => {
     
     setIsLoading(true);
     try {
-      // Add message to local state immediately for better UX
-      const userMessage = {
-        id: Date.now(),
-        user_email: supportForm.email,
-        user_name: supportForm.name,
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please log in to send messages');
+        return;
+      }
+
+      const response = await axios.post(`${backendUrl}/api/support/chat/message`, {
         message: newMessage,
-        is_admin: false,
-        created_at: new Date(),
-        replies: []
-      };
-      
-      setChatMessages(prev => [...prev, userMessage]);
+        reply_to_id: null
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      // Add message to local state
+      setChatMessages(prev => [...prev, response.data]);
       setNewMessage('');
-      
-      // Here you would make an API call to send the message
-      // await sendChatMessage(newMessage);
       
     } catch (error) {
       console.error('Error sending chat message:', error);
+      alert('Error sending message. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -228,20 +214,21 @@ const SupportCenter = ({ isOpen, onClose }) => {
     setIsLoading(true);
     
     try {
-      // Add current date/time
-      const ticketData = {
-        ...supportForm,
-        created_at: new Date(),
-        status: 'open'
-      };
-      
-      // Add to local tickets for demo
-      const newTicket = {
-        id: Date.now(),
-        ...ticketData
-      };
-      
-      setUserTickets(prev => [newTicket, ...prev]);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please log in to submit support tickets');
+        return;
+      }
+
+      const response = await axios.post(`${backendUrl}/api/support/tickets`, {
+        category: supportForm.category,
+        subject: supportForm.subject,
+        description: supportForm.description
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      setUserTickets(prev => [response.data, ...prev]);
       
       // Reset form
       setSupportForm({
