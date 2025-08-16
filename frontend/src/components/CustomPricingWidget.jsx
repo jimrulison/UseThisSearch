@@ -13,6 +13,7 @@ const CustomPricingWidget = ({ getAuthHeaders }) => {
   const [planType, setPlanType] = useState('professional');
   const [customPriceMonthly, setCustomPriceMonthly] = useState('');
   const [customPriceYearly, setCustomPriceYearly] = useState('');
+  const [expirationDate, setExpirationDate] = useState('');
   const [notes, setNotes] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
