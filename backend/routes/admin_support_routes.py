@@ -11,7 +11,7 @@ from models.support_models import (
     AdminNotification, AdminNotificationResponse,
     SupportDashboard, SupportTicketStatus
 )
-from database import get_database
+from database import db
 from billing.billing_middleware import get_admin_user
 
 router = APIRouter(prefix="/admin/support", tags=["admin-support"])
@@ -20,9 +20,8 @@ router = APIRouter(prefix="/admin/support", tags=["admin-support"])
 @router.get("/faq", response_model=List[FAQItem])
 async def get_all_faq_items(current_admin=Depends(get_admin_user)):
     """Get all FAQ items including inactive ones (admin only)"""
-    db = get_database()
     
-    faq_items = list(db.faq_items.find({}).sort("order", 1))
+    faq_items = await db.faq_items.find({}).sort("order", 1).to_list(1000)
     
     for item in faq_items:
         item["id"] = str(item["_id"])
@@ -36,11 +35,10 @@ async def create_faq_item(
     current_admin=Depends(get_admin_user)
 ):
     """Create a new FAQ item"""
-    db = get_database()
     
     faq_item = FAQItem(**faq_data.dict())
     
-    result = db.faq_items.insert_one(faq_item.dict())
+    result = await db.faq_items.insert_one(faq_item.dict())
     faq_item.id = str(result.inserted_id)
     
     return faq_item
@@ -52,12 +50,11 @@ async def update_faq_item(
     current_admin=Depends(get_admin_user)
 ):
     """Update an FAQ item"""
-    db = get_database()
     
     update_data = {k: v for k, v in faq_data.dict().items() if v is not None}
     update_data["updated_at"] = datetime.utcnow()
     
-    result = db.faq_items.update_one(
+    result = await db.faq_items.update_one(
         {"_id": faq_id},
         {"$set": update_data}
     )
@@ -65,7 +62,7 @@ async def update_faq_item(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="FAQ item not found")
     
-    updated_item = db.faq_items.find_one({"_id": faq_id})
+    updated_item = await db.faq_items.find_one({"_id": faq_id})
     updated_item["id"] = str(updated_item["_id"])
     del updated_item["_id"]
     
@@ -77,9 +74,8 @@ async def delete_faq_item(
     current_admin=Depends(get_admin_user)
 ):
     """Delete an FAQ item"""
-    db = get_database()
     
-    result = db.faq_items.delete_one({"_id": faq_id})
+    result = await db.faq_items.delete_one({"_id": faq_id})
     
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="FAQ item not found")
@@ -93,7 +89,6 @@ async def admin_create_chat_message(
     current_admin=Depends(get_admin_user)
 ):
     """Create a chat message as admin"""
-    db = get_database()
     
     message = ChatMessage(
         user_email=current_admin["email"],
@@ -103,7 +98,7 @@ async def admin_create_chat_message(
         is_admin=True
     )
     
-    result = db.chat_messages.insert_one(message.dict())
+    result = await db.chat_messages.insert_one(message.dict())
     message.id = str(result.inserted_id)
     
     return ChatMessageResponse(**message.dict(), replies=[])
@@ -114,9 +109,8 @@ async def delete_chat_message(
     current_admin=Depends(get_admin_user)
 ):
     """Delete a chat message (admin only)"""
-    db = get_database()
     
-    result = db.chat_messages.update_one(
+    result = await db.chat_messages.update_one(
         {"_id": message_id},
         {"$set": {"is_deleted": True, "updated_at": datetime.utcnow()}}
     )
@@ -133,13 +127,12 @@ async def get_all_support_tickets(
     current_admin=Depends(get_admin_user)
 ):
     """Get all support tickets (admin only)"""
-    db = get_database()
     
     query = {}
     if status:
         query["status"] = status
     
-    tickets = list(db.support_tickets.find(query).sort("created_at", -1))
+    tickets = await db.support_tickets.find(query).sort("created_at", -1).to_list(1000)
     
     for ticket in tickets:
         ticket["id"] = str(ticket["_id"])
@@ -154,7 +147,6 @@ async def update_support_ticket(
     current_admin=Depends(get_admin_user)
 ):
     """Update a support ticket (admin only)"""
-    db = get_database()
     
     update_data = {k: v for k, v in ticket_data.dict().items() if v is not None}
     update_data["updated_at"] = datetime.utcnow()
@@ -162,7 +154,7 @@ async def update_support_ticket(
     if ticket_data.status == SupportTicketStatus.RESOLVED:
         update_data["resolved_at"] = datetime.utcnow()
     
-    result = db.support_tickets.update_one(
+    result = await db.support_tickets.update_one(
         {"_id": ticket_id},
         {"$set": update_data}
     )
@@ -170,7 +162,7 @@ async def update_support_ticket(
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Ticket not found")
     
-    updated_ticket = db.support_tickets.find_one({"_id": ticket_id})
+    updated_ticket = await db.support_tickets.find_one({"_id": ticket_id})
     updated_ticket["id"] = str(updated_ticket["_id"])
     del updated_ticket["_id"]
     
@@ -183,10 +175,9 @@ async def reply_to_ticket(
     current_admin=Depends(get_admin_user)
 ):
     """Reply to a support ticket as admin"""
-    db = get_database()
     
     # Verify ticket exists
-    ticket = db.support_tickets.find_one({"_id": ticket_id})
+    ticket = await db.support_tickets.find_one({"_id": ticket_id})
     if not ticket:
         raise HTTPException(status_code=404, detail="Ticket not found")
     
@@ -199,12 +190,12 @@ async def reply_to_ticket(
         message=message_data.message
     )
     
-    result = db.support_messages.insert_one(message.dict())
+    result = await db.support_messages.insert_one(message.dict())
     message.id = str(result.inserted_id)
     
     # Update ticket status if it was closed
     if ticket.get("status") == SupportTicketStatus.CLOSED:
-        db.support_tickets.update_one(
+        await db.support_tickets.update_one(
             {"_id": ticket_id},
             {"$set": {"status": SupportTicketStatus.IN_PROGRESS, "updated_at": datetime.utcnow()}}
         )
@@ -218,9 +209,8 @@ async def get_admin_notifications(
     current_admin=Depends(get_admin_user)
 ):
     """Get admin notifications"""
-    db = get_database()
     
-    notifications = list(db.admin_notifications.find({}).sort("created_at", -1).limit(limit))
+    notifications = await db.admin_notifications.find({}).sort("created_at", -1).limit(limit).to_list(limit)
     
     for notification in notifications:
         notification["id"] = str(notification["_id"])
@@ -234,9 +224,8 @@ async def mark_notification_read(
     current_admin=Depends(get_admin_user)
 ):
     """Mark a notification as read"""
-    db = get_database()
     
-    result = db.admin_notifications.update_one(
+    result = await db.admin_notifications.update_one(
         {"_id": notification_id},
         {"$set": {"is_read": True}}
     )
@@ -249,9 +238,8 @@ async def mark_notification_read(
 @router.put("/notifications/read-all")
 async def mark_all_notifications_read(current_admin=Depends(get_admin_user)):
     """Mark all notifications as read"""
-    db = get_database()
     
-    db.admin_notifications.update_many(
+    await db.admin_notifications.update_many(
         {"is_read": False},
         {"$set": {"is_read": True}}
     )
@@ -262,27 +250,26 @@ async def mark_all_notifications_read(current_admin=Depends(get_admin_user)):
 @router.get("/dashboard", response_model=SupportDashboard)
 async def get_support_dashboard(current_admin=Depends(get_admin_user)):
     """Get admin support dashboard data"""
-    db = get_database()
     
     # Count unread notifications
-    unread_notifications = db.admin_notifications.count_documents({"is_read": False})
+    unread_notifications = await db.admin_notifications.count_documents({"is_read": False})
     
     # Count new chat messages (from last 24 hours)
     from datetime import timedelta
     yesterday = datetime.utcnow() - timedelta(days=1)
-    new_chat_messages = db.chat_messages.count_documents({
+    new_chat_messages = await db.chat_messages.count_documents({
         "created_at": {"$gte": yesterday},
         "is_admin": False,
         "is_deleted": False
     })
     
     # Count open tickets
-    open_tickets = db.support_tickets.count_documents({
+    open_tickets = await db.support_tickets.count_documents({
         "status": {"$in": [SupportTicketStatus.OPEN, SupportTicketStatus.IN_PROGRESS]}
     })
     
     # Get recent activity
-    recent_notifications = list(db.admin_notifications.find({}).sort("created_at", -1).limit(5))
+    recent_notifications = await db.admin_notifications.find({}).sort("created_at", -1).limit(5).to_list(5)
     recent_activity = []
     
     for notification in recent_notifications:

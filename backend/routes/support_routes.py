@@ -11,7 +11,7 @@ from models.support_models import (
     AdminNotification, AdminNotificationResponse,
     SupportDashboard, SupportCategory, SupportTicketStatus
 )
-from database import get_database
+from database import db
 from billing.billing_middleware import get_current_user
 
 router = APIRouter(prefix="/support", tags=["support"])
@@ -20,13 +20,12 @@ router = APIRouter(prefix="/support", tags=["support"])
 @router.get("/faq", response_model=List[FAQItem])
 async def get_faq_items(category: Optional[str] = None):
     """Get all active FAQ items, optionally filtered by category"""
-    db = get_database()
     
     query = {"is_active": True}
     if category:
         query["category"] = category
     
-    faq_items = list(db.faq_items.find(query).sort("order", 1))
+    faq_items = await db.faq_items.find(query).sort("order", 1).to_list(1000)
     
     # Convert MongoDB documents to Pydantic models
     for item in faq_items:
@@ -38,21 +37,19 @@ async def get_faq_items(category: Optional[str] = None):
 @router.get("/faq/categories")
 async def get_faq_categories():
     """Get all FAQ categories"""
-    db = get_database()
     
-    categories = db.faq_items.distinct("category", {"is_active": True})
+    categories = await db.faq_items.distinct("category", {"is_active": True})
     return {"categories": [cat for cat in categories if cat]}
 
 # Chat/Forum Routes
 @router.get("/chat/messages", response_model=List[ChatMessageResponse])
 async def get_chat_messages(limit: int = 50, offset: int = 0):
     """Get chat messages with threading support"""
-    db = get_database()
     
     # Get all messages (not deleted)
-    messages = list(db.chat_messages.find(
+    messages = await db.chat_messages.find(
         {"is_deleted": False}
-    ).sort("created_at", -1).limit(limit).skip(offset))
+    ).sort("created_at", -1).limit(limit).skip(offset).to_list(limit)
     
     # Convert to response format
     message_dict = {}
@@ -83,7 +80,6 @@ async def create_chat_message(
     current_user=Depends(get_current_user)
 ):
     """Create a new chat message"""
-    db = get_database()
     
     # Create message
     message = ChatMessage(
@@ -96,7 +92,7 @@ async def create_chat_message(
     )
     
     # Insert into database
-    result = db.chat_messages.insert_one(message.dict())
+    result = await db.chat_messages.insert_one(message.dict())
     message.id = str(result.inserted_id)
     
     # Create admin notification
@@ -106,7 +102,7 @@ async def create_chat_message(
         message=f"New message from {current_user['email']}: {message_data.message[:50]}...",
         reference_id=message.id
     )
-    db.admin_notifications.insert_one(notification.dict())
+    await db.admin_notifications.insert_one(notification.dict())
     
     return ChatMessageResponse(**message.dict(), replies=[])
 
@@ -114,11 +110,10 @@ async def create_chat_message(
 @router.get("/tickets", response_model=List[SupportTicket])
 async def get_user_tickets(current_user=Depends(get_current_user)):
     """Get current user's support tickets"""
-    db = get_database()
     
-    tickets = list(db.support_tickets.find(
+    tickets = await db.support_tickets.find(
         {"user_email": current_user["email"]}
-    ).sort("created_at", -1))
+    ).sort("created_at", -1).to_list(1000)
     
     for ticket in tickets:
         ticket["id"] = str(ticket["_id"])
@@ -132,7 +127,6 @@ async def create_support_ticket(
     current_user=Depends(get_current_user)
 ):
     """Create a new support ticket"""
-    db = get_database()
     
     # Create ticket
     ticket = SupportTicket(
@@ -145,7 +139,7 @@ async def create_support_ticket(
     )
     
     # Insert into database
-    result = db.support_tickets.insert_one(ticket.dict())
+    result = await db.support_tickets.insert_one(ticket.dict())
     ticket.id = str(result.inserted_id)
     
     # Create admin notification
@@ -155,7 +149,7 @@ async def create_support_ticket(
         message=f"New {ticket_data.category} ticket from {current_user['email']}: {ticket_data.subject}",
         reference_id=ticket.id
     )
-    db.admin_notifications.insert_one(notification.dict())
+    await db.admin_notifications.insert_one(notification.dict())
     
     return ticket
 
@@ -165,16 +159,15 @@ async def get_ticket_messages(
     current_user=Depends(get_current_user)
 ):
     """Get messages for a specific support ticket"""
-    db = get_database()
     
     # Verify user owns this ticket
-    ticket = db.support_tickets.find_one({"_id": ticket_id, "user_email": current_user["email"]})
+    ticket = await db.support_tickets.find_one({"_id": ticket_id, "user_email": current_user["email"]})
     if not ticket:
         raise HTTPException(status_code=404, detail="Ticket not found")
     
-    messages = list(db.support_messages.find(
+    messages = await db.support_messages.find(
         {"ticket_id": ticket_id}
-    ).sort("created_at", 1))
+    ).sort("created_at", 1).to_list(1000)
     
     for msg in messages:
         msg["id"] = str(msg["_id"])
@@ -182,7 +175,7 @@ async def get_ticket_messages(
         
         # Mark user messages as read when user views them
         if not msg["is_admin"] and msg["sender_email"] != current_user["email"]:
-            db.support_messages.update_one(
+            await db.support_messages.update_one(
                 {"_id": msg["id"]},
                 {"$set": {"is_read": True}}
             )
@@ -196,10 +189,9 @@ async def send_ticket_message(
     current_user=Depends(get_current_user)
 ):
     """Send a message in a support ticket"""
-    db = get_database()
     
     # Verify user owns this ticket
-    ticket = db.support_tickets.find_one({"_id": ticket_id, "user_email": current_user["email"]})
+    ticket = await db.support_tickets.find_one({"_id": ticket_id, "user_email": current_user["email"]})
     if not ticket:
         raise HTTPException(status_code=404, detail="Ticket not found")
     
@@ -213,12 +205,12 @@ async def send_ticket_message(
     )
     
     # Insert into database
-    result = db.support_messages.insert_one(message.dict())
+    result = await db.support_messages.insert_one(message.dict())
     message.id = str(result.inserted_id)
     
     # Update ticket status if closed
     if ticket.get("status") == SupportTicketStatus.CLOSED:
-        db.support_tickets.update_one(
+        await db.support_tickets.update_one(
             {"_id": ticket_id},
             {"$set": {"status": SupportTicketStatus.OPEN, "updated_at": datetime.utcnow()}}
         )
@@ -230,7 +222,7 @@ async def send_ticket_message(
         message=f"New message from {current_user['email']} on ticket: {ticket.get('subject', 'Unknown')}",
         reference_id=ticket_id
     )
-    db.admin_notifications.insert_one(notification.dict())
+    await db.admin_notifications.insert_one(notification.dict())
     
     return message
 
@@ -238,27 +230,26 @@ async def send_ticket_message(
 @router.get("/stats")
 async def get_support_stats(current_user=Depends(get_current_user)):
     """Get support statistics for current user"""
-    db = get_database()
     
     # Count user's tickets by status
-    open_tickets = db.support_tickets.count_documents({
+    open_tickets = await db.support_tickets.count_documents({
         "user_email": current_user["email"],
         "status": {"$in": [SupportTicketStatus.OPEN, SupportTicketStatus.IN_PROGRESS]}
     })
     
-    total_tickets = db.support_tickets.count_documents({
+    total_tickets = await db.support_tickets.count_documents({
         "user_email": current_user["email"]
     })
     
     # Count unread messages in user's tickets
-    user_tickets = list(db.support_tickets.find(
+    user_tickets = await db.support_tickets.find(
         {"user_email": current_user["email"]},
         {"_id": 1}
-    ))
+    ).to_list(1000)
     
     ticket_ids = [str(t["_id"]) for t in user_tickets]
     
-    unread_messages = db.support_messages.count_documents({
+    unread_messages = await db.support_messages.count_documents({
         "ticket_id": {"$in": ticket_ids},
         "is_admin": True,
         "is_read": False
