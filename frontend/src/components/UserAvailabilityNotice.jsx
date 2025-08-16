@@ -10,6 +10,7 @@ import StripeCheckout from './StripeCheckout';
 const UserAvailabilityNotice = () => {
   const { usage, subscription } = useBilling();
   const { user } = useAuth();
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   if (!usage || !user) return null;
 
