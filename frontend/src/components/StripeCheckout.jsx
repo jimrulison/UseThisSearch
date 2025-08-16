@@ -17,69 +17,36 @@ import { useToast } from '../hooks/use-toast';
 // Load Stripe
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_your_key_here');
 
-const PRICING_PLANS = {
-  solo: {
-    name: 'Solo',
-    monthly: 47,
-    yearly: 37,
-    features: [
-      '200 searches per month',
-      '1 company workspace',
-      '1 user account',
-      'All 6 content generators',
-      'Basic analytics',
-      'Email support'
-    ],
-    color: 'blue'
+const PRICING_PLAN = {
+  name: 'Use This Search',
+  regular: {
+    monthly: 59,
+    yearly: 590,
   },
-  professional: {
-    name: 'Professional',
-    monthly: 97,
-    yearly: 77,
-    features: [
-      '500 searches per month',
-      '5 company workspaces',
-      '2 user accounts',
-      'All 6 content generators',
-      'Enhanced analytics',
-      'Priority email support'
-    ],
-    color: 'purple',
-    popular: true
+  sale: {
+    monthly: 29,
+    yearly: 290,
   },
-  agency: {
-    name: 'Agency',
-    monthly: 197,
-    yearly: 157,
-    features: [
-      '2,000 searches per month',
-      'Unlimited companies',
-      '5 user accounts',
-      'All 6 content generators',
-      'Advanced analytics',
-      'Priority processing',
-      'Client reports',
-      'Chat support'
-    ],
-    color: 'green'
+  baseIncludes: [
+    '1 user account',
+    '1 company workspace', 
+    '1 workspace',
+    'All content generators',
+    'AI-powered insights',
+    'Email support'
+  ],
+  annualBonus: [
+    'GROUP KEYWORDS (clustering)',
+    '2 months FREE (save $118)',
+    'Strategic keyword intelligence',
+    'Content cluster analysis'
+  ],
+  addOns: {
+    user: { regular: 10, sale: 5 },
+    company: { regular: 15, sale: 8 },
+    workspace: { regular: 15, sale: 8 }
   },
-  enterprise: {
-    name: 'Enterprise',
-    monthly: 397,
-    yearly: 317,
-    features: [
-      'Unlimited searches',
-      'Unlimited companies',
-      '7 user accounts',
-      'All 6 content generators',
-      'Advanced analytics',
-      'White-label options',
-      'API access',
-      'Team collaboration',
-      'Phone support'
-    ],
-    color: 'gold'
-  }
+  color: 'purple'
 };
 
 const CheckoutForm = ({ selectedPlan, billingPeriod, onSuccess, onCancel }) => {
