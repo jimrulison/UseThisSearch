@@ -4584,6 +4584,8 @@ class BackendTester:
         self.test_admin_authentication_system()
         self.test_admin_analytics_api()
         self.test_admin_custom_pricing_system()
+        self.test_admin_custom_pricing_new_plan_structure()  # NEW TEST
+        self.test_feature_access_validation_new_plans()  # NEW TEST
         
         # Run new admin trial management tests
         print(f"\n{'='*60}")
