@@ -1172,8 +1172,8 @@ const AdminDashboard = () => {
 
         {/* Global Analytics Tab */}
         {activeTab === 'analytics' && globalAnalytics && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-white mb-6">Global Analytics</h2>
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-white mb-4">Global Analytics</h2>
             
             {/* Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
