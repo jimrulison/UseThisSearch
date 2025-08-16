@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import uuid
 
 from models.billing_models import UserTrialInfo, TrialStatus, PlanType, AdminSessionResponse
+from models.admin_models import Admin
 from database import db
 from routes.admin_routes import get_admin_from_request
 
