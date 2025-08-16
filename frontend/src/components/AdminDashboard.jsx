@@ -661,54 +661,7 @@ const AdminDashboard = () => {
         {/* Support Center Tab */}
         {activeTab === 'support' && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-white mb-6">Support Management</h2>
-              <div className="flex items-center gap-4">
-                {supportDashboard && (
-                  <>
-                    {supportDashboard.unread_notifications > 0 && (
-                      <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        {supportDashboard.unread_notifications} New Notifications
-                      </div>
-                    )}
-                    {supportDashboard.open_tickets > 0 && (
-                      <div className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        {supportDashboard.open_tickets} Open Tickets
-                      </div>
-                    )}
-                    {supportDashboard.new_chat_messages > 0 && (
-                      <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        {supportDashboard.new_chat_messages} New Messages
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Support Dashboard Cards */}
-            {supportDashboard && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                  <h3 className="text-gray-300 text-sm font-medium">Open Support Tickets</h3>
-                  <p className="text-3xl font-bold text-white mt-2">
-                    {supportDashboard.open_tickets}
-                  </p>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                  <h3 className="text-gray-300 text-sm font-medium">Unread Notifications</h3>
-                  <p className="text-3xl font-bold text-white mt-2">
-                    {supportDashboard.unread_notifications}
-                  </p>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
-                  <h3 className="text-gray-300 text-sm font-medium">New Chat Messages (24h)</h3>
-                  <p className="text-3xl font-bold text-white mt-2">
-                    {supportDashboard.new_chat_messages}
-                  </p>
-                </div>
-              </div>
-            )}
+            <h2 className="text-2xl font-bold text-white mb-6">Support Management</h2>
 
             {/* Support Tabs */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
