@@ -123,6 +123,12 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm, viewM
         isOpen={isEducationOpen} 
         onClose={() => setIsEducationOpen(false)} 
       />
+
+      {/* Support Center Modal */}
+      <SupportCenter 
+        isOpen={isSupportOpen} 
+        onClose={() => setIsSupportOpen(false)} 
+      />
     </div>
   );
 };
