@@ -285,7 +285,7 @@ const StripeCheckout = ({ isOpen, onClose }) => {
                   }`}
                 >
                   Yearly
-                  <Badge variant="secondary" className="ml-2">Save 20%</Badge>
+                  <Badge variant="secondary" className="ml-2">2 Months FREE</Badge>
                 </button>
               </div>
             </div>
