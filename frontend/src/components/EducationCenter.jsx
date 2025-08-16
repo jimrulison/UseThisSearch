@@ -674,6 +674,53 @@ This manual provides everything you need to effectively manage the Use This Sear
 
   if (!isOpen) return null;
 
+  // Document viewer mode
+  if (viewingDocument) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setViewingDocument(null)}
+                className="text-white hover:bg-white/20 mr-2"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <div>
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <viewingDocument.icon className="h-5 w-5" />
+                  {viewingDocument.title}
+                </h2>
+                <p className="text-blue-100 text-sm">{viewingDocument.description}</p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              className="text-white hover:bg-white/20"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+
+          {/* Document Content */}
+          <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+            <div className="prose max-w-none">
+              <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-gray-800">
+                {viewingDocument.docContent}
+              </pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
