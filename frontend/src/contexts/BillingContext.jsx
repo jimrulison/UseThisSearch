@@ -275,8 +275,53 @@ export const BillingProvider = ({ children }) => {
       return trialFeatures.includes(featureName);
     }
 
-    // New single plan structure - 'standard' plan
+    // New plan structure - all paid plans have core features
     const planFeatures = {
+      'solo': [
+        'basic_search', 
+        'csv_export', 
+        'personal_workspace',
+        'unlimited_searches'
+      ],
+      
+      'annual': [
+        'basic_search', 
+        'csv_export', 
+        'personal_workspace',
+        'unlimited_searches',
+        'keyword_clustering' // GROUP KEYWORDS feature - ONLY for annual
+      ],
+      
+      'additional_user': [
+        'basic_search', 
+        'csv_export', 
+        'team_collaboration',
+        'unlimited_searches'
+      ],
+      
+      'additional_workspace': [
+        'basic_search', 
+        'csv_export', 
+        'multiple_workspaces',
+        'unlimited_searches'
+      ],
+      
+      'additional_company': [
+        'basic_search', 
+        'csv_export', 
+        'multiple_companies',
+        'unlimited_searches'
+      ],
+      
+      // Legacy support during transition (all get unlimited searches now)
+      'professional': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'unlimited_searches'],
+      'agency': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'unlimited_searches'],
+      'enterprise': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'unlimited_searches'],
+      'professional_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'keyword_clustering', 'unlimited_searches'],
+      'agency_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'keyword_clustering', 'unlimited_searches'],
+      'enterprise_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'keyword_clustering', 'unlimited_searches'],
+      
+      // Standard plan (new base plan)
       'standard': [
         'basic_search', 
         'csv_export', 
@@ -284,10 +329,9 @@ export const BillingProvider = ({ children }) => {
         'multiple_workspaces', 
         'team_collaboration', 
         'usage_analytics',
-        'advanced_analytics'
+        'advanced_analytics',
+        'unlimited_searches'
       ],
-      
-      // Annual billing gets GROUP KEYWORDS
       'standard_annual': [
         'basic_search', 
         'csv_export', 
@@ -296,22 +340,14 @@ export const BillingProvider = ({ children }) => {
         'team_collaboration', 
         'usage_analytics',
         'advanced_analytics',
-        'keyword_clustering' // GROUP KEYWORDS feature
-      ],
-      
-      // Legacy support for existing plans during transition
-      'professional': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics'],
-      'agency': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label'],
-      'enterprise': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label', 'admin_dashboard', 'custom_pricing', 'api_access'],
-      'professional_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'keyword_clustering'],
-      'agency_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label', 'keyword_clustering'],
-      'enterprise_annual': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'white_label', 'admin_dashboard', 'custom_pricing', 'api_access', 'keyword_clustering'],
-      'annual_gift': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics', 'advanced_analytics', 'keyword_clustering', 'bonus_credits', 'priority_processing']
+        'keyword_clustering', // GROUP KEYWORDS feature
+        'unlimited_searches'
+      ]
     };
 
-    // Determine plan key based on plan type and billing cycle
+    // Determine plan key - only annual plan gets special treatment
     let planKey = subscription.plan_type;
-    if (subscription.billing_cycle === 'annual' && ['standard', 'professional', 'agency', 'enterprise'].includes(subscription.plan_type)) {
+    if (subscription.billing_cycle === 'annual' && ['standard'].includes(subscription.plan_type)) {
       planKey = `${subscription.plan_type}_annual`;
     }
 
