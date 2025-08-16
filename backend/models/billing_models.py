@@ -1,15 +1,67 @@
 from pydantic import BaseModel, Field
 from typing import List, Dict, Optional, Union
-from datetime import datetime
+from datetime import datetime, timedelta
 import uuid
 from enum import Enum
 
 class PlanType(str, Enum):
+    TRIAL = "trial"
     SOLO = "solo"
     PROFESSIONAL = "professional"
     AGENCY = "agency"
     ENTERPRISE = "enterprise"
     ANNUAL_GIFT = "annual_gift"  # NEW: Annual Gift Plan
+
+class TrialStatus(str, Enum):
+    ACTIVE = "active"
+    EXPIRED = "expired" 
+    CONVERTED = "converted"
+    DATA_RETENTION = "data_retention"  # 30-day grace period after trial
+
+class UserTrialInfo(BaseModel):
+    trial_start_date: datetime = Field(default_factory=datetime.utcnow)
+    trial_status: TrialStatus = TrialStatus.ACTIVE
+    searches_used_today: int = 0
+    last_search_date: Optional[datetime] = None
+    trial_reminders_sent: List[int] = []  # Days on which reminders were sent
+    data_retention_start: Optional[datetime] = None  # When 30-day countdown started
+    
+    def days_into_trial(self) -> int:
+        """Calculate how many days into the trial the user is"""
+        delta = datetime.utcnow() - self.trial_start_date
+        return delta.days + 1  # Day 1, 2, 3, etc.
+    
+    def is_trial_expired(self) -> bool:
+        """Check if the 7-day trial has expired"""
+        return self.days_into_trial() > 7
+    
+    def days_remaining(self) -> int:
+        """Calculate remaining trial days (can be negative)"""
+        return 7 - self.days_into_trial() + 1
+    
+    def should_show_reminder(self) -> bool:
+        """Check if user should see trial reminder popup"""
+        days = self.days_into_trial()
+        return days >= 4 and days <= 7
+    
+    def can_search_today(self) -> bool:
+        """Check if user can perform more searches today"""
+        if self.is_trial_expired():
+            return False
+        
+        # Reset daily count if it's a new day
+        today = datetime.utcnow().date()
+        if self.last_search_date is None or self.last_search_date.date() != today:
+            return True
+        
+        return self.searches_used_today < 25
+    
+    def is_data_retention_expired(self) -> bool:
+        """Check if 30-day data retention period has expired"""
+        if not self.data_retention_start:
+            return False
+        delta = datetime.utcnow() - self.data_retention_start
+        return delta.days > 30
 
 class SubscriptionStatus(str, Enum):
     ACTIVE = "active"
