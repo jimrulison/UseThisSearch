@@ -163,14 +163,15 @@ export const BillingProvider = ({ children }) => {
     return warnings;
   };
 
-  const createSubscription = async (planType, billingPeriod, paymentMethodId) => {
+  const createSubscription = async (planType, billingPeriod, paymentMethodId, addOns = {}) => {
     try {
       const response = await apiCall(`${API}/billing/subscription`, {
         method: 'POST',
         body: JSON.stringify({
           plan_type: planType,
           billing_period: billingPeriod,
-          payment_method_id: paymentMethodId
+          payment_method_id: paymentMethodId,
+          add_ons: addOns
         })
       });
 
