@@ -202,7 +202,7 @@ const CheckoutForm = ({ billingPeriod, addOns = {}, onSuccess, onCancel }) => {
           ) : (
             <>
               <CreditCard className="h-4 w-4" />
-              Subscribe ${price}/{billingPeriod === 'yearly' ? 'year' : 'month'}
+              Subscribe ${totalPrice}/{billingPeriod === 'yearly' ? 'year' : 'month'}
             </>
           )}
         </Button>
