@@ -20,6 +20,14 @@ const AdminDashboard = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
+  
+  // Support management state
+  const [supportDashboard, setSupportDashboard] = useState(null);
+  const [supportTickets, setSupportTickets] = useState([]);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [adminNotifications, setAdminNotifications] = useState([]);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [newAdminMessage, setNewAdminMessage] = useState('');
 
   useEffect(() => {
     if (activeTab === 'dashboard') {
