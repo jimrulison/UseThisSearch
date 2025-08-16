@@ -136,6 +136,8 @@ const SafeSearchWrapper = ({ children, onSearchAttempt, onCompanyCreateAttempt }
   
   const [showSearchModal, setShowSearchModal] = React.useState(false);
   const [showCompanyModal, setShowCompanyModal] = React.useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = React.useState(false);
+  const [selectedUpgradePlan, setSelectedUpgradePlan] = React.useState('professional');
   const [lastUsageInfo, setLastUsageInfo] = React.useState(null);
 
   const handleSearchAttempt = async (...args) => {
