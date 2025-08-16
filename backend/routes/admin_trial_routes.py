@@ -11,7 +11,7 @@ from routes.admin_routes import get_admin_from_request
 router = APIRouter(prefix="/admin/trial", tags=["admin-trial"])
 
 @router.get("/users")
-async def get_all_trial_users(admin: AdminSessionResponse = Depends(get_admin_from_request)):
+async def get_all_trial_users(admin: Admin = Depends(get_admin_from_request)):
     """Get all trial users with their status"""
     
     # Find all users with trial_info
