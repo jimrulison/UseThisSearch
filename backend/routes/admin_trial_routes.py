@@ -110,7 +110,7 @@ async def convert_trial_to_paid_admin(
     """Convert trial user to paid subscription (admin action)"""
     
     # Validate plan type
-    valid_plans = ["solo", "professional", "agency", "enterprise"]
+    valid_plans = ["solo", "annual", "additional_user", "additional_workspace", "additional_company"]
     if plan_type not in valid_plans:
         raise HTTPException(status_code=400, detail=f"Invalid plan type. Must be one of: {valid_plans}")
     
