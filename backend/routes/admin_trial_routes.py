@@ -183,7 +183,7 @@ async def cleanup_trial_user_data(
     }
 
 @router.get("/analytics")
-async def get_trial_analytics(admin: AdminSessionResponse = Depends(get_admin_from_request)):
+async def get_trial_analytics(admin: Admin = Depends(get_admin_from_request)):
     """Get trial user analytics and conversion rates"""
     
     # Get all trial users
