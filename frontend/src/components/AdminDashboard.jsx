@@ -796,11 +796,11 @@ const AdminDashboard = () => {
 
         {/* Announcements Tab */}
         {activeTab === 'announcements' && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-white mb-6">User Announcements</h2>
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-white mb-4">User Announcements</h2>
 
             {/* Create Announcement Form */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
               <h3 className="text-lg font-semibold text-white mb-4">Create New Announcement</h3>
               <form onSubmit={handleCreateAnnouncement} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
