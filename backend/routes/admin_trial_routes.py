@@ -105,7 +105,7 @@ async def extend_trial(
 async def convert_trial_to_paid_admin(
     user_email: str,
     plan_type: str,
-    admin: AdminSessionResponse = Depends(get_admin_from_request)
+    admin: Admin = Depends(get_admin_from_request)
 ):
     """Convert trial user to paid subscription (admin action)"""
     
