@@ -7,10 +7,15 @@ from enum import Enum
 class PlanType(str, Enum):
     TRIAL = "trial"
     SOLO = "solo"
+    ANNUAL = "annual"
+    ADDITIONAL_USER = "additional_user"
+    ADDITIONAL_WORKSPACE = "additional_workspace"
+    ADDITIONAL_COMPANY = "additional_company"
+    # Legacy plans for backward compatibility
     PROFESSIONAL = "professional"
     AGENCY = "agency"
     ENTERPRISE = "enterprise"
-    ANNUAL_GIFT = "annual_gift"  # NEW: Annual Gift Plan
+    ANNUAL_GIFT = "annual_gift"
 
 class TrialStatus(str, Enum):
     ACTIVE = "active"
