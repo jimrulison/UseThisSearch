@@ -150,6 +150,7 @@ api_router.include_router(safe_billing_router, prefix="/safe", tags=["safe-billi
 api_router.include_router(admin_router, prefix="/admin", tags=["admin"])
 api_router.include_router(admin_analytics_router, prefix="/admin/analytics", tags=["admin-analytics"])
 api_router.include_router(admin_custom_pricing_router, prefix="/admin/custom-pricing", tags=["admin-custom-pricing"])
+api_router.include_router(admin_trial_router, tags=["admin-trial"])
 
 # NEW: Include clustering routes (additive)
 api_router.include_router(clustering_router, prefix="/clustering", tags=["clustering"])
