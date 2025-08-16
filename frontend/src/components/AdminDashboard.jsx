@@ -4,6 +4,7 @@ import { useToast } from '../hooks/use-toast';
 import { Button } from './ui/button';
 import Logo from './Logo';
 import CustomPricingWidget from './CustomPricingWidget';
+import TrialManagement from './TrialManagement';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
