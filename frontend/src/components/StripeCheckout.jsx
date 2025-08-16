@@ -413,8 +413,8 @@ const StripeCheckout = ({ isOpen, onClose, initialPlan = 'professional' }) => {
         ) : (
           <Elements stripe={stripePromise}>
             <CheckoutForm
-              selectedPlan={selectedPlan}
               billingPeriod={billingPeriod}
+              addOns={{}} // No add-ons for now, can be extended later
               onSuccess={handleCheckoutSuccess}
               onCancel={handleCheckoutCancel}
             />
