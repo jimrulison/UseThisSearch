@@ -873,14 +873,25 @@ This manual provides everything you need to effectively manage the Use This Sear
                                 <span>{material.pages} pages</span>
                               </div>
                               <p className="text-xs text-gray-600 mb-4">{material.content}</p>
-                              <Button
-                                onClick={() => handleDownloadPDF(material.id)}
-                                size="sm"
-                                className={`text-white ${material.featured ? 'bg-blue-600 hover:bg-blue-700' : 'bg-green-600 hover:bg-green-700'}`}
-                              >
-                                <Download className="h-4 w-4 mr-2" />
-                                Download PDF
-                              </Button>
+                              <div className="flex gap-2">
+                                <Button
+                                  onClick={() => handleViewDocument(material.id)}
+                                  size="sm"
+                                  variant="outline"
+                                  className="text-gray-700 border-gray-300 hover:bg-gray-50"
+                                >
+                                  <Eye className="h-4 w-4 mr-2" />
+                                  View Document
+                                </Button>
+                                <Button
+                                  onClick={() => handleDownloadPDF(material.id)}
+                                  size="sm"
+                                  className={`text-white ${material.featured ? 'bg-blue-600 hover:bg-blue-700' : 'bg-green-600 hover:bg-green-700'}`}
+                                >
+                                  <Download className="h-4 w-4 mr-2" />
+                                  Download PDF
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         </CardContent>
