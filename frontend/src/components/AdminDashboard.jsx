@@ -169,6 +169,153 @@ const AdminDashboard = () => {
     return num.toLocaleString();
   };
 
+  // Support management functions
+  const loadSupportData = async () => {
+    setIsLoading(true);
+    try {
+      // Load support dashboard
+      const dashboardResponse = await axios.get(`${ADMIN_API}/support/dashboard`, {
+        headers: getAuthHeaders()
+      });
+      setSupportDashboard(dashboardResponse.data);
+
+      // Load support tickets
+      const ticketsResponse = await axios.get(`${ADMIN_API}/support/tickets`, {
+        headers: getAuthHeaders()
+      });
+      setSupportTickets(ticketsResponse.data);
+
+      // Load chat messages
+      const chatResponse = await axios.get(`${BACKEND_URL}/api/support/chat/messages`, {
+        headers: getAuthHeaders()
+      });
+      setChatMessages(chatResponse.data);
+
+      // Load notifications
+      const notificationsResponse = await axios.get(`${ADMIN_API}/support/notifications?limit=20`, {
+        headers: getAuthHeaders()
+      });
+      setAdminNotifications(notificationsResponse.data);
+
+    } catch (error) {
+      console.error('Error loading support data:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load support data",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSendAdminChatMessage = async () => {
+    if (!newAdminMessage.trim()) return;
+
+    try {
+      const response = await axios.post(`${ADMIN_API}/support/chat/message`, {
+        message: newAdminMessage,
+        reply_to_id: null
+      }, {
+        headers: getAuthHeaders()
+      });
+
+      setChatMessages(prev => [...prev, response.data]);
+      setNewAdminMessage('');
+      
+      toast({
+        title: "Message Sent",
+        description: "Your message has been posted to the community chat",
+        duration: 3000,
+      });
+
+    } catch (error) {
+      console.error('Error sending admin message:', error);
+      toast({
+        title: "Error",
+        description: "Failed to send message",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
+
+  const handleDeleteChatMessage = async (messageId) => {
+    try {
+      await axios.delete(`${ADMIN_API}/support/chat/message/${messageId}`, {
+        headers: getAuthHeaders()
+      });
+
+      setChatMessages(prev => prev.filter(msg => msg.id !== messageId));
+      
+      toast({
+        title: "Message Deleted",
+        description: "The message has been removed from the chat",
+        duration: 3000,
+      });
+
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete message",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
+
+  const handleUpdateTicketStatus = async (ticketId, newStatus) => {
+    try {
+      const response = await axios.put(`${ADMIN_API}/support/tickets/${ticketId}`, {
+        status: newStatus
+      }, {
+        headers: getAuthHeaders()
+      });
+
+      setSupportTickets(prev => 
+        prev.map(ticket => 
+          ticket.id === ticketId ? response.data : ticket
+        )
+      );
+      
+      toast({
+        title: "Ticket Updated",
+        description: `Ticket status changed to ${newStatus}`,
+        duration: 3000,
+      });
+
+    } catch (error) {
+      console.error('Error updating ticket:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update ticket status",
+        variant: "destructive",
+        duration: 3000,
+      });
+    }
+  };
+
+  const markNotificationAsRead = async (notificationId) => {
+    try {
+      await axios.put(`${ADMIN_API}/support/notifications/${notificationId}/read`, {}, {
+        headers: getAuthHeaders()
+      });
+
+      setAdminNotifications(prev => 
+        prev.map(notification => 
+          notification.id === notificationId 
+            ? { ...notification, is_read: true } 
+            : notification
+        )
+      );
+
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Header */}
