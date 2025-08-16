@@ -56,53 +56,62 @@ const UserAvailabilityNotice = () => {
   };
 
   return (
-    <Card className={`border-2 shadow-lg transition-all duration-300 hover:shadow-xl ${getStatusColor()}`}>
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3">
-              <Users className="h-6 w-6 text-blue-600" />
-              <span className="font-bold text-lg text-gray-800">Team Size:</span>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className="font-mono text-lg px-3 py-1 bg-white/80">
-                {current_users}/{user_limit}
+    <>
+      <Card className={`border-2 shadow-lg transition-all duration-300 hover:shadow-xl ${getStatusColor()}`}>
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                <Users className="h-6 w-6 text-blue-600" />
+                <span className="font-bold text-lg text-gray-800">Team Size:</span>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <Badge variant="outline" className="font-mono text-lg px-3 py-1 bg-white/80">
+                  {current_users}/{user_limit}
+                </Badge>
+                <span className="text-base text-gray-700 font-medium">users</span>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                {getStatusIcon()}
+                <span className="text-base font-medium">
+                  {users_remaining > 0 
+                    ? `${users_remaining} slot${users_remaining !== 1 ? 's' : ''} remaining`
+                    : 'Team full'
+                  }
+                </span>
+              </div>
+              
+              <Badge 
+                variant="secondary" 
+                className="text-base px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold shadow-md"
+              >
+                {getPlanName()} Plan
               </Badge>
-              <span className="text-base text-gray-700 font-medium">users</span>
             </div>
-            
-            <div className="flex items-center gap-2">
-              {getStatusIcon()}
-              <span className="text-base font-medium">
-                {users_remaining > 0 
-                  ? `${users_remaining} slot${users_remaining !== 1 ? 's' : ''} remaining`
-                  : 'Team full'
-                }
-              </span>
-            </div>
-            
-            <Badge 
-              variant="secondary" 
-              className="text-base px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-semibold shadow-md"
-            >
-              {getPlanName()} Plan
-            </Badge>
-          </div>
 
-          {users_remaining <= 1 && (
-            <Button 
-              size="lg" 
-              onClick={handleUpgrade}
-              className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg transition-all duration-200 hover:scale-105"
-            >
-              <ArrowUp className="h-4 w-4" />
-              Upgrade for {getUpgradeOptions().users} users
-            </Button>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+            {users_remaining <= 1 && (
+              <Button 
+                size="lg" 
+                onClick={handleUpgrade}
+                className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg transition-all duration-200 hover:scale-105"
+              >
+                <ArrowUp className="h-4 w-4" />
+                Upgrade for {getUpgradeOptions().users} users
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+      
+      {/* Stripe Checkout Modal */}
+      <StripeCheckout 
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        initialPlan={getUpgradeOptions().plan}
+      />
+    </>
   );
 };
 
