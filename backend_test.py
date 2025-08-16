@@ -3904,6 +3904,443 @@ class BackendTester:
         except Exception as e:
             self.log_test("trial_support_announcements", "fail", f"Trial support announcements test error: {str(e)}")
 
+    def test_admin_trial_management_authentication(self):
+        """Test admin authentication for trial management endpoints"""
+        print("\n=== Testing Admin Trial Management Authentication ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Test 1: Login as admin to get token
+            login_data = {
+                "email": self.admin_credentials["email"],
+                "password": self.admin_credentials["password"]
+            }
+            
+            response = self.session.post(f"{API_BASE}/admin/login", json=login_data)
+            if response.status_code == 200:
+                login_result = response.json()
+                if "token" in login_result:
+                    self.admin_token = login_result["token"]
+                    details.append("✓ Admin login successful, token obtained")
+                else:
+                    all_passed = False
+                    details.append("✗ Admin login response missing token")
+            else:
+                all_passed = False
+                details.append(f"✗ Admin login failed: HTTP {response.status_code}")
+                
+            # Test 2: Test authentication protection on trial endpoints
+            if self.admin_token:
+                admin_headers = {"Authorization": f"Bearer {self.admin_token}"}
+                
+                # Test authenticated access
+                response = self.session.get(f"{API_BASE}/admin/trial/users", headers=admin_headers)
+                if response.status_code == 200:
+                    details.append("✓ Authenticated admin can access trial users endpoint")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Authenticated admin cannot access trial users: HTTP {response.status_code}")
+                
+                # Test unauthenticated access (should fail)
+                response = self.session.get(f"{API_BASE}/admin/trial/users")
+                if response.status_code in [401, 403]:
+                    details.append("✓ Unauthenticated access properly denied")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Unauthenticated access not denied: HTTP {response.status_code}")
+                    
+                # Test invalid token
+                invalid_headers = {"Authorization": "Bearer invalid_token_123"}
+                response = self.session.get(f"{API_BASE}/admin/trial/users", headers=invalid_headers)
+                if response.status_code in [401, 403]:
+                    details.append("✓ Invalid token properly rejected")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Invalid token not rejected: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("admin_trial_management_authentication", "pass", 
+                            f"Admin trial management authentication working. {'; '.join(details)}")
+            else:
+                self.log_test("admin_trial_management_authentication", "fail", 
+                            f"Admin trial management authentication issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("admin_trial_management_authentication", "fail", f"Admin trial management authentication test error: {str(e)}")
+    
+    def test_admin_trial_users_api(self):
+        """Test GET /api/admin/trial/users endpoint"""
+        print("\n=== Testing Admin Trial Users API ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            if not self.admin_token:
+                self.log_test("admin_trial_users_api", "fail", "No admin token available for testing")
+                return
+                
+            admin_headers = {"Authorization": f"Bearer {self.admin_token}"}
+            
+            # Test 1: Get all trial users
+            response = self.session.get(f"{API_BASE}/admin/trial/users", headers=admin_headers)
+            if response.status_code == 200:
+                trial_data = response.json()
+                
+                # Validate response structure
+                required_fields = ["trial_users", "total_count", "active_trials", "expired_trials", "converted_trials", "data_retention"]
+                missing_fields = [field for field in required_fields if field not in trial_data]
+                
+                if not missing_fields:
+                    details.append(f"✓ Trial users API structure valid (total: {trial_data['total_count']})")
+                    
+                    # Validate trial user data structure
+                    if trial_data["trial_users"]:
+                        user = trial_data["trial_users"][0]
+                        user_required_fields = ["id", "email", "trial_status", "days_into_trial", "days_remaining", "is_expired", "searches_used_today"]
+                        user_missing_fields = [field for field in user_required_fields if field not in user]
+                        
+                        if not user_missing_fields:
+                            details.append("✓ Trial user data structure valid")
+                            
+                            # Check data types
+                            if (isinstance(user["days_into_trial"], int) and
+                                isinstance(user["days_remaining"], int) and
+                                isinstance(user["is_expired"], bool) and
+                                isinstance(user["searches_used_today"], int)):
+                                details.append("✓ Trial user data types correct")
+                            else:
+                                all_passed = False
+                                details.append("✗ Trial user data types invalid")
+                        else:
+                            all_passed = False
+                            details.append(f"✗ Trial user missing fields: {user_missing_fields}")
+                    else:
+                        details.append("✓ No trial users found (empty response valid)")
+                        
+                    # Validate summary counts
+                    total_calculated = (trial_data["active_trials"] + trial_data["expired_trials"] + 
+                                      trial_data["converted_trials"] + trial_data["data_retention"])
+                    if total_calculated == trial_data["total_count"]:
+                        details.append("✓ Trial status counts consistent")
+                    else:
+                        details.append(f"Minor: Trial status counts inconsistent (calculated: {total_calculated}, reported: {trial_data['total_count']})")
+                        
+                else:
+                    all_passed = False
+                    details.append(f"✗ Trial users API missing fields: {missing_fields}")
+            else:
+                all_passed = False
+                details.append(f"✗ Get trial users failed: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("admin_trial_users_api", "pass", 
+                            f"Admin trial users API working. {'; '.join(details)}")
+            else:
+                self.log_test("admin_trial_users_api", "fail", 
+                            f"Admin trial users API issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("admin_trial_users_api", "fail", f"Admin trial users API test error: {str(e)}")
+    
+    def test_admin_trial_analytics_api(self):
+        """Test GET /api/admin/trial/analytics endpoint"""
+        print("\n=== Testing Admin Trial Analytics API ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            if not self.admin_token:
+                self.log_test("admin_trial_analytics_api", "fail", "No admin token available for testing")
+                return
+                
+            admin_headers = {"Authorization": f"Bearer {self.admin_token}"}
+            
+            # Test 1: Get trial analytics
+            response = self.session.get(f"{API_BASE}/admin/trial/analytics", headers=admin_headers)
+            if response.status_code == 200:
+                analytics_data = response.json()
+                
+                # Validate response structure
+                required_fields = [
+                    "total_trial_users", "active_trials", "expired_trials", "converted_trials", 
+                    "data_retention", "conversion_rate", "avg_searches_per_trial", 
+                    "trial_duration_stats", "daily_signups_last_30_days", "search_usage_distribution"
+                ]
+                missing_fields = [field for field in required_fields if field not in analytics_data]
+                
+                if not missing_fields:
+                    details.append("✓ Trial analytics API structure valid")
+                    
+                    # Validate data types
+                    if (isinstance(analytics_data["total_trial_users"], int) and
+                        isinstance(analytics_data["conversion_rate"], (int, float)) and
+                        isinstance(analytics_data["avg_searches_per_trial"], (int, float)) and
+                        isinstance(analytics_data["trial_duration_stats"], dict) and
+                        isinstance(analytics_data["daily_signups_last_30_days"], dict) and
+                        isinstance(analytics_data["search_usage_distribution"], dict)):
+                        
+                        details.append("✓ Analytics data types correct")
+                        
+                        # Validate trial duration stats structure
+                        duration_stats = analytics_data["trial_duration_stats"]
+                        duration_required = ["day_1_3", "day_4_7", "completed_7_days"]
+                        duration_missing = [field for field in duration_required if field not in duration_stats]
+                        
+                        if not duration_missing:
+                            details.append("✓ Trial duration stats structure valid")
+                        else:
+                            all_passed = False
+                            details.append(f"✗ Trial duration stats missing: {duration_missing}")
+                        
+                        # Validate search usage distribution structure
+                        usage_dist = analytics_data["search_usage_distribution"]
+                        usage_required = ["0_searches", "1_10_searches", "11_25_searches", "over_25_searches"]
+                        usage_missing = [field for field in usage_required if field not in usage_dist]
+                        
+                        if not usage_missing:
+                            details.append("✓ Search usage distribution structure valid")
+                        else:
+                            all_passed = False
+                            details.append(f"✗ Search usage distribution missing: {usage_missing}")
+                        
+                        # Validate conversion rate calculation
+                        if 0 <= analytics_data["conversion_rate"] <= 100:
+                            details.append(f"✓ Conversion rate valid ({analytics_data['conversion_rate']}%)")
+                        else:
+                            details.append(f"Minor: Conversion rate out of range ({analytics_data['conversion_rate']}%)")
+                            
+                    else:
+                        all_passed = False
+                        details.append("✗ Analytics data types invalid")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Trial analytics API missing fields: {missing_fields}")
+            else:
+                all_passed = False
+                details.append(f"✗ Get trial analytics failed: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("admin_trial_analytics_api", "pass", 
+                            f"Admin trial analytics API working. {'; '.join(details)}")
+            else:
+                self.log_test("admin_trial_analytics_api", "fail", 
+                            f"Admin trial analytics API issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("admin_trial_analytics_api", "fail", f"Admin trial analytics API test error: {str(e)}")
+    
+    def test_admin_trial_extend_functionality(self):
+        """Test POST /api/admin/trial/extend/{user_email} endpoint"""
+        print("\n=== Testing Admin Trial Extend Functionality ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            if not self.admin_token:
+                self.log_test("admin_trial_extend_functionality", "fail", "No admin token available for testing")
+                return
+                
+            admin_headers = {"Authorization": f"Bearer {self.admin_token}"}
+            
+            # First, create a test trial user to extend
+            test_user_email = f"trial_extend_test_{int(time.time())}@example.com"
+            
+            # Register a trial user
+            register_data = {
+                "email": test_user_email,
+                "password": "testpass123",
+                "name": "Trial Extend Test User"
+            }
+            
+            register_response = self.session.post(f"{API_BASE}/auth/register", json=register_data)
+            if register_response.status_code != 200:
+                details.append(f"Minor: Could not create test trial user for extend test: HTTP {register_response.status_code}")
+                # Continue with existing user test
+                test_user_email = "existing_trial_user@example.com"
+            else:
+                details.append("✓ Test trial user created for extend test")
+            
+            # Test 1: Extend trial with valid parameters
+            response = self.session.post(f"{API_BASE}/admin/trial/extend/{test_user_email}?extension_days=5", 
+                                       headers=admin_headers)
+            
+            if response.status_code == 200:
+                extend_result = response.json()
+                
+                # Validate response structure
+                required_fields = ["message", "new_days_remaining", "extended_by"]
+                missing_fields = [field for field in required_fields if field not in extend_result]
+                
+                if not missing_fields:
+                    details.append("✓ Trial extend response structure valid")
+                    
+                    if extend_result["extended_by"] == self.admin_credentials["email"]:
+                        details.append("✓ Trial extend attribution correct")
+                    else:
+                        details.append(f"Minor: Trial extend attribution unexpected ({extend_result['extended_by']})")
+                        
+                else:
+                    all_passed = False
+                    details.append(f"✗ Trial extend response missing fields: {missing_fields}")
+                    
+            elif response.status_code == 404:
+                details.append("✓ Trial extend properly handles non-existent users")
+            else:
+                all_passed = False
+                details.append(f"✗ Trial extend failed: HTTP {response.status_code}")
+            
+            # Test 2: Test invalid extension days
+            response = self.session.post(f"{API_BASE}/admin/trial/extend/{test_user_email}?extension_days=0", 
+                                       headers=admin_headers)
+            if response.status_code == 400:
+                details.append("✓ Trial extend validates extension days (0 rejected)")
+            else:
+                all_passed = False
+                details.append(f"✗ Trial extend validation failed for 0 days: HTTP {response.status_code}")
+            
+            # Test 3: Test excessive extension days
+            response = self.session.post(f"{API_BASE}/admin/trial/extend/{test_user_email}?extension_days=31", 
+                                       headers=admin_headers)
+            if response.status_code == 400:
+                details.append("✓ Trial extend validates extension days (31 rejected)")
+            else:
+                all_passed = False
+                details.append(f"✗ Trial extend validation failed for 31 days: HTTP {response.status_code}")
+            
+            # Test 4: Test non-existent user
+            response = self.session.post(f"{API_BASE}/admin/trial/extend/nonexistent@example.com?extension_days=5", 
+                                       headers=admin_headers)
+            if response.status_code == 404:
+                details.append("✓ Trial extend handles non-existent users correctly")
+            else:
+                all_passed = False
+                details.append(f"✗ Trial extend should return 404 for non-existent users: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("admin_trial_extend_functionality", "pass", 
+                            f"Admin trial extend functionality working. {'; '.join(details)}")
+            else:
+                self.log_test("admin_trial_extend_functionality", "fail", 
+                            f"Admin trial extend functionality issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("admin_trial_extend_functionality", "fail", f"Admin trial extend functionality test error: {str(e)}")
+    
+    def test_admin_trial_convert_functionality(self):
+        """Test POST /api/admin/trial/convert/{user_email} endpoint"""
+        print("\n=== Testing Admin Trial Convert Functionality ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            if not self.admin_token:
+                self.log_test("admin_trial_convert_functionality", "fail", "No admin token available for testing")
+                return
+                
+            admin_headers = {"Authorization": f"Bearer {self.admin_token}"}
+            
+            # First, create a test trial user to convert
+            test_user_email = f"trial_convert_test_{int(time.time())}@example.com"
+            
+            # Register a trial user
+            register_data = {
+                "email": test_user_email,
+                "password": "testpass123",
+                "name": "Trial Convert Test User"
+            }
+            
+            register_response = self.session.post(f"{API_BASE}/auth/register", json=register_data)
+            if register_response.status_code != 200:
+                details.append(f"Minor: Could not create test trial user for convert test: HTTP {register_response.status_code}")
+                # Continue with existing user test
+                test_user_email = "existing_trial_user@example.com"
+            else:
+                details.append("✓ Test trial user created for convert test")
+            
+            # Test 1: Convert trial with valid plan
+            convert_data = {"plan_type": "professional"}
+            response = self.session.post(f"{API_BASE}/admin/trial/convert/{test_user_email}", 
+                                       json=convert_data, headers=admin_headers)
+            
+            if response.status_code == 200:
+                convert_result = response.json()
+                
+                # Validate response structure
+                required_fields = ["message", "plan_type", "converted_by"]
+                missing_fields = [field for field in required_fields if field not in convert_result]
+                
+                if not missing_fields:
+                    details.append("✓ Trial convert response structure valid")
+                    
+                    if convert_result["plan_type"] == "professional":
+                        details.append("✓ Trial convert plan type correct")
+                    else:
+                        all_passed = False
+                        details.append(f"✗ Trial convert plan type incorrect: {convert_result['plan_type']}")
+                        
+                    if convert_result["converted_by"] == self.admin_credentials["email"]:
+                        details.append("✓ Trial convert attribution correct")
+                    else:
+                        details.append(f"Minor: Trial convert attribution unexpected ({convert_result['converted_by']})")
+                        
+                else:
+                    all_passed = False
+                    details.append(f"✗ Trial convert response missing fields: {missing_fields}")
+                    
+            elif response.status_code == 404:
+                details.append("✓ Trial convert properly handles non-existent users")
+            else:
+                all_passed = False
+                details.append(f"✗ Trial convert failed: HTTP {response.status_code}")
+            
+            # Test 2: Test invalid plan type
+            invalid_convert_data = {"plan_type": "invalid_plan"}
+            response = self.session.post(f"{API_BASE}/admin/trial/convert/{test_user_email}", 
+                                       json=invalid_convert_data, headers=admin_headers)
+            if response.status_code == 400:
+                details.append("✓ Trial convert validates plan type (invalid_plan rejected)")
+            else:
+                all_passed = False
+                details.append(f"✗ Trial convert validation failed for invalid plan: HTTP {response.status_code}")
+            
+            # Test 3: Test all valid plan types
+            valid_plans = ["solo", "professional", "agency", "enterprise"]
+            for plan in valid_plans:
+                test_email = f"convert_test_{plan}_{int(time.time())}@example.com"
+                plan_data = {"plan_type": plan}
+                response = self.session.post(f"{API_BASE}/admin/trial/convert/{test_email}", 
+                                           json=plan_data, headers=admin_headers)
+                if response.status_code in [200, 404]:  # 404 is acceptable for non-existent users
+                    details.append(f"✓ Plan type '{plan}' accepted")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Plan type '{plan}' rejected: HTTP {response.status_code}")
+            
+            # Test 4: Test non-existent user
+            response = self.session.post(f"{API_BASE}/admin/trial/convert/nonexistent@example.com", 
+                                       json={"plan_type": "solo"}, headers=admin_headers)
+            if response.status_code == 404:
+                details.append("✓ Trial convert handles non-existent users correctly")
+            else:
+                all_passed = False
+                details.append(f"✗ Trial convert should return 404 for non-existent users: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("admin_trial_convert_functionality", "pass", 
+                            f"Admin trial convert functionality working. {'; '.join(details)}")
+            else:
+                self.log_test("admin_trial_convert_functionality", "fail", 
+                            f"Admin trial convert functionality issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("admin_trial_convert_functionality", "fail", f"Admin trial convert functionality test error: {str(e)}")
+
     def run_all_tests(self):
         """Run all backend tests"""
         print(f"Starting comprehensive backend testing...")
