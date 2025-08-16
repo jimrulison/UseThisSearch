@@ -3,10 +3,10 @@ from typing import List, Optional
 from datetime import datetime, timedelta
 import uuid
 
-from models.billing_models import UserTrialInfo, TrialStatus, PlanType, AdminSessionResponse
+from models.billing_models import UserTrialInfo, TrialStatus, PlanType
 from models.admin_models import Admin
 from database import db
-from routes.admin_routes import get_admin_from_request
+from routes.admin_custom_pricing_routes import get_admin_from_request
 
 router = APIRouter(prefix="/admin/trial", tags=["admin-trial"])
 
