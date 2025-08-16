@@ -2722,6 +2722,780 @@ class BackendTester:
         except Exception as e:
             self.log_test("clustering_data_models", "fail", f"Clustering data models test error: {str(e)}")
     
+    def test_support_faq_system(self):
+        """Test FAQ system endpoints"""
+        print("\n=== Testing Support FAQ System ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Test 1: Get FAQ items (public endpoint)
+            response = self.session.get(f"{API_BASE}/support/faq")
+            
+            if response.status_code == 200:
+                faq_items = response.json()
+                
+                if isinstance(faq_items, list):
+                    details.append(f"✓ FAQ endpoint returns list ({len(faq_items)} items)")
+                    
+                    # Check if we have default FAQ items
+                    if len(faq_items) > 0:
+                        # Validate FAQ item structure
+                        faq_item = faq_items[0]
+                        required_fields = ["id", "question", "answer", "is_active", "created_at"]
+                        missing_fields = [field for field in required_fields if field not in faq_item]
+                        
+                        if not missing_fields:
+                            details.append("✓ FAQ item structure valid")
+                            
+                            # Check if items are active
+                            active_items = [item for item in faq_items if item.get("is_active", False)]
+                            if len(active_items) == len(faq_items):
+                                details.append("✓ All returned FAQ items are active")
+                            else:
+                                details.append(f"Minor: {len(active_items)}/{len(faq_items)} FAQ items are active")
+                        else:
+                            all_passed = False
+                            details.append(f"✗ FAQ item missing fields: {missing_fields}")
+                    else:
+                        details.append("✓ FAQ endpoint accessible (no default items found)")
+                else:
+                    all_passed = False
+                    details.append(f"✗ FAQ endpoint returned non-list: {type(faq_items)}")
+            else:
+                all_passed = False
+                details.append(f"✗ FAQ endpoint failed: HTTP {response.status_code}")
+            
+            # Test 2: Get FAQ categories
+            response = self.session.get(f"{API_BASE}/support/faq/categories")
+            
+            if response.status_code == 200:
+                categories_data = response.json()
+                
+                if "categories" in categories_data and isinstance(categories_data["categories"], list):
+                    details.append(f"✓ FAQ categories endpoint working ({len(categories_data['categories'])} categories)")
+                else:
+                    all_passed = False
+                    details.append("✗ FAQ categories response structure invalid")
+            else:
+                all_passed = False
+                details.append(f"✗ FAQ categories endpoint failed: HTTP {response.status_code}")
+            
+            # Test 3: Filter FAQ by category (if categories exist)
+            response = self.session.get(f"{API_BASE}/support/faq?category=Billing")
+            
+            if response.status_code == 200:
+                filtered_faq = response.json()
+                if isinstance(filtered_faq, list):
+                    details.append("✓ FAQ category filtering working")
+                else:
+                    all_passed = False
+                    details.append("✗ FAQ category filtering failed")
+            else:
+                all_passed = False
+                details.append(f"✗ FAQ category filtering failed: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("support_faq_system", "pass", 
+                            f"Support FAQ system working. {'; '.join(details)}")
+            else:
+                self.log_test("support_faq_system", "fail", 
+                            f"Support FAQ system issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("support_faq_system", "fail", f"Support FAQ system test error: {str(e)}")
+    
+    def test_support_chat_messages(self):
+        """Test chat messages system"""
+        print("\n=== Testing Support Chat Messages ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Test 1: Get chat messages (public endpoint)
+            response = self.session.get(f"{API_BASE}/support/chat/messages")
+            
+            if response.status_code == 200:
+                messages = response.json()
+                
+                if isinstance(messages, list):
+                    details.append(f"✓ Chat messages endpoint returns list ({len(messages)} messages)")
+                    
+                    # If messages exist, validate structure
+                    if len(messages) > 0:
+                        message = messages[0]
+                        required_fields = ["id", "user_email", "user_name", "message", "is_admin", "created_at"]
+                        missing_fields = [field for field in required_fields if field not in message]
+                        
+                        if not missing_fields:
+                            details.append("✓ Chat message structure valid")
+                            
+                            # Check for replies structure
+                            if "replies" in message and isinstance(message["replies"], list):
+                                details.append("✓ Chat message threading structure present")
+                            else:
+                                details.append("Minor: Chat message threading structure missing")
+                        else:
+                            all_passed = False
+                            details.append(f"✗ Chat message missing fields: {missing_fields}")
+                    else:
+                        details.append("✓ Chat messages endpoint accessible (no messages found)")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Chat messages returned non-list: {type(messages)}")
+            else:
+                all_passed = False
+                details.append(f"✗ Chat messages endpoint failed: HTTP {response.status_code}")
+            
+            # Test 2: Test pagination
+            response = self.session.get(f"{API_BASE}/support/chat/messages?limit=5&offset=0")
+            
+            if response.status_code == 200:
+                paginated_messages = response.json()
+                if isinstance(paginated_messages, list) and len(paginated_messages) <= 5:
+                    details.append("✓ Chat messages pagination working")
+                else:
+                    all_passed = False
+                    details.append("✗ Chat messages pagination failed")
+            else:
+                all_passed = False
+                details.append(f"✗ Chat messages pagination failed: HTTP {response.status_code}")
+            
+            # Test 3: Try to create chat message without authentication (should fail)
+            message_data = {
+                "message": "Test message without authentication",
+                "reply_to_id": None
+            }
+            
+            response = self.session.post(f"{API_BASE}/support/chat/message", json=message_data)
+            
+            if response.status_code in [401, 403, 422]:
+                details.append("✓ Chat message creation requires authentication")
+            else:
+                all_passed = False
+                details.append(f"✗ Chat message creation authentication not enforced: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("support_chat_messages", "pass", 
+                            f"Support chat messages working. {'; '.join(details)}")
+            else:
+                self.log_test("support_chat_messages", "fail", 
+                            f"Support chat messages issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("support_chat_messages", "fail", f"Support chat messages test error: {str(e)}")
+    
+    def test_support_tickets(self):
+        """Test support ticket system with authentication"""
+        print("\n=== Testing Support Tickets ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # First, try to authenticate as a regular user
+            user_credentials = {
+                "email": "test@example.com",
+                "password": "password123"
+            }
+            
+            # Try to login (this might fail if user auth system is not implemented)
+            login_response = self.session.post(f"{API_BASE}/auth/login", json=user_credentials)
+            user_token = None
+            
+            if login_response.status_code == 200:
+                login_data = login_response.json()
+                user_token = login_data.get("token") or login_data.get("access_token")
+                details.append("✓ User authentication successful")
+            else:
+                details.append(f"Minor: User authentication not available (HTTP {login_response.status_code})")
+            
+            # Test 1: Get user tickets without authentication (should fail)
+            response = self.session.get(f"{API_BASE}/support/tickets")
+            
+            if response.status_code in [401, 403, 422]:
+                details.append("✓ Support tickets require authentication")
+            else:
+                all_passed = False
+                details.append(f"✗ Support tickets authentication not enforced: HTTP {response.status_code}")
+            
+            # Test 2: Create support ticket without authentication (should fail)
+            ticket_data = {
+                "category": "Software Issue",
+                "subject": "Test ticket without authentication",
+                "description": "This is a test ticket created without proper authentication"
+            }
+            
+            response = self.session.post(f"{API_BASE}/support/tickets", json=ticket_data)
+            
+            if response.status_code in [401, 403, 422]:
+                details.append("✓ Support ticket creation requires authentication")
+            else:
+                all_passed = False
+                details.append(f"✗ Support ticket creation authentication not enforced: HTTP {response.status_code}")
+            
+            # Test 3: If we have a user token, test authenticated requests
+            if user_token:
+                headers = {"Authorization": f"Bearer {user_token}"}
+                
+                # Test creating a support ticket
+                response = self.session.post(f"{API_BASE}/support/tickets", json=ticket_data, headers=headers)
+                
+                if response.status_code == 200:
+                    ticket = response.json()
+                    
+                    # Validate ticket structure
+                    required_fields = ["id", "user_email", "category", "subject", "description", "status", "created_at"]
+                    missing_fields = [field for field in required_fields if field not in ticket]
+                    
+                    if not missing_fields:
+                        details.append("✓ Support ticket creation working with authentication")
+                        
+                        # Test getting user tickets
+                        response = self.session.get(f"{API_BASE}/support/tickets", headers=headers)
+                        
+                        if response.status_code == 200:
+                            tickets = response.json()
+                            if isinstance(tickets, list) and len(tickets) > 0:
+                                details.append("✓ Support ticket retrieval working")
+                            else:
+                                details.append("✓ Support ticket retrieval endpoint accessible")
+                        else:
+                            all_passed = False
+                            details.append(f"✗ Support ticket retrieval failed: HTTP {response.status_code}")
+                        
+                        # Test ticket messages
+                        ticket_id = ticket["id"]
+                        response = self.session.get(f"{API_BASE}/support/tickets/{ticket_id}/messages", headers=headers)
+                        
+                        if response.status_code == 200:
+                            messages = response.json()
+                            if isinstance(messages, list):
+                                details.append("✓ Support ticket messages endpoint working")
+                            else:
+                                all_passed = False
+                                details.append("✗ Support ticket messages structure invalid")
+                        else:
+                            all_passed = False
+                            details.append(f"✗ Support ticket messages failed: HTTP {response.status_code}")
+                        
+                    else:
+                        all_passed = False
+                        details.append(f"✗ Support ticket missing fields: {missing_fields}")
+                elif response.status_code in [401, 403]:
+                    details.append("✓ Support ticket authentication working (token might be invalid)")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Support ticket creation failed: HTTP {response.status_code}")
+            
+            # Test 4: Test support stats endpoint
+            if user_token:
+                headers = {"Authorization": f"Bearer {user_token}"}
+                response = self.session.get(f"{API_BASE}/support/stats", headers=headers)
+                
+                if response.status_code == 200:
+                    stats = response.json()
+                    required_fields = ["open_tickets", "total_tickets", "unread_messages"]
+                    missing_fields = [field for field in required_fields if field not in stats]
+                    
+                    if not missing_fields:
+                        details.append("✓ Support stats endpoint working")
+                    else:
+                        all_passed = False
+                        details.append(f"✗ Support stats missing fields: {missing_fields}")
+                elif response.status_code in [401, 403]:
+                    details.append("✓ Support stats requires authentication")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Support stats failed: HTTP {response.status_code}")
+            else:
+                response = self.session.get(f"{API_BASE}/support/stats")
+                if response.status_code in [401, 403, 422]:
+                    details.append("✓ Support stats requires authentication")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Support stats authentication not enforced: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("support_tickets", "pass", 
+                            f"Support tickets working. {'; '.join(details)}")
+            else:
+                self.log_test("support_tickets", "fail", 
+                            f"Support tickets issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("support_tickets", "fail", f"Support tickets test error: {str(e)}")
+    
+    def test_admin_support_dashboard(self):
+        """Test admin support dashboard and endpoints"""
+        print("\n=== Testing Admin Support Dashboard ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Test 1: Admin login
+            admin_token = None
+            if not self.admin_token:
+                login_response = self.session.post(f"{API_BASE}/admin/login", json=self.admin_credentials)
+                
+                if login_response.status_code == 200:
+                    login_data = login_response.json()
+                    admin_token = login_data.get("token")
+                    self.admin_token = admin_token
+                    details.append("✓ Admin authentication successful")
+                else:
+                    details.append(f"✗ Admin authentication failed: HTTP {login_response.status_code}")
+                    all_passed = False
+            else:
+                admin_token = self.admin_token
+                details.append("✓ Using existing admin token")
+            
+            if admin_token:
+                headers = {"Authorization": f"Bearer {admin_token}"}
+                
+                # Test 2: Get admin support dashboard
+                response = self.session.get(f"{API_BASE}/admin/support/dashboard", headers=headers)
+                
+                if response.status_code == 200:
+                    dashboard = response.json()
+                    
+                    # Validate dashboard structure
+                    required_fields = ["unread_notifications", "new_chat_messages", "open_tickets", "recent_activity"]
+                    missing_fields = [field for field in required_fields if field not in dashboard]
+                    
+                    if not missing_fields:
+                        details.append("✓ Admin support dashboard structure valid")
+                        
+                        # Validate data types
+                        if (isinstance(dashboard["unread_notifications"], int) and
+                            isinstance(dashboard["new_chat_messages"], int) and
+                            isinstance(dashboard["open_tickets"], int) and
+                            isinstance(dashboard["recent_activity"], list)):
+                            
+                            details.append(f"✓ Admin dashboard data types correct (notifications: {dashboard['unread_notifications']}, messages: {dashboard['new_chat_messages']}, tickets: {dashboard['open_tickets']})")
+                        else:
+                            all_passed = False
+                            details.append("✗ Admin dashboard data types invalid")
+                    else:
+                        all_passed = False
+                        details.append(f"✗ Admin dashboard missing fields: {missing_fields}")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Admin support dashboard failed: HTTP {response.status_code}")
+                
+                # Test 3: Get admin notifications
+                response = self.session.get(f"{API_BASE}/admin/support/notifications", headers=headers)
+                
+                if response.status_code == 200:
+                    notifications = response.json()
+                    
+                    if isinstance(notifications, list):
+                        details.append(f"✓ Admin notifications endpoint working ({len(notifications)} notifications)")
+                        
+                        # If notifications exist, validate structure
+                        if len(notifications) > 0:
+                            notification = notifications[0]
+                            required_fields = ["id", "type", "title", "message", "is_read", "created_at"]
+                            missing_fields = [field for field in required_fields if field not in notification]
+                            
+                            if not missing_fields:
+                                details.append("✓ Admin notification structure valid")
+                            else:
+                                all_passed = False
+                                details.append(f"✗ Admin notification missing fields: {missing_fields}")
+                    else:
+                        all_passed = False
+                        details.append("✗ Admin notifications returned non-list")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Admin notifications failed: HTTP {response.status_code}")
+                
+                # Test 4: Get all support tickets (admin view)
+                response = self.session.get(f"{API_BASE}/admin/support/tickets", headers=headers)
+                
+                if response.status_code == 200:
+                    tickets = response.json()
+                    
+                    if isinstance(tickets, list):
+                        details.append(f"✓ Admin tickets endpoint working ({len(tickets)} tickets)")
+                        
+                        # If tickets exist, validate structure
+                        if len(tickets) > 0:
+                            ticket = tickets[0]
+                            required_fields = ["id", "user_email", "category", "subject", "status", "created_at"]
+                            missing_fields = [field for field in required_fields if field not in ticket]
+                            
+                            if not missing_fields:
+                                details.append("✓ Admin ticket structure valid")
+                            else:
+                                all_passed = False
+                                details.append(f"✗ Admin ticket missing fields: {missing_fields}")
+                    else:
+                        all_passed = False
+                        details.append("✗ Admin tickets returned non-list")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Admin tickets failed: HTTP {response.status_code}")
+                
+                # Test 5: Test ticket filtering by status
+                response = self.session.get(f"{API_BASE}/admin/support/tickets?status=open", headers=headers)
+                
+                if response.status_code == 200:
+                    filtered_tickets = response.json()
+                    if isinstance(filtered_tickets, list):
+                        details.append("✓ Admin ticket filtering working")
+                    else:
+                        all_passed = False
+                        details.append("✗ Admin ticket filtering failed")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Admin ticket filtering failed: HTTP {response.status_code}")
+            
+            # Test 6: Test admin endpoints without authentication (should fail)
+            response = self.session.get(f"{API_BASE}/admin/support/dashboard")
+            
+            if response.status_code in [401, 403]:
+                details.append("✓ Admin support endpoints require authentication")
+            else:
+                all_passed = False
+                details.append(f"✗ Admin support authentication not enforced: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("admin_support_dashboard", "pass", 
+                            f"Admin support dashboard working. {'; '.join(details)}")
+            else:
+                self.log_test("admin_support_dashboard", "fail", 
+                            f"Admin support dashboard issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("admin_support_dashboard", "fail", f"Admin support dashboard test error: {str(e)}")
+    
+    def test_admin_support_faq_management(self):
+        """Test admin FAQ management endpoints"""
+        print("\n=== Testing Admin Support FAQ Management ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Use existing admin token or login
+            admin_token = self.admin_token
+            if not admin_token:
+                login_response = self.session.post(f"{API_BASE}/admin/login", json=self.admin_credentials)
+                if login_response.status_code == 200:
+                    login_data = login_response.json()
+                    admin_token = login_data.get("token")
+                    self.admin_token = admin_token
+                    details.append("✓ Admin authentication successful")
+                else:
+                    details.append(f"✗ Admin authentication failed: HTTP {login_response.status_code}")
+                    all_passed = False
+            
+            if admin_token:
+                headers = {"Authorization": f"Bearer {admin_token}"}
+                
+                # Test 1: Get all FAQ items (admin view - includes inactive)
+                response = self.session.get(f"{API_BASE}/admin/support/faq", headers=headers)
+                
+                if response.status_code == 200:
+                    admin_faq_items = response.json()
+                    
+                    if isinstance(admin_faq_items, list):
+                        details.append(f"✓ Admin FAQ endpoint working ({len(admin_faq_items)} items)")
+                        
+                        # Compare with public FAQ endpoint
+                        public_response = self.session.get(f"{API_BASE}/support/faq")
+                        if public_response.status_code == 200:
+                            public_faq_items = public_response.json()
+                            
+                            if len(admin_faq_items) >= len(public_faq_items):
+                                details.append("✓ Admin FAQ shows all items (including inactive)")
+                            else:
+                                details.append("Minor: Admin FAQ count inconsistent with public FAQ")
+                    else:
+                        all_passed = False
+                        details.append("✗ Admin FAQ returned non-list")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Admin FAQ endpoint failed: HTTP {response.status_code}")
+                
+                # Test 2: Create new FAQ item
+                new_faq = {
+                    "question": "Test FAQ Question",
+                    "answer": "This is a test FAQ answer created during testing.",
+                    "category": "Testing",
+                    "order": 999
+                }
+                
+                response = self.session.post(f"{API_BASE}/admin/support/faq", json=new_faq, headers=headers)
+                
+                created_faq_id = None
+                if response.status_code == 200:
+                    created_faq = response.json()
+                    
+                    # Validate created FAQ structure
+                    required_fields = ["id", "question", "answer", "category", "order", "is_active", "created_at"]
+                    missing_fields = [field for field in required_fields if field not in created_faq]
+                    
+                    if not missing_fields:
+                        details.append("✓ Admin FAQ creation working")
+                        created_faq_id = created_faq["id"]
+                        
+                        # Verify the FAQ was created with correct data
+                        if (created_faq["question"] == new_faq["question"] and
+                            created_faq["answer"] == new_faq["answer"] and
+                            created_faq["category"] == new_faq["category"]):
+                            details.append("✓ Admin FAQ creation data correct")
+                        else:
+                            all_passed = False
+                            details.append("✗ Admin FAQ creation data incorrect")
+                    else:
+                        all_passed = False
+                        details.append(f"✗ Created FAQ missing fields: {missing_fields}")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Admin FAQ creation failed: HTTP {response.status_code}")
+                
+                # Test 3: Update FAQ item (if we created one)
+                if created_faq_id:
+                    update_data = {
+                        "question": "Updated Test FAQ Question",
+                        "answer": "This is an updated test FAQ answer.",
+                        "is_active": False
+                    }
+                    
+                    response = self.session.put(f"{API_BASE}/admin/support/faq/{created_faq_id}", 
+                                              json=update_data, headers=headers)
+                    
+                    if response.status_code == 200:
+                        updated_faq = response.json()
+                        
+                        if (updated_faq["question"] == update_data["question"] and
+                            updated_faq["answer"] == update_data["answer"] and
+                            updated_faq["is_active"] == update_data["is_active"]):
+                            details.append("✓ Admin FAQ update working")
+                        else:
+                            all_passed = False
+                            details.append("✗ Admin FAQ update data incorrect")
+                    else:
+                        all_passed = False
+                        details.append(f"✗ Admin FAQ update failed: HTTP {response.status_code}")
+                    
+                    # Test 4: Delete FAQ item
+                    response = self.session.delete(f"{API_BASE}/admin/support/faq/{created_faq_id}", headers=headers)
+                    
+                    if response.status_code == 200:
+                        details.append("✓ Admin FAQ deletion working")
+                        
+                        # Verify deletion
+                        response = self.session.get(f"{API_BASE}/admin/support/faq", headers=headers)
+                        if response.status_code == 200:
+                            remaining_faqs = response.json()
+                            deleted_faq = next((faq for faq in remaining_faqs if faq["id"] == created_faq_id), None)
+                            
+                            if not deleted_faq:
+                                details.append("✓ Admin FAQ deletion confirmed")
+                            else:
+                                all_passed = False
+                                details.append("✗ Admin FAQ deletion not confirmed")
+                    else:
+                        all_passed = False
+                        details.append(f"✗ Admin FAQ deletion failed: HTTP {response.status_code}")
+                
+                # Test 5: Try to update non-existent FAQ
+                response = self.session.put(f"{API_BASE}/admin/support/faq/nonexistent_id", 
+                                          json={"question": "Test"}, headers=headers)
+                
+                if response.status_code == 404:
+                    details.append("✓ Admin FAQ update handles non-existent items")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Admin FAQ update error handling failed: HTTP {response.status_code}")
+            
+            # Test 6: Test admin FAQ endpoints without authentication (should fail)
+            response = self.session.get(f"{API_BASE}/admin/support/faq")
+            
+            if response.status_code in [401, 403]:
+                details.append("✓ Admin FAQ endpoints require authentication")
+            else:
+                all_passed = False
+                details.append(f"✗ Admin FAQ authentication not enforced: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("admin_support_faq_management", "pass", 
+                            f"Admin support FAQ management working. {'; '.join(details)}")
+            else:
+                self.log_test("admin_support_faq_management", "fail", 
+                            f"Admin support FAQ management issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("admin_support_faq_management", "fail", f"Admin support FAQ management test error: {str(e)}")
+    
+    def test_admin_support_ticket_management(self):
+        """Test admin support ticket management endpoints"""
+        print("\n=== Testing Admin Support Ticket Management ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Use existing admin token or login
+            admin_token = self.admin_token
+            if not admin_token:
+                login_response = self.session.post(f"{API_BASE}/admin/login", json=self.admin_credentials)
+                if login_response.status_code == 200:
+                    login_data = login_response.json()
+                    admin_token = login_data.get("token")
+                    self.admin_token = admin_token
+                    details.append("✓ Admin authentication successful")
+                else:
+                    details.append(f"✗ Admin authentication failed: HTTP {login_response.status_code}")
+                    all_passed = False
+            
+            if admin_token:
+                headers = {"Authorization": f"Bearer {admin_token}"}
+                
+                # Test 1: Get all support tickets (admin view)
+                response = self.session.get(f"{API_BASE}/admin/support/tickets", headers=headers)
+                
+                if response.status_code == 200:
+                    admin_tickets = response.json()
+                    
+                    if isinstance(admin_tickets, list):
+                        details.append(f"✓ Admin tickets endpoint working ({len(admin_tickets)} tickets)")
+                        
+                        # If tickets exist, test ticket management
+                        if len(admin_tickets) > 0:
+                            test_ticket = admin_tickets[0]
+                            ticket_id = test_ticket["id"]
+                            
+                            # Test 2: Update ticket status
+                            update_data = {
+                                "status": "in_progress",
+                                "priority": "high",
+                                "admin_notes": "Test admin notes added during testing"
+                            }
+                            
+                            response = self.session.put(f"{API_BASE}/admin/support/tickets/{ticket_id}", 
+                                                      json=update_data, headers=headers)
+                            
+                            if response.status_code == 200:
+                                updated_ticket = response.json()
+                                
+                                if (updated_ticket["status"] == update_data["status"] and
+                                    updated_ticket["priority"] == update_data["priority"] and
+                                    updated_ticket.get("admin_notes") == update_data["admin_notes"]):
+                                    details.append("✓ Admin ticket update working")
+                                else:
+                                    all_passed = False
+                                    details.append("✗ Admin ticket update data incorrect")
+                            else:
+                                all_passed = False
+                                details.append(f"✗ Admin ticket update failed: HTTP {response.status_code}")
+                            
+                            # Test 3: Reply to ticket
+                            reply_data = {
+                                "message": "This is a test admin reply to the support ticket."
+                            }
+                            
+                            response = self.session.post(f"{API_BASE}/admin/support/tickets/{ticket_id}/reply", 
+                                                       json=reply_data, headers=headers)
+                            
+                            if response.status_code == 200:
+                                reply_message = response.json()
+                                
+                                # Validate reply structure
+                                required_fields = ["id", "ticket_id", "sender_email", "sender_name", "is_admin", "message", "created_at"]
+                                missing_fields = [field for field in required_fields if field not in reply_message]
+                                
+                                if not missing_fields:
+                                    if (reply_message["is_admin"] == True and
+                                        reply_message["message"] == reply_data["message"] and
+                                        reply_message["ticket_id"] == ticket_id):
+                                        details.append("✓ Admin ticket reply working")
+                                    else:
+                                        all_passed = False
+                                        details.append("✗ Admin ticket reply data incorrect")
+                                else:
+                                    all_passed = False
+                                    details.append(f"✗ Admin ticket reply missing fields: {missing_fields}")
+                            else:
+                                all_passed = False
+                                details.append(f"✗ Admin ticket reply failed: HTTP {response.status_code}")
+                        else:
+                            details.append("✓ Admin tickets endpoint accessible (no tickets to test management)")
+                    else:
+                        all_passed = False
+                        details.append("✗ Admin tickets returned non-list")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Admin tickets endpoint failed: HTTP {response.status_code}")
+                
+                # Test 4: Filter tickets by status
+                response = self.session.get(f"{API_BASE}/admin/support/tickets?status=open", headers=headers)
+                
+                if response.status_code == 200:
+                    open_tickets = response.json()
+                    if isinstance(open_tickets, list):
+                        details.append("✓ Admin ticket status filtering working")
+                        
+                        # Verify all returned tickets have 'open' status
+                        if len(open_tickets) > 0:
+                            non_open_tickets = [t for t in open_tickets if t.get("status") != "open"]
+                            if len(non_open_tickets) == 0:
+                                details.append("✓ Admin ticket status filter accurate")
+                            else:
+                                all_passed = False
+                                details.append("✗ Admin ticket status filter inaccurate")
+                    else:
+                        all_passed = False
+                        details.append("✗ Admin ticket filtering returned non-list")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Admin ticket filtering failed: HTTP {response.status_code}")
+                
+                # Test 5: Try to update non-existent ticket
+                response = self.session.put(f"{API_BASE}/admin/support/tickets/nonexistent_id", 
+                                          json={"status": "resolved"}, headers=headers)
+                
+                if response.status_code == 404:
+                    details.append("✓ Admin ticket update handles non-existent tickets")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Admin ticket update error handling failed: HTTP {response.status_code}")
+                
+                # Test 6: Try to reply to non-existent ticket
+                response = self.session.post(f"{API_BASE}/admin/support/tickets/nonexistent_id/reply", 
+                                           json={"message": "Test reply"}, headers=headers)
+                
+                if response.status_code == 404:
+                    details.append("✓ Admin ticket reply handles non-existent tickets")
+                else:
+                    all_passed = False
+                    details.append(f"✗ Admin ticket reply error handling failed: HTTP {response.status_code}")
+            
+            # Test 7: Test admin ticket endpoints without authentication (should fail)
+            response = self.session.get(f"{API_BASE}/admin/support/tickets")
+            
+            if response.status_code in [401, 403]:
+                details.append("✓ Admin ticket endpoints require authentication")
+            else:
+                all_passed = False
+                details.append(f"✗ Admin ticket authentication not enforced: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("admin_support_ticket_management", "pass", 
+                            f"Admin support ticket management working. {'; '.join(details)}")
+            else:
+                self.log_test("admin_support_ticket_management", "fail", 
+                            f"Admin support ticket management issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("admin_support_ticket_management", "fail", f"Admin support ticket management test error: {str(e)}")
+
     def run_all_tests(self):
         """Run all backend tests"""
         print(f"Starting comprehensive backend testing...")
