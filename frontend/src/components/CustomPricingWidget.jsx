@@ -18,17 +18,16 @@ const CustomPricingWidget = ({ getAuthHeaders }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const planOptions = [
-    { value: 'solo', label: 'Solo Plan', features: ['1 user', '1 company', '200 searches'] },
-    { value: 'professional', label: 'Professional Plan', features: ['2 users', '5 companies', '500 searches'] },
-    { value: 'agency', label: 'Agency Plan', features: ['5 users', 'Unlimited companies', '2000 searches'] },
-    { value: 'enterprise', label: 'Enterprise Plan', features: ['7 users', 'Unlimited companies', 'Unlimited searches'] },
+    { value: 'solo', label: 'Solo Plan', features: ['1 user', '1 company', '1 workspace', 'Unlimited searches'] },
     { 
-      value: 'annual_gift', 
-      label: '🎁 Annual Gift Plan', 
-      features: ['5 users', '10 companies', '1000+ searches', '🔥 Clustering Access', '500 Bonus Credits', '12-month duration'],
-      isGift: true,
-      description: 'Special annual gift subscription with premium features'
-    }
+      value: 'annual', 
+      label: 'Annual Plan', 
+      features: ['GROUP KEYWORDS access', 'Strategic keyword clustering', 'Content intelligence'],
+      description: 'Annual billing with Group Keywords clustering feature'
+    },
+    { value: 'additional_user', label: 'Additional User', features: ['Extra user access', 'Team collaboration'] },
+    { value: 'additional_workspace', label: 'Additional Workspace', features: ['Extra workspace', 'Project organization'] },
+    { value: 'additional_company', label: 'Additional Company', features: ['Extra company access', 'Multi-client management'] }
   ];
 
   const handleApplyCustomPricing = async (e) => {
