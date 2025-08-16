@@ -254,8 +254,8 @@ async def get_trial_analytics(admin: Admin = Depends(get_admin_from_request)):
             analytics_data["search_usage_distribution"]["over_25_searches"] += 1
         
         # Daily signups (last 30 days)
-        if trial.trial_start:
-            signup_date = trial.trial_start.date()
+        if trial.trial_start_date:
+            signup_date = trial.trial_start_date.date()
             if (today - signup_date).days <= 30:
                 date_str = signup_date.isoformat()
                 analytics_data["daily_signups_last_30_days"][date_str] = analytics_data["daily_signups_last_30_days"].get(date_str, 0) + 1
