@@ -211,25 +211,40 @@ def get_company_limit_decorator():
 
 # Authentication functions for support system
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Get current user from token - placeholder implementation"""
+    """Get current user from JWT token"""
     try:
+        import jwt
+        from datetime import datetime
+        
         token = credentials.credentials
+        JWT_SECRET = "your-secret-key-here"  # Should match auth_routes.py
+        JWT_ALGORITHM = "HS256"
         
-        # This is a placeholder implementation
-        # In a real system, you would validate the token against your user database
-        # For now, we'll create a mock user based on the token
-        
-        # Check if it's a test token
-        if token.startswith("test_"):
+        # Decode JWT token
+        try:
+            payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            user_email = payload.get("email")
+            user_id = payload.get("user_id")
+            
+            if not user_email or not user_id:
+                raise HTTPException(status_code=401, detail="Invalid token payload")
+            
+            # Check if token has expired
+            exp = payload.get("exp")
+            if exp and datetime.utcfromtimestamp(exp) < datetime.utcnow():
+                raise HTTPException(status_code=401, detail="Token has expired")
+            
+            # Return user info
             return {
-                "email": "test@example.com",
-                "name": "Test User",
-                "company_id": "test_company_123"
+                "email": user_email,
+                "user_id": user_id,
+                "name": user_email.split('@')[0]  # Default name
             }
-        
-        # For other tokens, try to find user session (simplified)
-        # This would need to be implemented based on your user authentication system
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
+            
+        except jwt.ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail="Token has expired")
+        except jwt.InvalidTokenError:
+            raise HTTPException(status_code=401, detail="Invalid token")
         
     except Exception as e:
         logger.error(f"Error getting current user: {e}")
