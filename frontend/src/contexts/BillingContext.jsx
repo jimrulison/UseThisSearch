@@ -268,6 +268,12 @@ export const BillingProvider = ({ children }) => {
       return false;
     }
 
+    // Trial users have limited access - NO GROUP KEYWORDS (keyword_clustering)
+    if (subscription.plan_type === 'trial') {
+      const trialFeatures = ['basic_search', 'csv_export', 'personal_workspace'];
+      return trialFeatures.includes(featureName);
+    }
+
     const planFeatures = {
       'solo': ['basic_search', 'csv_export', 'personal_workspace'],
       'professional': ['basic_search', 'csv_export', 'multiple_workspaces', 'team_collaboration', 'usage_analytics'],
