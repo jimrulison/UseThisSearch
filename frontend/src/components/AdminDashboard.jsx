@@ -572,7 +572,7 @@ const AdminDashboard = () => {
         </div>
         
         {isLoading && (
-          <div className="flex items-center justify-center py-12">
+          <div className="flex items-center justify-center py-6">
             <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div>
             <span className="ml-3 text-white">Loading...</span>
           </div>
@@ -580,8 +580,8 @@ const AdminDashboard = () => {
 
         {/* Dashboard Tab */}
         {activeTab === 'dashboard' && dashboardData && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-white mb-6">Dashboard Overview</h2>
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-white mb-4">Dashboard Overview</h2>
             
             {/* Key Metrics Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
