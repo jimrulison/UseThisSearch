@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 from models.billing_models import UserTrialInfo, TrialStatus, PlanType
 from database import get_database
 
-router = APIRouter(prefix="/api/auth", tags=["auth"])
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 # JWT settings
 JWT_SECRET = "your-secret-key-here"  # In production, use environment variable
