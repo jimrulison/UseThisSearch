@@ -1,9 +1,13 @@
 import logging
-from fastapi import Request, HTTPException
+from fastapi import Request, HTTPException, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Callable, Any
 from billing.usage_tracker import get_usage_tracker
+from database import db
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
+security = HTTPBearer()
 
 class BillingMiddleware:
     """
