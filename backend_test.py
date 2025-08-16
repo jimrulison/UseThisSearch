@@ -68,7 +68,14 @@ class BackendTester:
             "support_tickets": {"status": "pending", "details": ""},
             "admin_support_dashboard": {"status": "pending", "details": ""},
             "admin_support_faq_management": {"status": "pending", "details": ""},
-            "admin_support_ticket_management": {"status": "pending", "details": ""}
+            "admin_support_ticket_management": {"status": "pending", "details": ""},
+            # New 7-day trial system tests
+            "trial_user_registration": {"status": "pending", "details": ""},
+            "trial_user_login": {"status": "pending", "details": ""},
+            "trial_status_check": {"status": "pending", "details": ""},
+            "trial_search_limits": {"status": "pending", "details": ""},
+            "trial_reminder_system": {"status": "pending", "details": ""},
+            "trial_support_announcements": {"status": "pending", "details": ""}
         }
         self.session = requests.Session()
         self.session.timeout = 30
