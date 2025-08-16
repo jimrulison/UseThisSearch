@@ -137,6 +137,10 @@ CLUSTERING_FEATURE_NAME = "keyword_clustering"
 
 # Default limits by plan
 CLUSTERING_LIMITS = {
+    "annual": {
+        "monthly_analyses": 100,
+        "keywords_per_analysis": 1000
+    },
     "professional_annual": {
         "monthly_analyses": 50,
         "keywords_per_analysis": 500
