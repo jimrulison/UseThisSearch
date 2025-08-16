@@ -61,7 +61,14 @@ class BackendTester:
             "clustering_api_endpoints": {"status": "pending", "details": ""},
             "clustering_usage_limits": {"status": "pending", "details": ""},
             "clustering_export_functionality": {"status": "pending", "details": ""},
-            "clustering_data_models": {"status": "pending", "details": ""}
+            "clustering_data_models": {"status": "pending", "details": ""},
+            # New support system tests
+            "support_faq_system": {"status": "pending", "details": ""},
+            "support_chat_messages": {"status": "pending", "details": ""},
+            "support_tickets": {"status": "pending", "details": ""},
+            "admin_support_dashboard": {"status": "pending", "details": ""},
+            "admin_support_faq_management": {"status": "pending", "details": ""},
+            "admin_support_ticket_management": {"status": "pending", "details": ""}
         }
         self.session = requests.Session()
         self.session.timeout = 30
