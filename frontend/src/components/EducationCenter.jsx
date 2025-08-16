@@ -18,6 +18,7 @@ import {
 
 const EducationCenter = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('tutorials');
+  const [viewingDocument, setViewingDocument] = useState(null);
 
   // Tutorial slides data - these will be converted to videos later
   const tutorialSlides = [
