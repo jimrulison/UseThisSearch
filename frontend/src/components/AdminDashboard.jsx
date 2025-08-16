@@ -494,6 +494,7 @@ const AdminDashboard = () => {
               { id: 'dashboard', label: 'Dashboard' },
               { id: 'announcements', label: 'Announcements' },
               { id: 'support', label: 'Support Center' },
+              { id: 'trials', label: 'Trial Management' },
               { id: 'lookup', label: 'User Lookup' },
               { id: 'analytics', label: 'Global Analytics' },
               { id: 'users', label: 'All Users' }
