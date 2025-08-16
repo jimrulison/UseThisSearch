@@ -30,6 +30,10 @@ from routes.admin_custom_pricing_routes import router as admin_custom_pricing_ro
 # NEW: Import clustering routes (additive)
 from routes.clustering_routes import router as clustering_router
 
+# NEW: Import support routes (additive)
+from routes.support_routes import router as support_router
+from routes.admin_support_routes import router as admin_support_router
+
 from database import init_database, close_database
 
 ROOT_DIR = Path(__file__).parent
