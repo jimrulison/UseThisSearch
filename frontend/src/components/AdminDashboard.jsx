@@ -36,6 +36,8 @@ const AdminDashboard = () => {
       loadGlobalAnalytics();
     } else if (activeTab === 'users') {
       loadAllUsers();
+    } else if (activeTab === 'support') {
+      loadSupportData();
     }
   }, [activeTab]);
 
