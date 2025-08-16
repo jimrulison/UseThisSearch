@@ -4311,9 +4311,8 @@ class BackendTester:
             valid_plans = ["solo", "professional", "agency", "enterprise"]
             for plan in valid_plans:
                 test_email = f"convert_test_{plan}_{int(time.time())}@example.com"
-                plan_data = {"plan_type": plan}
-                response = self.session.post(f"{API_BASE}/admin/trial/convert/{test_email}", 
-                                           json=plan_data, headers=admin_headers)
+                response = self.session.post(f"{API_BASE}/admin/trial/convert/{test_email}?plan_type={plan}", 
+                                           headers=admin_headers)
                 if response.status_code in [200, 404]:  # 404 is acceptable for non-existent users
                     details.append(f"✓ Plan type '{plan}' accepted")
                 else:
