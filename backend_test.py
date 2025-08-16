@@ -4935,6 +4935,18 @@ class BackendTester:
         self.test_admin_trial_extend_functionality()
         self.test_admin_trial_convert_functionality()
         
+        # Run NEW PLAN STRUCTURE tests
+        print(f"\n{'='*60}")
+        print("NEW PLAN STRUCTURE TESTS")
+        print(f"{'='*60}")
+        
+        self.test_admin_authentication_new_plan_testing()
+        self.test_admin_custom_pricing_new_plan_structure()
+        self.test_admin_trial_management_new_plans()
+        self.test_group_keywords_access_validation()
+        self.test_search_limits_validation_new_plans()
+        self.test_backend_model_updates_validation()
+        
         # Run new clustering tests
         print(f"\n{'='*60}")
         print("CLUSTERING SYSTEM TESTS")
