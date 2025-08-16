@@ -379,11 +379,59 @@ const AdminDashboard = () => {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex justify-between items-start mb-8">
-          <div></div>
-          {/* Custom Pricing Widget - Top Right */}
-          <div className="w-80">
+        {/* Top Row - Custom Pricing and Support Dashboard */}
+        <div className="flex gap-6 mb-8">
+          {/* Custom Pricing Widget - Left Side */}
+          <div className="w-80 flex-shrink-0">
             <CustomPricingWidget getAuthHeaders={getAuthHeaders} />
+          </div>
+          
+          {/* Support Dashboard Stats - Right Side */}
+          <div className="flex-1">
+            {supportDashboard && (
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-white">Support Overview</h3>
+                  <div className="flex items-center gap-2">
+                    {supportDashboard.unread_notifications > 0 && (
+                      <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                        {supportDashboard.unread_notifications} New
+                      </div>
+                    )}
+                    {supportDashboard.open_tickets > 0 && (
+                      <div className="bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                        {supportDashboard.open_tickets} Tickets
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-white">{supportDashboard.open_tickets}</p>
+                    <p className="text-gray-300 text-xs">Open Tickets</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-white">{supportDashboard.unread_notifications}</p>
+                    <p className="text-gray-300 text-xs">Notifications</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-white">{supportDashboard.new_chat_messages}</p>
+                    <p className="text-gray-300 text-xs">New Messages</p>
+                  </div>
+                </div>
+                
+                <div className="mt-4">
+                  <Button
+                    onClick={() => setActiveTab('support')}
+                    size="sm"
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                  >
+                    Manage Support
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         
