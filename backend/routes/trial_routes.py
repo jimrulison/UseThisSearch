@@ -7,7 +7,7 @@ from models.billing_models import UserTrialInfo, TrialStatus, PlanType
 from database import get_database
 from billing.billing_middleware import get_current_user
 
-router = APIRouter(prefix="/api/trial", tags=["trial"])
+router = APIRouter(prefix="/trial", tags=["trial"])
 
 @router.get("/status")
 async def get_trial_status(current_user=Depends(get_current_user)):
