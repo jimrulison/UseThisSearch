@@ -90,8 +90,49 @@ const EducationCenter = ({ isOpen, onClose }) => {
     }
   ];
 
-  // Educational materials/manuals
+  // Educational materials/manuals - reordered as requested
   const educationalMaterials = [
+    {
+      id: 'user-quick-start',
+      title: 'User Quick Start Guide',
+      description: 'Get started quickly with essential features',
+      type: 'PDF',
+      size: '800 KB',
+      pages: '12',
+      icon: FileText,
+      content: 'Essential features for new users to get productive quickly',
+      docContent: `# USER QUICK START GUIDE
+
+## Welcome to Use This Search!
+This quick start guide will get you up and running in just a few minutes.
+
+### Step 1: Login
+- Enter your email (case-insensitive)
+- Enter your password (6+ characters)
+- Click "Sign In"
+
+### Step 2: First Search
+- Type a keyword in the search box
+- Click "Generate Ideas"
+- Get 40+ relevant suggestions
+
+### Step 3: View Results
+- Switch between Graph and List views
+- Filter by category (Questions, Prepositions, Comparisons, Alphabetical)
+- Export to CSV for later use
+
+### Step 4: Generate Content
+- Use the 6 content generation tools
+- Create blog titles, social posts, FAQs, and more
+- Copy generated content for your use
+
+### Step 5: Access Dashboard
+- View search analytics
+- Track team usage
+- Monitor performance
+
+That's it! You're ready to start generating valuable content ideas.`
+    },
     {
       id: 'complete-training-guide',
       title: 'Complete Training Guide',
@@ -100,7 +141,119 @@ const EducationCenter = ({ isOpen, onClose }) => {
       size: '2.8 MB',
       pages: '50+',
       icon: BookOpen,
-      content: 'Complete step-by-step training for both user and admin platforms'
+      content: 'Complete step-by-step training for both user and admin platforms',
+      featured: true,
+      docContent: `# USE THIS SEARCH - COMPLETE TRAINING MANUAL
+
+This comprehensive manual covers all aspects of the Use This Search platform.
+
+## Table of Contents
+
+### PART I - USER PLATFORM TRAINING
+- Chapter 1: Getting Started
+- Chapter 2: AI-Powered Search System
+- Chapter 3: Content Generation Tools
+- Chapter 4: Dashboard & Analytics
+- Chapter 5: Team & Company Management
+- Chapter 6: Billing & Subscriptions
+
+### PART II - ADMIN PLATFORM TRAINING
+- Chapter 7: Administrative Access
+- Chapter 8: System Overview Dashboard
+- Chapter 9: Custom Pricing Management
+- Chapter 10: User Management & Analytics
+- Chapter 11: System Administration
+
+### PART III - ADVANCED FEATURES & BEST PRACTICES
+- Chapter 12: Advanced Search Strategies
+- Chapter 13: Content Optimization
+- Chapter 14: Troubleshooting Guide
+- Chapter 15: Security & Best Practices
+
+## Platform Capabilities
+
+### For Users:
+- AI-Powered Keyword Research: Generate 40+ relevant keyword suggestions per search
+- Multi-View Results: Graph and list visualizations of keyword relationships
+- Content Generation: Six advanced AI tools for creating marketing content
+- Team Collaboration: Multi-user workspaces with company-specific data isolation
+- Analytics Dashboard: Track search patterns, popular terms, and performance metrics
+- Flexible Billing: Four subscription tiers with transparent usage tracking
+
+### For Administrators:
+- System Oversight: Real-time metrics and user activity monitoring
+- Custom Pricing: Override standard pricing for specific users
+- User Management: Comprehensive user lookup and analytics
+- Global Analytics: System-wide statistics and trend analysis
+- Security Management: Secure administrative access with audit trails
+
+This manual provides detailed instructions for every feature and capability of the platform.`
+    },
+    {
+      id: 'beautiful-onboarding',
+      title: 'Getting Started Masterclass',
+      description: 'Beautiful step-by-step guide to platform success',
+      type: 'PDF',
+      size: '900 KB',
+      pages: '15',
+      icon: Play,
+      content: 'Transform from newcomer to expert in 15-20 minutes',
+      docContent: `# 🚀 USE THIS SEARCH - GETTING STARTED MASTERCLASS
+
+## Your 5-Step Journey to Success
+
+### 🎯 STEP 1: LOGIN & FIRST IMPRESSION
+**Goal**: Get comfortable with the platform interface
+
+**What you'll do:**
+- Log in with your credentials
+- Explore the main navigation
+- Understand the layout and design
+
+**Success indicator**: You feel confident navigating the interface
+
+### 🔍 STEP 2: YOUR FIRST SEARCH
+**Goal**: Experience the AI-powered keyword research
+
+**What you'll do:**
+- Enter a keyword relevant to your business
+- Generate your first set of suggestions
+- Explore the different categories
+
+**Success indicator**: You have 40+ keyword suggestions to work with
+
+### 📊 STEP 3: UNDERSTANDING RESULTS
+**Goal**: Master result interpretation and organization
+
+**What you'll do:**
+- Switch between Graph and List views
+- Use category filters
+- Export results to CSV
+
+**Success indicator**: You can easily find and organize relevant keywords
+
+### ✨ STEP 4: CONTENT CREATION
+**Goal**: Generate your first piece of marketing content
+
+**What you'll do:**
+- Try the Blog Title Generator
+- Create social media posts
+- Generate FAQ content
+
+**Success indicator**: You have usable content ready for your marketing
+
+### 📈 STEP 5: DASHBOARD MASTERY
+**Goal**: Understand analytics and team features
+
+**What you'll do:**
+- Explore the dashboard
+- Check usage statistics
+- Understand billing and limits
+
+**Success indicator**: You know how to monitor and optimize your usage
+
+## 🏆 Congratulations!
+You've completed the masterclass. You're now ready to use Use This Search to transform your content marketing strategy.`
     },
     {
       id: 'question-economy-whitepaper',
@@ -111,7 +264,63 @@ const EducationCenter = ({ isOpen, onClose }) => {
       pages: '35',
       icon: FileText,
       content: 'Comprehensive analysis of Google\'s search transformation and strategic response framework',
-      featured: true
+      docContent: `# THE QUESTION ECONOMY
+## How Google's 2025 Algorithm Rewards Businesses That Answer Customer Questions
+
+### Executive Summary
+
+The digital marketing landscape has undergone a fundamental transformation in 2025. Google's algorithm now prioritizes businesses that effectively answer customer questions, creating what we call the "Question Economy."
+
+### Key Findings
+
+**78% of local searches** now trigger AI Overview responses featuring businesses that provide comprehensive question-answering content.
+
+**64% increase** in organic traffic for businesses implementing question-based content strategies.
+
+**52% improvement** in local search rankings for companies actively managing Google Business Profile Q&A sections.
+
+### The Transformation
+
+Google's 2025 algorithm update represents the most significant change in search since the introduction of RankBrain. The search engine now evaluates businesses based on their ability to:
+
+1. **Identify customer questions accurately**
+2. **Provide comprehensive, helpful answers**
+3. **Maintain responsive customer engagement**
+4. **Demonstrate expertise through detailed responses**
+
+### Strategic Response Framework
+
+#### Phase 1: Question Discovery and Analysis
+- Comprehensive audit of current customer questions
+- Competitive question research and gap analysis
+- Customer language analysis for authentic question phrasing
+- Priority ranking system for high-value questions
+
+#### Phase 2: Answer Development and Deployment
+- Creation of comprehensive answer libraries
+- Multi-format answer deployment (FAQ, blog posts, social media)
+- Google Business Profile Q&A optimization
+- Response time improvement systems
+
+#### Phase 3: Engagement and Performance Management
+- Active Q&A management across all platforms
+- Performance monitoring and optimization
+- Community building through question-answering excellence
+- Continuous improvement based on customer feedback
+
+### Business Impact
+
+Companies implementing comprehensive question-answering strategies report:
+- 40% increase in qualified leads
+- 25% improvement in conversion rates
+- 60% reduction in customer service inquiries
+- 35% increase in local search visibility
+
+### Conclusion
+
+The Question Economy represents both a challenge and an unprecedented opportunity. Businesses that adapt quickly will gain sustainable competitive advantages, while those that delay risk becoming increasingly invisible to potential customers.
+
+The future belongs to businesses that can anticipate, understand, and answer customer questions better than anyone else.`
     },
     {
       id: 'building-great-questions',
@@ -121,37 +330,80 @@ const EducationCenter = ({ isOpen, onClose }) => {
       size: '1.8 MB',
       pages: '22',
       icon: Search,
-      content: 'Complete guide to producing question-based content that ranks and converts'
-    },
-    {
-      id: 'user-quick-start',
-      title: 'User Quick Start Guide',
-      description: 'Get started quickly with essential features',
-      type: 'PDF',
-      size: '800 KB',
-      pages: '12',
-      icon: FileText,
-      content: 'Essential features for new users to get productive quickly'
-    },
-    {
-      id: 'admin-manual',
-      title: 'Administrator Manual',
-      description: 'Complete admin platform documentation',
-      type: 'PDF',
-      size: '1.5 MB',
-      pages: '25',
-      icon: Settings,
-      content: 'Comprehensive administrative features and best practices'
-    },
-    {
-      id: 'best-practices',
-      title: 'Best Practices Guide',
-      description: 'Tips and strategies for optimal platform usage',
-      type: 'PDF',
-      size: '600 KB',
-      pages: '8',
-      icon: Users,
-      content: 'Advanced strategies for teams and power users'
+      content: 'Complete guide to producing question-based content that ranks and converts',
+      docContent: `# 🎯 BUILDING GREAT QUESTIONS GUIDE
+## Master the Art of Question Recognition and Content Structure
+
+### Introduction: The Power of Great Question Content
+
+In today's search landscape, the ability to recognize, understand, and respond to customer questions effectively has become the cornerstone of successful content marketing.
+
+### Part I: Question Recognition & Structure
+
+#### Understanding True Intent Behind Questions
+
+The foundation of effective question-based content lies in recognizing what people really want to know versus what they literally asked.
+
+**Surface Question:** "How to lose weight fast"
+**True Intent:** "What are sustainable, healthy methods that work efficiently without compromising my health or lifestyle?"
+
+#### Query Type Classification System
+
+**🔵 Informational Queries**
+- What they want: Knowledge, understanding, explanations
+- Content approach: Educational, comprehensive, authoritative
+- Examples: "What is digital marketing?", "How does SEO work?"
+
+**🟡 Navigational Queries**
+- What they want: To find a specific website, page, or resource
+- Content approach: Clear pathways, directory-style information
+- Examples: "Facebook login", "Nike customer service"
+
+**🟢 Transactional Queries**
+- What they want: To complete an action, make a purchase, or solve a problem
+- Content approach: Solution-focused, step-by-step, actionable
+- Examples: "Buy organic dog food", "Download tax software"
+
+### Part II: Answer Architecture
+
+#### The Inverted Pyramid Approach
+
+Structure your content to satisfy immediate needs while providing depth for those who want more information.
+
+**The Golden Rule:** Answer the question in the first 40-60 words, then provide supporting explanation.
+
+#### Content Hierarchy Best Practices
+
+**Level 1: Immediate Answer** (First paragraph)
+- Direct response to the query
+- Key numbers, timeframes, or recommendations
+- Essential qualifying information
+
+**Level 2: Essential Context** (Following 2-3 paragraphs)
+- Why this answer is correct
+- Important variables that affect the answer
+- Common exceptions or special cases
+
+**Level 3: Comprehensive Details** (Remaining content)
+- Step-by-step processes
+- Examples and case studies
+- Advanced considerations
+- Related topics and next steps
+
+### Part III: Implementation
+
+#### Featured Snippet Optimization
+
+Featured snippets typically contain 40-60 words. This constraint requires exceptional clarity and precision.
+
+**Structure Formula:**
+1. Direct answer (1 sentence)
+2. Essential qualifier (1 sentence)
+3. Key consideration (1 sentence)
+
+### Conclusion
+
+Creating great question content requires a deep understanding of user psychology, technical implementation skills, and ongoing optimization efforts. Master these techniques to transform your content strategy and achieve sustainable search success.`
     },
     {
       id: 'starting-ideas-guide',
@@ -161,17 +413,246 @@ const EducationCenter = ({ isOpen, onClose }) => {
       size: '1.2 MB',
       pages: '18',
       icon: Search,
-      content: 'Question recognition, answer architecture, and Google ranking strategies'
+      content: 'Question recognition, answer architecture, and Google ranking strategies',
+      docContent: `# GOOGLE SEARCH OPTIMIZATION STRATEGIES
+
+## Advanced Techniques for Question-Based Content That Ranks
+
+### Understanding Google's Question-Focused Evolution
+
+Google's algorithm has evolved to prioritize content that directly answers user questions. This shift requires new optimization strategies.
+
+### Core Optimization Principles
+
+1. **Question-First Content Structure**
+   - Lead with direct answers
+   - Use question-based headers
+   - Implement FAQ schema markup
+
+2. **Authority Through Evidence**
+   - Cite credible sources
+   - Include expert opinions
+   - Provide data-backed answers
+
+3. **User Experience Excellence**
+   - Fast-loading pages
+   - Mobile-optimized design
+   - Clear information hierarchy
+
+### Advanced Techniques
+
+#### Featured Snippet Optimization
+- 40-60 word answer format
+- Table and list structured content
+- Step-by-step process documentation
+
+#### Voice Search Optimization
+- Conversational query targeting
+- Local question optimization
+- Natural language content
+
+#### Schema Markup Implementation
+- FAQ schema for question pages
+- HowTo schema for process content
+- Article schema for comprehensive guides
+
+### Measuring Success
+
+Track these key metrics:
+- Featured snippet captures
+- Voice search traffic
+- Question-based query rankings
+- User engagement metrics
+
+### Implementation Roadmap
+
+**Week 1-2:** Question audit and research
+**Week 3-4:** Content creation and optimization
+**Week 5-6:** Technical implementation
+**Week 7-8:** Performance monitoring and refinement
+
+This guide provides the foundation for creating content that not only ranks well but genuinely serves your audience's needs.`
     },
     {
-      id: 'beautiful-onboarding',
-      title: 'Getting Started Masterclass',
-      description: 'Beautiful step-by-step guide to platform success',
+      id: 'best-practices',
+      title: 'Best Practices Guide',
+      description: 'Tips and strategies for optimal platform usage',
       type: 'PDF',
-      size: '900 KB',
-      pages: '15',
-      icon: Play,
-      content: 'Transform from newcomer to expert in 15-20 minutes'
+      size: '600 KB',
+      pages: '8',
+      icon: Users,
+      content: 'Advanced strategies for teams and power users',
+      docContent: `# BEST PRACTICES GUIDE
+
+## Maximize Your Use This Search Experience
+
+### Team Collaboration Best Practices
+
+#### Efficient Search Coordination
+- Plan searches around content calendar
+- Avoid duplicate searches across team members
+- Share CSV exports for team-wide use
+- Coordinate company workspace usage
+
+#### Content Generation Workflow
+1. **Research Phase**: Use keyword research for content planning
+2. **Creation Phase**: Generate multiple content types from single search
+3. **Optimization Phase**: Refine generated content for brand voice
+4. **Distribution Phase**: Adapt content for multiple platforms
+
+### Usage Optimization Strategies
+
+#### Smart Search Techniques
+- Use broad keywords for comprehensive research
+- Combine related topics in single searches
+- Export and save results for future reference
+- Focus on high-value question categories
+
+#### Content Creation Efficiency
+- Generate multiple content formats from one search
+- Customize AI-generated content for your brand
+- Create content templates from successful generations
+- Maintain consistency across team outputs
+
+### Advanced Features
+
+#### Multi-Company Management
+- Separate clients or projects by company workspace
+- Maintain data isolation between companies
+- Track performance by company/project
+- Optimize billing across multiple workspaces
+
+#### Analytics and Reporting
+- Monitor search patterns for content planning
+- Track team productivity and usage
+- Identify top-performing content themes
+- Plan upgrades based on usage trends
+
+### Success Metrics
+
+Track these key indicators:
+- Content pieces created per search
+- Team collaboration efficiency
+- Client satisfaction (for agencies)
+- ROI from generated content
+
+### Common Mistakes to Avoid
+
+1. **Over-searching similar terms** - Batch related keywords
+2. **Ignoring analytics** - Use dashboard insights for planning
+3. **Underutilizing content tools** - Explore all 6 generation tools
+4. **Poor team coordination** - Establish clear workflow processes
+
+Follow these best practices to maximize your platform investment and achieve superior results.`
+    },
+    {
+      id: 'admin-manual',
+      title: 'Administrator Manual',
+      description: 'Complete admin platform documentation',
+      type: 'PDF',
+      size: '1.5 MB',
+      pages: '25',
+      icon: Settings,
+      content: 'Comprehensive administrative features and best practices',
+      docContent: `# ADMINISTRATOR MANUAL
+
+## Complete Guide to Admin Platform Management
+
+### Admin Platform Overview
+
+The admin platform provides comprehensive system oversight, user management, and advanced analytics capabilities for Use This Search administrators.
+
+### Accessing the Admin Platform
+
+**Admin Login URL:** [Your Application URL]/admin/login
+**Current Administrator Access:**
+- Email: JimRulison@gmail.com
+- Password: JR09mar05
+- Note: Email is case-insensitive
+
+### Admin Dashboard Features
+
+#### System Monitoring
+- Real-time user activity tracking
+- Platform performance metrics
+- Usage statistics and trends
+- Revenue and subscription analytics
+
+#### User Management
+- Individual user lookup and analysis
+- Custom pricing application
+- Subscription management override
+- User support and assistance
+
+### Custom Pricing System
+
+#### Business Use Cases
+- Enterprise negotiations
+- Partnership agreements
+- Promotional offers
+- Customer retention
+- Volume discounts
+
+#### Application Process
+1. Enter user email in custom pricing widget
+2. Select appropriate pricing plan
+3. Set custom price amount
+4. Add notes for reference
+5. Apply pricing changes
+
+### User Lookup and Analytics
+
+#### Available Information
+- User registration details
+- Subscription status and history
+- Search activity and patterns
+- Company associations
+- Usage statistics
+
+#### Support Capabilities
+- Identify users needing assistance
+- Monitor high-value customers
+- Track feature adoption
+- Analyze usage patterns
+
+### Global Analytics
+
+Monitor platform-wide metrics:
+- Total users and growth trends
+- Search volume and patterns
+- Revenue tracking
+- Feature utilization
+- Geographic distribution
+
+### Security and Best Practices
+
+#### Administrative Security
+- Separate authentication system
+- Secure session management
+- Audit trail logging
+- Access control protocols
+
+#### Best Practices
+- Regular security reviews
+- Performance monitoring
+- User feedback integration
+- System optimization
+
+### Troubleshooting Common Issues
+
+#### User Account Issues
+- Password reset procedures
+- Account activation problems
+- Billing discrepancies
+- Feature access problems
+
+#### System Performance
+- Monitor response times
+- Track error rates
+- Optimize resource usage
+- Plan capacity upgrades
+
+This manual provides everything you need to effectively manage the Use This Search platform and support your users.`
     }
   ];
 
