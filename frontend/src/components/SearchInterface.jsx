@@ -18,6 +18,7 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm, viewM
   const navigate = useNavigate();
   const { t, changeLanguage } = useLanguage();
   const [isEducationOpen, setIsEducationOpen] = useState(false);
+  const [isSupportOpen, setIsSupportOpen] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
