@@ -966,8 +966,8 @@ const AdminDashboard = () => {
 
         {/* Support Center Tab */}
         {activeTab === 'support' && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-white mb-6">Support Management</h2>
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-white mb-4">Support Management</h2>
 
             {/* Support Tabs */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
