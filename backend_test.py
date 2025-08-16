@@ -75,7 +75,13 @@ class BackendTester:
             "trial_status_check": {"status": "pending", "details": ""},
             "trial_search_limits": {"status": "pending", "details": ""},
             "trial_reminder_system": {"status": "pending", "details": ""},
-            "trial_support_announcements": {"status": "pending", "details": ""}
+            "trial_support_announcements": {"status": "pending", "details": ""},
+            # New admin trial management tests
+            "admin_trial_management_authentication": {"status": "pending", "details": ""},
+            "admin_trial_users_api": {"status": "pending", "details": ""},
+            "admin_trial_analytics_api": {"status": "pending", "details": ""},
+            "admin_trial_extend_functionality": {"status": "pending", "details": ""},
+            "admin_trial_convert_functionality": {"status": "pending", "details": ""}
         }
         self.session = requests.Session()
         self.session.timeout = 30
