@@ -750,6 +750,22 @@ This manual provides everything you need to effectively manage the Use This Sear
           // Method 1: Direct save (most common)
           pdf.save(`${fileName}.pdf`);
           console.log(`PDF download initiated using pdf.save()`);
+          
+          // Show success message with troubleshooting info
+          setTimeout(() => {
+            alert(`✅ PDF "${material.title}" has been generated successfully!
+
+📥 Check your browser's download folder or look for a download notification.
+
+💡 If download didn't start:
+• Check if your browser blocked downloads 
+• Look for a download icon in your browser's address bar
+• Check your browser's download settings
+• Try clicking the download button again
+
+📁 Filename: ${fileName}.pdf`);
+          }, 1000);
+          
         } catch (saveError) {
           console.log(`pdf.save() failed, trying alternative method:`, saveError);
           
@@ -759,27 +775,15 @@ This manual provides everything you need to effectively manage the Use This Sear
           const link = document.createElement('a');
           link.href = url;
           link.download = `${fileName}.pdf`;
+          link.style.display = 'none';
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
           URL.revokeObjectURL(url);
           console.log(`PDF download initiated using blob method`);
+          
+          alert(`✅ PDF "${material.title}" generated using alternative method. Check your downloads folder.`);
         }
-        
-        // Show success message with troubleshooting info
-        setTimeout(() => {
-          alert(`✅ PDF "${material.title}" has been generated successfully!
-
-📥 Check your browser's download folder or look for a download notification.
-
-💡 If download didn't start:
-• Check if your browser blocked downloads 
-• Look for a download icon in your browser's address bar
-• Check your browser's download settings
-• Try right-clicking the button and selecting "Save As"
-
-📁 Filename: ${fileName}.pdf`);
-        }, 500);
         
       } catch (error) {
         console.error('Error generating PDF:', error);
