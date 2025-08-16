@@ -240,133 +240,119 @@ const StripeCheckout = ({ isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[1400px] w-[1400px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-md w-full max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-2xl">
+            <DialogTitle className="text-xl">
               {showCheckout ? 'Complete Your Subscription' : 'Choose Your Plan'}
             </DialogTitle>
             <Button variant="ghost" size="sm" onClick={onClose}>
               <X className="h-4 w-4" />
             </Button>
           </div>
-          {!showCheckout && (
-            <div className="text-center mt-3 mb-4">
-              <p className="text-gray-700 text-base font-medium">
-                We will change your plan immediately and charge for the difference in your current plan versus your new plan.
-              </p>
-            </div>
-          )}
         </DialogHeader>
 
         {!showCheckout ? (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Billing Period Toggle */}
             <div className="flex justify-center">
-              <div className="bg-gray-100 rounded-lg p-1 flex">
+              <div className="bg-gray-100 rounded-lg p-1 flex w-full">
                 <button
                   type="button"
                   onClick={() => setBillingPeriod('monthly')}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     billingPeriod === 'monthly'
                       ? 'bg-white text-gray-900 shadow-sm'
                       : 'text-gray-500 hover:text-gray-900'
                   }`}
                 >
-                  Monthly
+                  <div className="text-center">
+                    <div>Monthly</div>
+                    <div className="text-xs text-blue-600">FREE updates</div>
+                  </div>
                 </button>
                 <button
                   type="button"
                   onClick={() => setBillingPeriod('yearly')}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex-1 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     billingPeriod === 'yearly'
                       ? 'bg-white text-gray-900 shadow-sm'
                       : 'text-gray-500 hover:text-gray-900'
                   }`}
                 >
-                  Yearly
-                  <Badge variant="secondary" className="ml-2">2 Months FREE</Badge>
+                  <div className="text-center">
+                    <div>Yearly</div>
+                    <div className="text-xs text-blue-600">FREE updates + 2 Months FREE</div>
+                  </div>
                 </button>
               </div>
             </div>
 
-            {/* Plan Cards - Now showing single plan with add-ons */}
-            <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
-              <Card className="relative border-purple-500 shadow-lg">
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <Badge className="bg-purple-500 text-white px-3 py-1">
-                    🎉 Sale Price
-                  </Badge>
-                </div>
-                
-                <CardHeader className="text-center">
-                  <CardTitle className="flex items-center justify-center gap-2">
-                    <Check className="h-5 w-5 text-green-500" />
-                    {PRICING_PLAN.name}
-                  </CardTitle>
-                  <div className="space-y-1">
-                    <div className="text-3xl font-bold">
-                      ${billingPeriod === 'yearly' ? PRICING_PLAN.sale.yearly : PRICING_PLAN.sale.monthly}
-                      <span className="text-lg font-normal text-gray-500">
-                        /{billingPeriod === 'yearly' ? 'year' : 'month'}
-                      </span>
-                    </div>
-                    <div className="text-sm text-gray-500 line-through">
-                      Regular: ${billingPeriod === 'yearly' ? PRICING_PLAN.regular.yearly : PRICING_PLAN.regular.monthly}
-                      /{billingPeriod === 'yearly' ? 'year' : 'month'}
-                    </div>
-                    {billingPeriod === 'yearly' && (
-                      <p className="text-sm text-blue-600">✨ Includes 2 months FREE + GROUP KEYWORDS!</p>
-                    )}
-                  </div>
-                </CardHeader>
-                
-                <CardContent>
-                  <ul className="space-y-2">
-                    {PRICING_PLAN.baseIncludes.map((feature, index) => (
-                      <li key={index} className="flex items-center gap-2 text-sm">
-                        <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
-                        {feature}
-                      </li>
-                    ))}
-                    {billingPeriod === 'yearly' && PRICING_PLAN.annualBonus.map((feature, index) => (
-                      <li key={`bonus-${index}`} className="flex items-center gap-2 text-sm text-blue-600">
-                        <Check className="h-4 w-4 text-blue-500 flex-shrink-0" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Selected Plan Summary */}
-            <div className="bg-blue-50 rounded-lg p-4">
-              <h4 className="font-semibold mb-2">Selected Plan:</h4>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">{PRICING_PLAN.name} Plan</p>
-                  <p className="text-sm text-gray-600">
-                    ${billingPeriod === 'yearly' ? PRICING_PLAN.sale.yearly : PRICING_PLAN.sale.monthly}
-                    /{billingPeriod === 'yearly' ? 'year' : 'month'}
-                  </p>
-                  <p className="text-xs text-green-600">🎉 Sale Price Active!</p>
-                </div>
-                <Button onClick={handleProceedToCheckout}>
-                  Continue to Payment
-                </Button>
+            {/* Single Plan Card */}
+            <Card className="relative border-purple-500 shadow-lg">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <Badge className="bg-purple-500 text-white px-3 py-1">
+                  🎉 Sale Price
+                </Badge>
               </div>
-            </div>
+              
+              <CardHeader className="text-center pb-4">
+                <CardTitle className="flex items-center justify-center gap-2">
+                  <Check className="h-5 w-5 text-green-500" />
+                  {PRICING_PLAN.name}
+                </CardTitle>
+                <div className="space-y-1">
+                  <div className="text-3xl font-bold">
+                    ${billingPeriod === 'yearly' ? PRICING_PLAN.sale.yearly : PRICING_PLAN.sale.monthly}
+                    <span className="text-lg font-normal text-gray-500">
+                      /{billingPeriod === 'yearly' ? 'year' : 'month'}
+                    </span>
+                  </div>
+                  <div className="text-sm text-gray-500 line-through">
+                    Regular: ${billingPeriod === 'yearly' ? PRICING_PLAN.regular.yearly : PRICING_PLAN.regular.monthly}
+                    /{billingPeriod === 'yearly' ? 'year' : 'month'}
+                  </div>
+                  {billingPeriod === 'yearly' && (
+                    <p className="text-sm text-blue-600">✨ Includes GROUP KEYWORDS clustering!</p>
+                  )}
+                </div>
+              </CardHeader>
+              
+              <CardContent className="pt-0">
+                <ul className="space-y-2 mb-4">
+                  {PRICING_PLAN.baseIncludes.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-2 text-sm">
+                      <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                      {feature}
+                    </li>
+                  ))}
+                  {billingPeriod === 'yearly' && PRICING_PLAN.annualBonus.map((feature, index) => (
+                    <li key={`bonus-${index}`} className="flex items-center gap-2 text-sm text-blue-600">
+                      <Check className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                
+                <Button 
+                  onClick={handleProceedToCheckout} 
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3"
+                  size="lg"
+                >
+                  Get Started - ${billingPeriod === 'yearly' ? PRICING_PLAN.sale.yearly : PRICING_PLAN.sale.monthly}
+                  /{billingPeriod === 'yearly' ? 'year' : 'month'}
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         ) : (
-          <Elements stripe={stripePromise}>
+          <div className="space-y-4">
             <CheckoutForm
               billingPeriod={billingPeriod}
-              addOns={{}} // No add-ons for now, can be extended later
               onSuccess={handleCheckoutSuccess}
               onCancel={handleCheckoutCancel}
             />
-          </Elements>
+          </div>
         )}
       </DialogContent>
     </Dialog>
