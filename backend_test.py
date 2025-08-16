@@ -3937,6 +3937,18 @@ class BackendTester:
         self.test_admin_support_faq_management()
         self.test_admin_support_ticket_management()
         
+        # Run new 7-day trial system tests
+        print(f"\n{'='*60}")
+        print("7-DAY TRIAL SYSTEM TESTS")
+        print(f"{'='*60}")
+        
+        self.test_trial_user_registration()
+        self.test_trial_user_login()
+        self.test_trial_status_check()
+        self.test_trial_search_limits()
+        self.test_trial_reminder_system()
+        self.test_trial_support_announcements()
+        
         total_time = time.time() - start_time
         
         # Summary
