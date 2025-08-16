@@ -3,9 +3,9 @@ import logging
 from datetime import datetime, timedelta
 from typing import List
 
-from ..models.billing_models import UserTrialInfo, TrialStatus
-from ..database import get_database
-from .email_service import get_email_service
+from models.billing_models import UserTrialInfo, TrialStatus
+from database import get_database
+from services.email_service import get_email_service
 
 logger = logging.getLogger(__name__)
 
