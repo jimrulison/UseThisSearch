@@ -90,6 +90,7 @@ const CustomPricingWidget = ({ getAuthHeaders }) => {
       setUserEmail('');
       setCustomPriceMonthly('');
       setCustomPriceYearly('');
+      setExpirationDate('');
       setNotes('');
       
     } catch (error) {
