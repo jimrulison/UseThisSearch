@@ -82,32 +82,95 @@ class BillingPeriod(str, Enum):
 # Flexible pricing configuration - easily changeable
 PRICING_CONFIG = {
     "solo": {
-        "monthly": 47,
-        "yearly": 37,
-        "search_limit": 200,
+        "monthly": 59,  # Regular price
+        "yearly": 590,  # Regular price  
+        "sale_monthly": 29,  # Sale price
+        "sale_yearly": 290,  # Sale price
+        "search_limit": -1,  # UNLIMITED searches (except trial)
         "company_limit": 1,
-        "user_limit": 1,  # NEW: User limit
+        "user_limit": 1,
+        "workspace_limit": 1,
         "features": [
-            "200 searches per month",
+            "1 user account",
             "1 company workspace", 
-            "1 user account",  # NEW: User feature
-            "All 6 content generators",
-            "Basic analytics",
-            "CSV export",
+            "1 workspace",
+            "Unlimited searches",
+            "All content generators",
+            "AI-powered insights",
             "Email support"
         ]
     },
+    "annual": {
+        "monthly": 0,  # Annual only
+        "yearly": 590,  # Regular price
+        "sale_yearly": 290,  # Sale price
+        "search_limit": -1,  # UNLIMITED searches
+        "company_limit": 1,
+        "user_limit": 1, 
+        "workspace_limit": 1,
+        "includes_clustering": True,  # GROUP KEYWORDS access
+        "features": [
+            "All Solo Plan features",
+            "GROUP KEYWORDS (clustering)",
+            "Strategic keyword intelligence", 
+            "Content cluster analysis",
+            "2 months FREE (when marketed as yearly)"
+        ]
+    },
+    "additional_user": {
+        "monthly": 10,  # Regular price
+        "yearly": 120,  # Regular price
+        "sale_monthly": 5,  # Sale price
+        "sale_yearly": 60,  # Sale price
+        "search_limit": 0,  # Add-on doesn't add searches
+        "company_limit": 0,
+        "user_limit": 1,  # Adds 1 user
+        "workspace_limit": 0,
+        "features": [
+            "Extra user access",
+            "Team collaboration"
+        ]
+    },
+    "additional_workspace": {
+        "monthly": 15,  # Regular price
+        "yearly": 180,  # Regular price  
+        "sale_monthly": 8,  # Sale price
+        "sale_yearly": 96,  # Sale price
+        "search_limit": 0,  # Add-on doesn't add searches
+        "company_limit": 0,
+        "user_limit": 0,
+        "workspace_limit": 1,  # Adds 1 workspace
+        "features": [
+            "Extra workspace",
+            "Project organization"
+        ]
+    },
+    "additional_company": {
+        "monthly": 15,  # Regular price
+        "yearly": 180,  # Regular price
+        "sale_monthly": 8,  # Sale price  
+        "sale_yearly": 96,  # Sale price
+        "search_limit": 0,  # Add-on doesn't add searches
+        "company_limit": 1,  # Adds 1 company
+        "user_limit": 0,
+        "workspace_limit": 0,
+        "features": [
+            "Extra company access",
+            "Multi-client management"
+        ]
+    },
+    # Legacy plans for backward compatibility
     "professional": {
         "monthly": 97,
         "yearly": 77,
-        "search_limit": 500,
+        "search_limit": -1,  # NOW unlimited
         "company_limit": 5,
-        "user_limit": 2,  # NEW: User limit
+        "user_limit": 2,
         "features": [
-            "500 searches per month",
+            "Unlimited searches",  # UPDATED
             "5 company workspaces",
-            "2 user accounts",  # NEW: User feature
-            "All 6 content generators",
+            "2 user accounts",
+            "All content generators",
             "Enhanced analytics", 
             "CSV export",
             "Priority email support"
@@ -116,14 +179,14 @@ PRICING_CONFIG = {
     "agency": {
         "monthly": 197,
         "yearly": 157,
-        "search_limit": 2000,
-        "company_limit": -1,  # -1 means unlimited
-        "user_limit": 5,  # NEW: User limit
+        "search_limit": -1,  # NOW unlimited
+        "company_limit": -1,
+        "user_limit": 5,
         "features": [
-            "2000 searches per month",
+            "Unlimited searches",  # UPDATED
             "Unlimited companies",
-            "5 user accounts",  # NEW: User feature
-            "All 6 content generators",
+            "5 user accounts",
+            "All content generators",
             "Advanced analytics",
             "Priority processing",
             "Advanced export",
@@ -134,14 +197,14 @@ PRICING_CONFIG = {
     "enterprise": {
         "monthly": 397,
         "yearly": 317,
-        "search_limit": -1,  # -1 means unlimited
+        "search_limit": -1,  # Already unlimited
         "company_limit": -1,
-        "user_limit": 7,  # NEW: User limit
+        "user_limit": 7,
         "features": [
             "Unlimited searches",
             "Unlimited companies",
-            "7 user accounts",  # NEW: User feature
-            "All 6 content generators", 
+            "7 user accounts",
+            "All content generators", 
             "Advanced analytics",
             "Priority processing",
             "White-label options",
@@ -152,20 +215,20 @@ PRICING_CONFIG = {
         ]
     },
     "annual_gift": {
-        "monthly": 0,  # Gift plan - no monthly option
-        "yearly": 0,   # Free when gifted, actual cost managed separately
-        "search_limit": 1000,  # Premium limits
-        "company_limit": 10,   # Enhanced workspace limit
-        "user_limit": 5,       # Multi-user support
-        "gift_duration_months": 12,  # Valid for 12 months
-        "includes_clustering": True,  # Premium clustering access
-        "bonus_credits": 500,  # Extra search credits
+        "monthly": 0,
+        "yearly": 0,
+        "search_limit": -1,  # NOW unlimited
+        "company_limit": 10,
+        "user_limit": 5,
+        "gift_duration_months": 12,
+        "includes_clustering": True,
+        "bonus_credits": 500,
         "features": [
             "🎁 Annual Gift Subscription",
-            "1000+ searches per month",
+            "Unlimited searches",  # UPDATED
             "10 company workspaces", 
             "5 user accounts",
-            "All 6 content generators",
+            "All content generators",
             "🔥 Keyword Clustering Engine",
             "Advanced analytics",
             "Priority processing",
