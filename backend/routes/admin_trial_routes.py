@@ -37,7 +37,7 @@ async def get_all_trial_users(admin: Admin = Depends(get_admin_from_request)):
             "email": user["email"],
             "name": user.get("name", ""),
             "trial_status": trial.trial_status.value,
-            "trial_start": trial.trial_start.isoformat() if trial.trial_start else None,
+            "trial_start": trial.trial_start_date.isoformat() if trial.trial_start_date else None,
             "days_into_trial": days_into_trial,
             "days_remaining": max(0, days_remaining),
             "is_expired": is_expired,
