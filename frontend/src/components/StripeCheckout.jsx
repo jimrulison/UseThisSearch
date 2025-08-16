@@ -342,18 +342,54 @@ const StripeCheckout = ({ isOpen, onClose, initialPlan = 'professional' }) => {
               </div>
             </div>
 
-            {/* Plan Cards */}
-            <div className="grid grid-cols-4 gap-6">
-              {Object.entries(PRICING_PLANS).map(([planKey, plan]) => (
-                <PlanCard
-                  key={planKey}
-                  planKey={planKey}
-                  plan={plan}
-                  selectedPlan={selectedPlan}
-                  setSelectedPlan={setSelectedPlan}
-                  billingPeriod={billingPeriod}
-                />
-              ))}
+            {/* Plan Cards - Now showing single plan with add-ons */}
+            <div className="grid grid-cols-1 gap-6 max-w-md mx-auto">
+              <Card className="relative border-purple-500 shadow-lg">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-purple-500 text-white px-3 py-1">
+                    🎉 Sale Price
+                  </Badge>
+                </div>
+                
+                <CardHeader className="text-center">
+                  <CardTitle className="flex items-center justify-center gap-2">
+                    <Check className="h-5 w-5 text-green-500" />
+                    {PRICING_PLAN.name}
+                  </CardTitle>
+                  <div className="space-y-1">
+                    <div className="text-3xl font-bold">
+                      ${billingPeriod === 'yearly' ? PRICING_PLAN.sale.yearly : PRICING_PLAN.sale.monthly}
+                      <span className="text-lg font-normal text-gray-500">
+                        /{billingPeriod === 'yearly' ? 'year' : 'month'}
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-500 line-through">
+                      Regular: ${billingPeriod === 'yearly' ? PRICING_PLAN.regular.yearly : PRICING_PLAN.regular.monthly}
+                      /{billingPeriod === 'yearly' ? 'year' : 'month'}
+                    </div>
+                    {billingPeriod === 'yearly' && (
+                      <p className="text-sm text-blue-600">✨ Includes 2 months FREE + GROUP KEYWORDS!</p>
+                    )}
+                  </div>
+                </CardHeader>
+                
+                <CardContent>
+                  <ul className="space-y-2">
+                    {PRICING_PLAN.baseIncludes.map((feature, index) => (
+                      <li key={index} className="flex items-center gap-2 text-sm">
+                        <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                        {feature}
+                      </li>
+                    ))}
+                    {billingPeriod === 'yearly' && PRICING_PLAN.annualBonus.map((feature, index) => (
+                      <li key={`bonus-${index}`} className="flex items-center gap-2 text-sm text-blue-600">
+                        <Check className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
             </div>
 
             {/* Selected Plan Summary */}
