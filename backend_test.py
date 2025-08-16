@@ -4320,8 +4320,8 @@ class BackendTester:
                     details.append(f"✗ Plan type '{plan}' rejected: HTTP {response.status_code}")
             
             # Test 4: Test non-existent user
-            response = self.session.post(f"{API_BASE}/admin/trial/convert/nonexistent@example.com", 
-                                       json={"plan_type": "solo"}, headers=admin_headers)
+            response = self.session.post(f"{API_BASE}/admin/trial/convert/nonexistent@example.com?plan_type=solo", 
+                                       headers=admin_headers)
             if response.status_code == 404:
                 details.append("✓ Trial convert handles non-existent users correctly")
             else:
