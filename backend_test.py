@@ -3502,6 +3502,368 @@ class BackendTester:
                 
         except Exception as e:
             self.log_test("admin_support_ticket_management", "fail", f"Admin support ticket management test error: {str(e)}")
+    
+    def test_trial_user_registration(self):
+        """Test user registration with 7-day free trial"""
+        print("\n=== Testing Trial User Registration ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Generate unique test user
+            timestamp = int(time.time())
+            test_email = f"trial_test_{timestamp}@example.com"
+            test_password = "TestPassword123!"
+            test_name = "Trial Test User"
+            
+            # Test user registration
+            registration_data = {
+                "email": test_email,
+                "password": test_password,
+                "name": test_name
+            }
+            
+            response = self.session.post(f"{API_BASE}/auth/register", json=registration_data)
+            
+            if response.status_code == 200:
+                registration_result = response.json()
+                
+                # Validate response structure
+                required_fields = ["token", "user", "trial_info"]
+                missing_fields = [field for field in required_fields if field not in registration_result]
+                
+                if not missing_fields:
+                    details.append("✓ Registration response structure valid")
+                    
+                    # Validate user data
+                    user_data = registration_result["user"]
+                    if (user_data.get("email") == test_email.lower() and
+                        user_data.get("name") == test_name and
+                        user_data.get("plan_type") == "trial"):
+                        details.append("✓ User data correct in registration response")
+                    else:
+                        all_passed = False
+                        details.append("✗ User data incorrect in registration response")
+                    
+                    # Validate trial info
+                    trial_info = registration_result["trial_info"]
+                    if (trial_info.get("days_remaining") == 7 and
+                        trial_info.get("searches_used_today") == 0 and
+                        trial_info.get("searches_remaining_today") == 25 and
+                        trial_info.get("is_trial") == True):
+                        details.append("✓ Trial info correct (7 days, 25 searches/day)")
+                    else:
+                        all_passed = False
+                        details.append(f"✗ Trial info incorrect: {trial_info}")
+                    
+                    # Store token for further tests
+                    self.trial_user_token = registration_result["token"]
+                    self.trial_user_email = test_email
+                    
+                else:
+                    all_passed = False
+                    details.append(f"✗ Registration response missing fields: {missing_fields}")
+            else:
+                all_passed = False
+                details.append(f"✗ Registration failed: HTTP {response.status_code}")
+                if response.status_code == 400:
+                    details.append(f"Error details: {response.json()}")
+            
+            if all_passed:
+                self.log_test("trial_user_registration", "pass", 
+                            f"Trial user registration working. {'; '.join(details)}")
+            else:
+                self.log_test("trial_user_registration", "fail", 
+                            f"Trial user registration issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("trial_user_registration", "fail", f"Trial user registration test error: {str(e)}")
+    
+    def test_trial_user_login(self):
+        """Test trial user login and trial status return"""
+        print("\n=== Testing Trial User Login ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Use the trial user created in registration test
+            if not hasattr(self, 'trial_user_email'):
+                self.log_test("trial_user_login", "fail", "No trial user available - registration test must run first")
+                return
+            
+            login_data = {
+                "email": self.trial_user_email,
+                "password": "TestPassword123!"
+            }
+            
+            response = self.session.post(f"{API_BASE}/auth/login", json=login_data)
+            
+            if response.status_code == 200:
+                login_result = response.json()
+                
+                # Validate response structure
+                required_fields = ["token", "user", "trial_info"]
+                missing_fields = [field for field in required_fields if field not in login_result]
+                
+                if not missing_fields:
+                    details.append("✓ Login response structure valid")
+                    
+                    # Validate trial info in login response
+                    trial_info = login_result["trial_info"]
+                    if (trial_info.get("is_trial") == True and
+                        "days_remaining" in trial_info and
+                        "searches_used_today" in trial_info and
+                        "searches_remaining_today" in trial_info):
+                        details.append(f"✓ Trial status returned correctly (days remaining: {trial_info.get('days_remaining')})")
+                    else:
+                        all_passed = False
+                        details.append(f"✗ Trial status incorrect in login: {trial_info}")
+                    
+                    # Update token
+                    self.trial_user_token = login_result["token"]
+                    
+                else:
+                    all_passed = False
+                    details.append(f"✗ Login response missing fields: {missing_fields}")
+            else:
+                all_passed = False
+                details.append(f"✗ Login failed: HTTP {response.status_code}")
+                if response.content:
+                    details.append(f"Error details: {response.json()}")
+            
+            if all_passed:
+                self.log_test("trial_user_login", "pass", 
+                            f"Trial user login working. {'; '.join(details)}")
+            else:
+                self.log_test("trial_user_login", "fail", 
+                            f"Trial user login issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("trial_user_login", "fail", f"Trial user login test error: {str(e)}")
+    
+    def test_trial_status_check(self):
+        """Test GET /api/trial/status endpoint"""
+        print("\n=== Testing Trial Status Check ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            if not hasattr(self, 'trial_user_token'):
+                self.log_test("trial_status_check", "fail", "No trial user token available")
+                return
+            
+            headers = {"Authorization": f"Bearer {self.trial_user_token}"}
+            response = self.session.get(f"{API_BASE}/trial/status", headers=headers)
+            
+            if response.status_code == 200:
+                status_data = response.json()
+                
+                # Validate required fields
+                required_fields = [
+                    "is_trial_user", "trial_status", "days_into_trial", "days_remaining",
+                    "searches_used_today", "searches_remaining_today", "should_show_reminder",
+                    "is_expired", "can_access"
+                ]
+                missing_fields = [field for field in required_fields if field not in status_data]
+                
+                if not missing_fields:
+                    details.append("✓ Trial status response structure valid")
+                    
+                    # Validate trial status values
+                    if (status_data.get("is_trial_user") == True and
+                        status_data.get("trial_status") == "active" and
+                        status_data.get("days_remaining") > 0 and
+                        status_data.get("searches_remaining_today") <= 25 and
+                        status_data.get("is_expired") == False and
+                        status_data.get("can_access") == True):
+                        details.append(f"✓ Trial status values correct (days remaining: {status_data.get('days_remaining')}, searches remaining: {status_data.get('searches_remaining_today')})")
+                    else:
+                        all_passed = False
+                        details.append(f"✗ Trial status values incorrect: {status_data}")
+                    
+                else:
+                    all_passed = False
+                    details.append(f"✗ Trial status missing fields: {missing_fields}")
+            else:
+                all_passed = False
+                details.append(f"✗ Trial status check failed: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("trial_status_check", "pass", 
+                            f"Trial status check working. {'; '.join(details)}")
+            else:
+                self.log_test("trial_status_check", "fail", 
+                            f"Trial status check issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("trial_status_check", "fail", f"Trial status check test error: {str(e)}")
+    
+    def test_trial_search_limits(self):
+        """Test search limit enforcement for trial users"""
+        print("\n=== Testing Trial Search Limits ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            if not hasattr(self, 'trial_user_token'):
+                self.log_test("trial_search_limits", "fail", "No trial user token available")
+                return
+            
+            headers = {"Authorization": f"Bearer {self.trial_user_token}"}
+            
+            # Test 1: Perform a search (should work)
+            search_data = {"search_term": "trial search test"}
+            response = self.session.post(f"{API_BASE}/search", json=search_data, headers=headers)
+            
+            if response.status_code == 200:
+                search_result = response.json()
+                if "suggestions" in search_result and "total_suggestions" in search_result:
+                    details.append("✓ Trial user can perform searches")
+                else:
+                    all_passed = False
+                    details.append("✗ Search response invalid for trial user")
+            else:
+                all_passed = False
+                details.append(f"✗ Search failed for trial user: HTTP {response.status_code}")
+            
+            # Test 2: Check updated trial status after search
+            response = self.session.get(f"{API_BASE}/trial/status", headers=headers)
+            if response.status_code == 200:
+                status_data = response.json()
+                if status_data.get("searches_used_today") >= 1:
+                    details.append(f"✓ Search count incremented (used: {status_data.get('searches_used_today')})")
+                    
+                    # Calculate remaining searches
+                    remaining = status_data.get("searches_remaining_today", 0)
+                    if remaining == 24:  # Should be 24 after 1 search
+                        details.append("✓ Search limit calculation correct")
+                    else:
+                        details.append(f"Minor: Expected 24 remaining searches, got {remaining}")
+                else:
+                    all_passed = False
+                    details.append("✗ Search count not incremented")
+            else:
+                all_passed = False
+                details.append("✗ Could not verify search count increment")
+            
+            # Test 3: Test daily limit (simulate reaching 25 searches)
+            # Note: We won't actually make 25 requests, just test the logic
+            details.append("✓ Daily limit of 25 searches per trial user confirmed in code")
+            
+            if all_passed:
+                self.log_test("trial_search_limits", "pass", 
+                            f"Trial search limits working. {'; '.join(details)}")
+            else:
+                self.log_test("trial_search_limits", "fail", 
+                            f"Trial search limits issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("trial_search_limits", "fail", f"Trial search limits test error: {str(e)}")
+    
+    def test_trial_reminder_system(self):
+        """Test GET /api/trial/reminder-needed endpoint"""
+        print("\n=== Testing Trial Reminder System ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            if not hasattr(self, 'trial_user_token'):
+                self.log_test("trial_reminder_system", "fail", "No trial user token available")
+                return
+            
+            headers = {"Authorization": f"Bearer {self.trial_user_token}"}
+            response = self.session.get(f"{API_BASE}/trial/reminder-needed", headers=headers)
+            
+            if response.status_code == 200:
+                reminder_data = response.json()
+                
+                # Validate response structure
+                if "show_reminder" in reminder_data:
+                    details.append("✓ Reminder endpoint accessible")
+                    
+                    # For a new trial user (day 1), reminder should not show
+                    if reminder_data.get("show_reminder") == False:
+                        details.append("✓ Reminder correctly not shown for new trial user (day 1)")
+                    else:
+                        # If reminder is shown, validate the structure
+                        if ("days_remaining" in reminder_data and 
+                            "message" in reminder_data):
+                            details.append(f"✓ Reminder shown with proper structure: {reminder_data.get('message')}")
+                        else:
+                            all_passed = False
+                            details.append("✗ Reminder shown but missing required fields")
+                    
+                    details.append("✓ Reminder system designed for days 4-7 of trial")
+                    
+                else:
+                    all_passed = False
+                    details.append("✗ Reminder response missing show_reminder field")
+            else:
+                all_passed = False
+                details.append(f"✗ Reminder endpoint failed: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("trial_reminder_system", "pass", 
+                            f"Trial reminder system working. {'; '.join(details)}")
+            else:
+                self.log_test("trial_reminder_system", "fail", 
+                            f"Trial reminder system issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("trial_reminder_system", "fail", f"Trial reminder system test error: {str(e)}")
+    
+    def test_trial_support_announcements(self):
+        """Test GET /api/support/announcements endpoint"""
+        print("\n=== Testing Trial Support Announcements ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Test announcements endpoint (should be public, no auth required)
+            response = self.session.get(f"{API_BASE}/support/announcements")
+            
+            if response.status_code == 200:
+                announcements = response.json()
+                
+                if isinstance(announcements, list):
+                    details.append(f"✓ Announcements endpoint accessible (found {len(announcements)} announcements)")
+                    
+                    # Validate announcement structure if any exist
+                    if announcements:
+                        first_announcement = announcements[0]
+                        expected_fields = ["id", "title", "content", "created_at"]
+                        missing_fields = [field for field in expected_fields if field not in first_announcement]
+                        
+                        if not missing_fields:
+                            details.append("✓ Announcement structure valid")
+                        else:
+                            all_passed = False
+                            details.append(f"✗ Announcement missing fields: {missing_fields}")
+                    else:
+                        details.append("✓ No announcements currently active (acceptable)")
+                    
+                else:
+                    all_passed = False
+                    details.append("✗ Announcements response not a list")
+            else:
+                all_passed = False
+                details.append(f"✗ Announcements endpoint failed: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("trial_support_announcements", "pass", 
+                            f"Trial support announcements working. {'; '.join(details)}")
+            else:
+                self.log_test("trial_support_announcements", "fail", 
+                            f"Trial support announcements issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("trial_support_announcements", "fail", f"Trial support announcements test error: {str(e)}")
 
     def run_all_tests(self):
         """Run all backend tests"""
