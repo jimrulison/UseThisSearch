@@ -334,6 +334,31 @@ class CustomPricing(BaseModel):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     expires_at: Optional[datetime] = None
     
+    # NEW: Enhanced expiration management
+    auto_revert: bool = True  # Whether to revert to standard pricing after expiration
+    expiration_notification_sent: bool = False
+    original_plan_type: Optional[PlanType] = None  # Plan to revert to after expiration
+    
+    def is_expired(self) -> bool:
+        """Check if custom pricing has expired"""
+        if not self.expires_at:
+            return False
+        return datetime.utcnow() > self.expires_at
+    
+    def days_until_expiration(self) -> Optional[int]:
+        """Get days until expiration (None if no expiration set)"""
+        if not self.expires_at:
+            return None
+        delta = self.expires_at - datetime.utcnow()
+        return max(0, delta.days)
+    
+    def should_send_expiration_warning(self, days_before: int = 7) -> bool:
+        """Check if expiration warning should be sent"""
+        if not self.expires_at or self.expiration_notification_sent:
+            return False
+        days_remaining = self.days_until_expiration()
+        return days_remaining is not None and days_remaining <= days_before
+    
     class Config:
         json_schema_extra = {
             "example": {
@@ -342,7 +367,9 @@ class CustomPricing(BaseModel):
                 "custom_price_monthly": 50,
                 "custom_price_yearly": 40,
                 "applied_by": "admin@company.com",
-                "notes": "Special pricing for enterprise customer"
+                "notes": "Special pricing for enterprise customer",
+                "expires_at": "2025-12-31T23:59:59Z",
+                "auto_revert": True
             }
         }
 
