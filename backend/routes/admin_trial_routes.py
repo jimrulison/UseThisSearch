@@ -82,7 +82,7 @@ async def extend_trial(
     trial = UserTrialInfo(**trial_info)
     
     # Extend the trial
-    trial.trial_start = trial.trial_start - timedelta(days=extension_days)
+    trial.trial_start_date = trial.trial_start_date - timedelta(days=extension_days)
     
     # If trial was expired, reactivate it
     if trial.trial_status == TrialStatus.EXPIRED:
