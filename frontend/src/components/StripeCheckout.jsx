@@ -268,8 +268,7 @@ const PlanCard = ({ planKey, plan, selectedPlan, setSelectedPlan, billingPeriod 
   );
 };
 
-const StripeCheckout = ({ isOpen, onClose, initialPlan = 'professional' }) => {
-  const [selectedPlan, setSelectedPlan] = useState(initialPlan);
+const StripeCheckout = ({ isOpen, onClose }) => {
   const [billingPeriod, setBillingPeriod] = useState('monthly');
   const [showCheckout, setShowCheckout] = useState(false);
   const { subscription, loadBillingData } = useBilling();
