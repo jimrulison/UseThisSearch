@@ -9,6 +9,7 @@ from models.support_models import (
     SupportTicket, SupportTicketCreate, SupportTicketUpdate,
     SupportMessage, SupportMessageCreate, SupportMessageResponse,
     AdminNotification, AdminNotificationResponse,
+    UserAnnouncement, UserAnnouncementResponse,
     SupportDashboard, SupportCategory, SupportTicketStatus
 )
 from database import db
