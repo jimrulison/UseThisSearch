@@ -14,7 +14,7 @@ const TrialManagement = ({ getAuthHeaders }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedUser, setSelectedUser] = useState(null);
   const [extensionDays, setExtensionDays] = useState('');
-  const [convertPlan, setConvertPlan] = useState('professional');
+  const [convertPlan, setConvertPlan] = useState('solo');
 
   const statusColors = {
     active: 'text-green-500 bg-green-50',
