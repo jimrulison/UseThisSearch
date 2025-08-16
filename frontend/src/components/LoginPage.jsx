@@ -20,6 +20,55 @@ const LoginPage = ({ onLogin }) => {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [announcements, setAnnouncements] = useState([]);
+  const [dismissedAnnouncements, setDismissedAnnouncements] = useState([]);
+
+  const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+
+  useEffect(() => {
+    loadAnnouncements();
+    // Load dismissed announcements from localStorage
+    const dismissed = JSON.parse(localStorage.getItem('dismissedAnnouncements') || '[]');
+    setDismissedAnnouncements(dismissed);
+  }, []);
+
+  const loadAnnouncements = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/support/announcements`);
+      setAnnouncements(response.data || []);
+    } catch (error) {
+      console.error('Error loading announcements:', error);
+    }
+  };
+
+  const dismissAnnouncement = (announcementId) => {
+    const newDismissed = [...dismissedAnnouncements, announcementId];
+    setDismissedAnnouncements(newDismissed);
+    localStorage.setItem('dismissedAnnouncements', JSON.stringify(newDismissed));
+  };
+
+  const getAnnouncementIcon = (type) => {
+    switch (type) {
+      case 'success': return CheckCircle;
+      case 'warning': return AlertCircle;
+      case 'promotion': return Gift;
+      default: return Info;
+    }
+  };
+
+  const getAnnouncementColor = (type) => {
+    switch (type) {
+      case 'success': return 'bg-green-100 border-green-300 text-green-800';
+      case 'warning': return 'bg-yellow-100 border-yellow-300 text-yellow-800';
+      case 'promotion': return 'bg-purple-100 border-purple-300 text-purple-800';
+      default: return 'bg-blue-100 border-blue-300 text-blue-800';
+    }
+  };
+
+  // Filter active announcements that haven't been dismissed
+  const activeAnnouncements = announcements.filter(
+    announcement => !dismissedAnnouncements.includes(announcement.id)
+  );
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
