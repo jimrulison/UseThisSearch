@@ -141,6 +141,46 @@ class AdminNotificationResponse(BaseModel):
     is_read: bool
     created_at: datetime
 
+# User Announcement Models
+class UserAnnouncement(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    message: str
+    type: str = "info"  # "info", "warning", "success", "promotion"
+    is_active: bool = True
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    created_by: str  # Admin email
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+class UserAnnouncementCreate(BaseModel):
+    title: str
+    message: str
+    type: str = "info"
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+
+class UserAnnouncementUpdate(BaseModel):
+    title: Optional[str] = None
+    message: Optional[str] = None
+    type: Optional[str] = None
+    is_active: Optional[bool] = None
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+
+class UserAnnouncementResponse(BaseModel):
+    id: str
+    title: str
+    message: str
+    type: str
+    is_active: bool
+    start_date: Optional[datetime]
+    end_date: Optional[datetime]
+    created_by: str
+    created_at: datetime
+    updated_at: datetime
+
 # Response Models
 class SupportDashboard(BaseModel):
     unread_notifications: int
