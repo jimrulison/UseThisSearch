@@ -34,6 +34,10 @@ from routes.clustering_routes import router as clustering_router
 from routes.support_routes import router as support_router
 from routes.admin_support_routes import router as admin_support_router
 
+# NEW: Import trial and auth routes (additive)
+from routes.trial_routes import router as trial_router
+from routes.auth_routes import router as auth_router
+
 from database import init_database, close_database
 
 ROOT_DIR = Path(__file__).parent
