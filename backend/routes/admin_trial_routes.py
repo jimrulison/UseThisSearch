@@ -277,7 +277,7 @@ async def update_trial_settings(
     trial_duration_days: Optional[int] = None,
     daily_search_limit: Optional[int] = None,
     data_retention_days: Optional[int] = None,
-    admin: AdminSessionResponse = Depends(get_admin_from_request)
+    admin: Admin = Depends(get_admin_from_request)
 ):
     """Update global trial settings (for future trials)"""
     
