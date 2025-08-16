@@ -118,6 +118,10 @@ api_router.include_router(clustering_router, prefix="/clustering", tags=["cluste
 api_router.include_router(support_router, tags=["support"])
 api_router.include_router(admin_support_router, tags=["admin-support"])
 
+# NEW: Include trial and auth routes (additive)
+api_router.include_router(trial_router, tags=["trial"])
+api_router.include_router(auth_router, tags=["auth"])
+
 # Include the router in the main app
 app.include_router(api_router)
 
