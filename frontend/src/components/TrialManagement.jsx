@@ -25,9 +25,10 @@ const TrialManagement = ({ getAuthHeaders }) => {
 
   const planOptions = [
     { value: 'solo', label: 'Solo Plan' },
-    { value: 'professional', label: 'Professional Plan' },
-    { value: 'agency', label: 'Agency Plan' },
-    { value: 'enterprise', label: 'Enterprise Plan' }
+    { value: 'annual', label: 'Annual Plan' },
+    { value: 'additional_user', label: 'Additional User' },
+    { value: 'additional_workspace', label: 'Additional Workspace' },
+    { value: 'additional_company', label: 'Additional Company' }
   ];
 
   useEffect(() => {
