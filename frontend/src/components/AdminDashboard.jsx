@@ -657,8 +657,8 @@ const AdminDashboard = () => {
 
         {/* User Lookup Tab */}
         {activeTab === 'lookup' && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-white mb-6">User Lookup</h2>
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-white mb-4">User Lookup & Analysis</h2>
             
             {/* Lookup Form */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
