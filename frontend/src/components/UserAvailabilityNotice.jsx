@@ -42,16 +42,17 @@ const UserAvailabilityNotice = () => {
   };
 
   const getUpgradeOptions = () => {
-    const currentPlan = subscription?.plan_type || 'solo';
-    
-    if (currentPlan === 'solo') return { plan: 'professional', users: 2 };
-    if (currentPlan === 'professional') return { plan: 'agency', users: 5 };
-    if (currentPlan === 'agency') return { plan: 'enterprise', users: 7 };
-    return { plan: 'enterprise', users: 7 };
+    // With new pricing model, they can add individual users for $5/month (sale price)
+    return { 
+      addOnType: 'users',
+      salePrice: 5,
+      regularPrice: 10,
+      description: 'Add extra users to your plan'
+    };
   };
 
   const handleUpgrade = () => {
-    // Show the Stripe checkout modal for upgrade
+    // Show the Stripe checkout modal for add-on upgrade
     setShowUpgradeModal(true);
   };
 
