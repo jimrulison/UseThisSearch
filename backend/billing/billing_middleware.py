@@ -208,3 +208,62 @@ def get_company_limit_decorator():
     if _company_limit_decorator is None:
         _company_limit_decorator = create_company_limit_decorator()
     return _company_limit_decorator
+
+# Authentication functions for support system
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Get current user from token - placeholder implementation"""
+    try:
+        token = credentials.credentials
+        
+        # This is a placeholder implementation
+        # In a real system, you would validate the token against your user database
+        # For now, we'll create a mock user based on the token
+        
+        # Check if it's a test token
+        if token.startswith("test_"):
+            return {
+                "email": "test@example.com",
+                "name": "Test User",
+                "company_id": "test_company_123"
+            }
+        
+        # For other tokens, try to find user session (simplified)
+        # This would need to be implemented based on your user authentication system
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+        
+    except Exception as e:
+        logger.error(f"Error getting current user: {e}")
+        raise HTTPException(status_code=401, detail="Authentication failed")
+
+async def get_admin_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Get current admin from token"""
+    try:
+        token = credentials.credentials
+        
+        # Find active admin session
+        session = await db.admin_sessions.find_one({
+            "token": token,
+            "is_active": True,
+            "expires_at": {"$gt": datetime.utcnow()}
+        })
+        
+        if not session:
+            raise HTTPException(status_code=401, detail="Invalid or expired admin token")
+        
+        # Get admin user
+        admin = await db.admins.find_one({"id": session["admin_id"]})
+        if not admin or not admin.get("is_active", False):
+            raise HTTPException(status_code=401, detail="Admin not found or inactive")
+        
+        return {
+            "id": admin["id"],
+            "email": admin["email"],
+            "name": admin.get("name", admin["email"]),
+            "role": admin.get("role", "admin")
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting current admin: {e}")
+        raise HTTPException(status_code=401, detail="Admin authentication failed")
