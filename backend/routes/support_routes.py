@@ -261,3 +261,29 @@ async def get_support_stats(current_user=Depends(get_current_user)):
         "total_tickets": total_tickets,
         "unread_messages": unread_messages
     }
+
+# User Announcements (Public endpoint)
+@router.get("/announcements", response_model=List[UserAnnouncementResponse])
+async def get_active_announcements():
+    """Get active announcements for users (no authentication required)"""
+    
+    now = datetime.utcnow()
+    
+    # Find active announcements that are within date range (if specified)
+    query = {
+        "is_active": True,
+        "$or": [
+            {"start_date": None, "end_date": None},  # No date restrictions
+            {"start_date": {"$lte": now}, "end_date": None},  # Started, no end
+            {"start_date": None, "end_date": {"$gte": now}},  # No start, not ended
+            {"start_date": {"$lte": now}, "end_date": {"$gte": now}}  # Within date range
+        ]
+    }
+    
+    announcements = await db.user_announcements.find(query).sort("created_at", -1).to_list(10)
+    
+    for announcement in announcements:
+        announcement["id"] = str(announcement["_id"])
+        del announcement["_id"]
+    
+    return announcements
