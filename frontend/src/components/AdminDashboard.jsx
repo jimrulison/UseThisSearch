@@ -609,6 +609,259 @@ const AdminDashboard = () => {
           </div>
         )}
 
+        {/* Support Center Tab */}
+        {activeTab === 'support' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-white mb-6">Support Management</h2>
+              <div className="flex items-center gap-4">
+                {supportDashboard && (
+                  <>
+                    {supportDashboard.unread_notifications > 0 && (
+                      <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        {supportDashboard.unread_notifications} New Notifications
+                      </div>
+                    )}
+                    {supportDashboard.open_tickets > 0 && (
+                      <div className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        {supportDashboard.open_tickets} Open Tickets
+                      </div>
+                    )}
+                    {supportDashboard.new_chat_messages > 0 && (
+                      <div className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                        {supportDashboard.new_chat_messages} New Messages
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Support Dashboard Cards */}
+            {supportDashboard && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                  <h3 className="text-gray-300 text-sm font-medium">Open Support Tickets</h3>
+                  <p className="text-3xl font-bold text-white mt-2">
+                    {supportDashboard.open_tickets}
+                  </p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                  <h3 className="text-gray-300 text-sm font-medium">Unread Notifications</h3>
+                  <p className="text-3xl font-bold text-white mt-2">
+                    {supportDashboard.unread_notifications}
+                  </p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                  <h3 className="text-gray-300 text-sm font-medium">New Chat Messages (24h)</h3>
+                  <p className="text-3xl font-bold text-white mt-2">
+                    {supportDashboard.new_chat_messages}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Support Tabs */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+              <div className="border-b border-white/20">
+                <nav className="flex space-x-8 px-6">
+                  {['tickets', 'chat', 'notifications'].map((tab) => (
+                    <button
+                      key={tab}
+                      className={`py-4 px-2 border-b-2 font-medium text-sm capitalize ${
+                        selectedTab === tab
+                          ? 'border-red-500 text-white'
+                          : 'border-transparent text-gray-400 hover:text-white hover:border-gray-300'
+                      }`}
+                      onClick={() => setSelectedTab(tab)}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </nav>
+              </div>
+
+              <div className="p-6">
+                {/* Support Tickets Management */}
+                {selectedTab === 'tickets' && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-white mb-4">Support Tickets</h3>
+                    {supportTickets.length > 0 ? (
+                      <div className="space-y-3">
+                        {supportTickets.map((ticket) => (
+                          <div key={ticket.id} className="bg-white/5 rounded-lg p-4 border border-white/10">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-3 mb-2">
+                                  <h4 className="text-white font-medium">{ticket.subject}</h4>
+                                  <span className={`px-2 py-1 text-xs rounded-full ${
+                                    ticket.status === 'open' ? 'bg-yellow-500 text-black' :
+                                    ticket.status === 'in_progress' ? 'bg-blue-500 text-white' :
+                                    ticket.status === 'resolved' ? 'bg-green-500 text-white' :
+                                    'bg-gray-500 text-white'
+                                  }`}>
+                                    {ticket.status.replace('_', ' ').toUpperCase()}
+                                  </span>
+                                  <span className="text-xs bg-purple-500 text-white px-2 py-1 rounded">
+                                    {ticket.category}
+                                  </span>
+                                </div>
+                                <p className="text-gray-300 text-sm mb-2">{ticket.description}</p>
+                                <div className="flex items-center gap-4 text-xs text-gray-400">
+                                  <span>From: {ticket.user_email}</span>
+                                  <span>Created: {formatDate(ticket.created_at)}</span>
+                                  {ticket.updated_at !== ticket.created_at && (
+                                    <span>Updated: {formatDate(ticket.updated_at)}</span>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="flex gap-2 ml-4">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleUpdateTicketStatus(ticket.id, 'in_progress')}
+                                  className="text-blue-400 border-blue-400 hover:bg-blue-400 hover:text-white"
+                                >
+                                  In Progress
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleUpdateTicketStatus(ticket.id, 'resolved')}
+                                  className="text-green-400 border-green-400 hover:bg-green-400 hover:text-white"
+                                >
+                                  Resolve
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-gray-400">No support tickets found</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Chat Management */}
+                {selectedTab === 'chat' && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-white mb-4">Community Chat Management</h3>
+                    
+                    {/* Admin Message Input */}
+                    <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                      <h4 className="text-white font-medium mb-3">Post as Admin</h4>
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={newAdminMessage}
+                          onChange={(e) => setNewAdminMessage(e.target.value)}
+                          placeholder="Type your message to the community..."
+                          className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+                          onKeyPress={(e) => e.key === 'Enter' && handleSendAdminChatMessage()}
+                        />
+                        <Button
+                          onClick={handleSendAdminChatMessage}
+                          disabled={!newAdminMessage.trim()}
+                          className="bg-red-600 hover:bg-red-700"
+                        >
+                          Send
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Chat Messages */}
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                      {chatMessages.length > 0 ? (
+                        chatMessages.map((message) => (
+                          <div key={message.id} className="bg-white/5 rounded-lg p-4 border border-white/10">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <span className={`text-sm font-medium ${
+                                    message.is_admin ? 'text-red-400' : 'text-blue-400'
+                                  }`}>
+                                    {message.is_admin ? 'Support Team' : message.user_name}
+                                  </span>
+                                  <span className="text-xs text-gray-400">
+                                    {formatDate(message.created_at)}
+                                  </span>
+                                  {message.is_admin && (
+                                    <span className="text-xs bg-red-500 text-white px-2 py-1 rounded">
+                                      ADMIN
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-gray-300 text-sm">{message.message}</p>
+                              </div>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleDeleteChatMessage(message.id)}
+                                className="text-red-400 hover:text-red-300 hover:bg-red-500/20"
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-8">
+                          <p className="text-gray-400">No chat messages found</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Notifications */}
+                {selectedTab === 'notifications' && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-white mb-4">Admin Notifications</h3>
+                    {adminNotifications.length > 0 ? (
+                      <div className="space-y-3">
+                        {adminNotifications.map((notification) => (
+                          <div 
+                            key={notification.id} 
+                            className={`rounded-lg p-4 border cursor-pointer transition-all ${
+                              notification.is_read 
+                                ? 'bg-white/5 border-white/10' 
+                                : 'bg-blue-500/20 border-blue-400/50'
+                            }`}
+                            onClick={() => !notification.is_read && markNotificationAsRead(notification.id)}
+                          >
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h4 className="text-white font-medium">{notification.title}</h4>
+                                  {!notification.is_read && (
+                                    <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                                  )}
+                                </div>
+                                <p className="text-gray-300 text-sm mb-2">{notification.message}</p>
+                                <div className="flex items-center gap-4 text-xs text-gray-400">
+                                  <span>Type: {notification.type.replace('_', ' ')}</span>
+                                  <span>{formatDate(notification.created_at)}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-gray-400">No notifications found</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Global Analytics Tab */}
         {activeTab === 'analytics' && globalAnalytics && (
           <div className="space-y-6">
