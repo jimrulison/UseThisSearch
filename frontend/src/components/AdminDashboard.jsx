@@ -1237,8 +1237,8 @@ const AdminDashboard = () => {
 
         {/* All Users Tab */}
         {activeTab === 'users' && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-white mb-6">All Users</h2>
+          <div className="space-y-4">
+            <h2 className="text-xl font-bold text-white mb-4">All Users Overview</h2>
             
             {allUsers.length > 0 ? (
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
