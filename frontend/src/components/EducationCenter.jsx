@@ -13,8 +13,10 @@ import {
   Search,
   X,
   ExternalLink,
-  ArrowLeft
+  ArrowLeft,
+  Eye
 } from 'lucide-react';
+import jsPDF from 'jspdf';
 
 const EducationCenter = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('tutorials');
