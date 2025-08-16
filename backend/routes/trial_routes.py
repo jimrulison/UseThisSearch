@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import uuid
 
 from models.billing_models import UserTrialInfo, TrialStatus, PlanType
-from database import get_database
+from database import db
 from billing.billing_middleware import get_current_user
 
 router = APIRouter(prefix="/trial", tags=["trial"])
@@ -12,10 +12,9 @@ router = APIRouter(prefix="/trial", tags=["trial"])
 @router.get("/status")
 async def get_trial_status(current_user=Depends(get_current_user)):
     """Get current user's trial status"""
-    db = get_database()
     
     # Get user from database
-    user = db.users.find_one({"email": current_user["email"]})
+    user = await db.users.find_one({"email": current_user["email"]})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -36,7 +35,7 @@ async def get_trial_status(current_user=Depends(get_current_user)):
         trial.data_retention_start = datetime.utcnow()
         
         # Update in database
-        db.users.update_one(
+        await db.users.update_one(
             {"email": current_user["email"]},
             {"$set": {"trial_info": trial.dict()}}
         )
@@ -56,9 +55,8 @@ async def get_trial_status(current_user=Depends(get_current_user)):
 @router.post("/increment-search")
 async def increment_search_count(current_user=Depends(get_current_user)):
     """Increment the daily search count for trial user"""
-    db = get_database()
     
-    user = db.users.find_one({"email": current_user["email"]})
+    user = await db.users.find_one({"email": current_user["email"]})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -84,7 +82,7 @@ async def increment_search_count(current_user=Depends(get_current_user)):
     trial.last_search_date = datetime.utcnow()
     
     # Update in database
-    db.users.update_one(
+    await db.users.update_one(
         {"email": current_user["email"]},
         {"$set": {"trial_info": trial.dict()}}
     )
@@ -100,9 +98,8 @@ async def convert_trial_to_paid(
     current_user=Depends(get_current_user)
 ):
     """Convert trial user to paid subscription"""
-    db = get_database()
     
-    user = db.users.find_one({"email": current_user["email"]})
+    user = await db.users.find_one({"email": current_user["email"]})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -114,7 +111,7 @@ async def convert_trial_to_paid(
     trial.trial_status = TrialStatus.CONVERTED
     
     # Update user with paid subscription
-    db.users.update_one(
+    await db.users.update_one(
         {"email": current_user["email"]},
         {
             "$set": {
@@ -131,9 +128,8 @@ async def convert_trial_to_paid(
 @router.get("/reminder-needed")
 async def check_reminder_needed(current_user=Depends(get_current_user)):
     """Check if user needs to see trial reminder popup"""
-    db = get_database()
     
-    user = db.users.find_one({"email": current_user["email"]})
+    user = await db.users.find_one({"email": current_user["email"]})
     if not user:
         return {"show_reminder": False}
     
@@ -150,7 +146,7 @@ async def check_reminder_needed(current_user=Depends(get_current_user)):
         trial.trial_reminders_sent.append(days)
         
         # Update in database
-        db.users.update_one(
+        await db.users.update_one(
             {"email": current_user["email"]},
             {"$set": {"trial_info": trial.dict()}}
         )
@@ -167,24 +163,23 @@ async def check_reminder_needed(current_user=Depends(get_current_user)):
 @router.delete("/cleanup-expired-data")
 async def cleanup_expired_trial_data():
     """Clean up data for users whose 30-day retention period has expired"""
-    db = get_database()
     
     # Find users with expired data retention
     cutoff_date = datetime.utcnow() - timedelta(days=30)
     
-    expired_users = db.users.find({
+    expired_users = await db.users.find({
         "trial_info.trial_status": TrialStatus.DATA_RETENTION,
         "trial_info.data_retention_start": {"$lt": cutoff_date}
-    })
+    }).to_list(1000)
     
     deleted_count = 0
     for user in expired_users:
         # Delete user data (searches, companies, etc.)
-        db.searches.delete_many({"user_email": user["email"]})
-        db.companies.delete_many({"users": user["email"]})
+        await db.searches.delete_many({"user_email": user["email"]})
+        await db.companies.delete_many({"users": user["email"]})
         
         # Delete user account
-        db.users.delete_one({"_id": user["_id"]})
+        await db.users.delete_one({"_id": user["_id"]})
         deleted_count += 1
     
     return {
