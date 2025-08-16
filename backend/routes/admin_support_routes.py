@@ -14,7 +14,7 @@ from models.support_models import (
 from database import get_database
 from billing.billing_middleware import get_admin_user
 
-router = APIRouter(prefix="/api/admin/support", tags=["admin-support"])
+router = APIRouter(prefix="/admin/support", tags=["admin-support"])
 
 # Admin FAQ Management
 @router.get("/faq", response_model=List[FAQItem])
