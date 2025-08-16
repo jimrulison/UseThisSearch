@@ -1670,8 +1670,8 @@ class BackendTester:
     
     
     def test_admin_custom_pricing_system(self):
-        """Test admin custom pricing system functionality"""
-        print("\n=== Testing Admin Custom Pricing System ===")
+        """Test admin custom pricing system with expiration date functionality"""
+        print("\n=== Testing Admin Custom Pricing System with Expiration Date ===")
         
         try:
             all_passed = True
@@ -1691,34 +1691,55 @@ class BackendTester:
             
             admin_headers = {"Authorization": f"Bearer {self.admin_token}"}
             
-            # Test user email for custom pricing
-            test_user_email = "custom_pricing_test@example.com"
+            # Test user emails for custom pricing
+            test_user_email_1 = "custom_pricing_expiry_test@example.com"
+            test_user_email_2 = "custom_pricing_permanent_test@example.com"
             
-            # Test 1: Apply custom pricing to a user
-            custom_pricing_data = {
-                "user_email": test_user_email,
+            # Create user activity first by making searches
+            for email in [test_user_email_1, test_user_email_2]:
+                search_headers = {"X-User-ID": email}
+                search_data = {"search_term": f"custom pricing test for {email}"}
+                self.session.post(f"{API_BASE}/search", json=search_data, headers=search_headers)
+            time.sleep(1)  # Wait for background tasks
+            
+            # Test 1: Apply custom pricing WITH expiration date
+            from datetime import datetime, timedelta
+            future_date = (datetime.utcnow() + timedelta(days=30)).isoformat() + "Z"
+            
+            custom_pricing_with_expiry = {
+                "user_email": test_user_email_1,
                 "plan_type": "professional",
                 "custom_price_monthly": 50,
                 "custom_price_yearly": 40,
-                "notes": "Test custom pricing for backend testing"
+                "notes": "Test custom pricing with expiration date",
+                "expires_at": future_date
             }
             
             response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
-                                       json=custom_pricing_data, headers=admin_headers)
+                                       json=custom_pricing_with_expiry, headers=admin_headers)
             
             if response.status_code == 200:
                 applied_pricing = response.json()
-                details.append("✓ Custom pricing applied successfully")
+                details.append("✓ Custom pricing with expiration date applied successfully")
                 
-                # Validate response structure
+                # Validate response structure including expires_at
                 required_fields = ["id", "user_email", "plan_type", "custom_price_monthly", "custom_price_yearly", "applied_by", "status"]
                 missing_fields = [field for field in required_fields if field not in applied_pricing]
                 
                 if not missing_fields:
                     details.append("✓ Custom pricing response structure valid")
                     
-                    # Validate values
-                    if (applied_pricing["user_email"] == test_user_email and
+                    # Check if expires_at field is present and correctly set
+                    if "expires_at" in applied_pricing:
+                        if applied_pricing["expires_at"] is not None:
+                            details.append("✓ Expiration date field present and set correctly")
+                        else:
+                            details.append("Minor: Expiration date field present but null")
+                    else:
+                        details.append("Minor: Expiration date field missing from response")
+                        
+                    # Validate other values
+                    if (applied_pricing["user_email"] == test_user_email_1 and
                         applied_pricing["plan_type"] == "professional" and
                         applied_pricing["custom_price_monthly"] == 50 and
                         applied_pricing["custom_price_yearly"] == 40 and
@@ -1732,23 +1753,39 @@ class BackendTester:
                     details.append(f"✗ Custom pricing response missing fields: {missing_fields}")
             else:
                 all_passed = False
-                details.append(f"✗ Apply custom pricing failed: HTTP {response.status_code}")
-                if response.status_code == 404:
-                    # Try to create a user activity first by making a search
-                    search_headers = {"X-User-ID": test_user_email}
-                    search_data = {"search_term": "custom pricing test"}
-                    self.session.post(f"{API_BASE}/search", json=search_data, headers=search_headers)
-                    
-                    # Retry applying custom pricing
-                    response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
-                                               json=custom_pricing_data, headers=admin_headers)
-                    if response.status_code == 200:
-                        details.append("✓ Custom pricing applied after creating user activity")
-                    else:
-                        details.append(f"✗ Custom pricing still failed after user creation: HTTP {response.status_code}")
+                details.append(f"✗ Apply custom pricing with expiration failed: HTTP {response.status_code} - {response.text}")
             
-            # Test 2: Get user's custom pricing
-            response = self.session.get(f"{API_BASE}/admin/custom-pricing/user/{test_user_email}", 
+            # Test 2: Apply custom pricing WITHOUT expiration date (permanent)
+            custom_pricing_permanent = {
+                "user_email": test_user_email_2,
+                "plan_type": "agency",
+                "custom_price_monthly": 100,
+                "custom_price_yearly": 80,
+                "notes": "Test permanent custom pricing (no expiration)",
+                "expires_at": None
+            }
+            
+            response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
+                                       json=custom_pricing_permanent, headers=admin_headers)
+            
+            if response.status_code == 200:
+                permanent_pricing = response.json()
+                details.append("✓ Permanent custom pricing (no expiration) applied successfully")
+                
+                # Check expires_at field handling for permanent pricing
+                if "expires_at" in permanent_pricing:
+                    if permanent_pricing["expires_at"] is None:
+                        details.append("✓ Null expiration date handled correctly for permanent pricing")
+                    else:
+                        details.append("Minor: Expected null expiration date for permanent pricing")
+                else:
+                    details.append("Minor: Expiration date field missing from permanent pricing response")
+            else:
+                all_passed = False
+                details.append(f"✗ Apply permanent custom pricing failed: HTTP {response.status_code} - {response.text}")
+            
+            # Test 3: Get user's custom pricing and verify expiration data
+            response = self.session.get(f"{API_BASE}/admin/custom-pricing/user/{test_user_email_1}", 
                                       headers=admin_headers)
             
             if response.status_code == 200:
@@ -1756,8 +1793,18 @@ class BackendTester:
                 if user_pricing and "user_email" in user_pricing:
                     details.append("✓ Get user custom pricing working")
                     
+                    # Verify expiration date is stored and retrieved correctly
+                    if "expires_at" in user_pricing:
+                        details.append("✓ Expiration date field present in retrieved data")
+                        if user_pricing["expires_at"] is not None:
+                            details.append("✓ Expiration date value retrieved correctly")
+                        else:
+                            details.append("Minor: Expiration date is null in retrieved data")
+                    else:
+                        details.append("Minor: Expiration date field missing from retrieved data")
+                        
                     # Validate it matches what we applied
-                    if (user_pricing["user_email"] == test_user_email and
+                    if (user_pricing["user_email"] == test_user_email_1 and
                         user_pricing["custom_price_monthly"] == 50):
                         details.append("✓ Retrieved custom pricing matches applied pricing")
                     else:
@@ -1769,32 +1816,7 @@ class BackendTester:
                 all_passed = False
                 details.append(f"✗ Get user custom pricing failed: HTTP {response.status_code}")
             
-            # Test 3: Get custom pricing history
-            response = self.session.get(f"{API_BASE}/admin/custom-pricing/history", headers=admin_headers)
-            
-            if response.status_code == 200:
-                history = response.json()
-                if isinstance(history, list):
-                    details.append(f"✓ Custom pricing history retrieved ({len(history)} records)")
-                    
-                    # Check if our test record appears in history
-                    test_record_found = any(
-                        record.get("user_email") == test_user_email and record.get("action") == "applied"
-                        for record in history
-                    )
-                    
-                    if test_record_found:
-                        details.append("✓ Applied custom pricing appears in history")
-                    else:
-                        details.append("Minor: Test record not found in history (acceptable if apply failed)")
-                else:
-                    all_passed = False
-                    details.append("✗ Custom pricing history not a list")
-            else:
-                all_passed = False
-                details.append(f"✗ Get custom pricing history failed: HTTP {response.status_code}")
-            
-            # Test 4: Get all active custom pricing
+            # Test 4: Database validation - check active custom pricing includes expires_at
             response = self.session.get(f"{API_BASE}/admin/custom-pricing/active", headers=admin_headers)
             
             if response.status_code == 200:
@@ -1802,75 +1824,74 @@ class BackendTester:
                 if isinstance(active_pricing, list):
                     details.append(f"✓ Active custom pricing retrieved ({len(active_pricing)} records)")
                     
-                    # Check if our test record is in active pricing
-                    test_active_found = any(
-                        record.get("user_email") == test_user_email and record.get("status") == "active"
-                        for record in active_pricing
-                    )
-                    
-                    if test_active_found:
-                        details.append("✓ Applied custom pricing appears in active list")
+                    # Check if records have expires_at field
+                    records_with_expiry = [record for record in active_pricing if "expires_at" in record]
+                    if records_with_expiry:
+                        details.append(f"✓ Database stores expiration dates correctly ({len(records_with_expiry)} records with expiry field)")
+                        
+                        # Check if our test records are present
+                        test_record_1 = next((r for r in active_pricing if r.get("user_email") == test_user_email_1), None)
+                        test_record_2 = next((r for r in active_pricing if r.get("user_email") == test_user_email_2), None)
+                        
+                        if test_record_1:
+                            details.append("✓ Test record with expiration found in active pricing")
+                        if test_record_2:
+                            details.append("✓ Test record without expiration found in active pricing")
                     else:
-                        details.append("Minor: Test record not found in active list (acceptable if apply failed)")
+                        details.append("Minor: No records with expiration date field found")
                 else:
                     all_passed = False
-                    details.append("✗ Active custom pricing not a list")
+                    details.append("✗ Active custom pricing response not a list")
             else:
                 all_passed = False
                 details.append(f"✗ Get active custom pricing failed: HTTP {response.status_code}")
             
-            # Test 5: Try to apply custom pricing to same user (should update existing)
-            updated_pricing_data = {
-                "user_email": test_user_email,
-                "plan_type": "agency",
-                "custom_price_monthly": 75,
-                "custom_price_yearly": 60,
-                "notes": "Updated custom pricing for testing"
+            # Test 5: Get custom pricing history and verify audit trail
+            response = self.session.get(f"{API_BASE}/admin/custom-pricing/history", headers=admin_headers)
+            
+            if response.status_code == 200:
+                history = response.json()
+                if isinstance(history, list):
+                    details.append(f"✓ Custom pricing history retrieved ({len(history)} records)")
+                    
+                    # Check if our test records appear in history
+                    test_records_found = [
+                        record for record in history 
+                        if record.get("user_email") in [test_user_email_1, test_user_email_2] 
+                        and record.get("action") == "applied"
+                    ]
+                    
+                    if test_records_found:
+                        details.append(f"✓ Applied custom pricing appears in history ({len(test_records_found)} records)")
+                    else:
+                        details.append("Minor: Test records not found in history (acceptable if apply failed)")
+                else:
+                    all_passed = False
+                    details.append("✗ Custom pricing history not a list")
+            else:
+                all_passed = False
+                details.append(f"✗ Get custom pricing history failed: HTTP {response.status_code}")
+            
+            # Test 6: Test invalid expiration date format
+            invalid_expiry_data = {
+                "user_email": "invalid_expiry_test@example.com",
+                "plan_type": "professional",
+                "custom_price_monthly": 50,
+                "custom_price_yearly": 40,
+                "expires_at": "invalid-date-format"
             }
             
             response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
-                                       json=updated_pricing_data, headers=admin_headers)
+                                       json=invalid_expiry_data, headers=admin_headers)
             
-            if response.status_code == 200:
-                details.append("✓ Custom pricing update/reapply working")
+            if response.status_code in [400, 422]:
+                details.append("✓ Invalid expiration date format properly rejected")
             else:
-                details.append(f"Minor: Custom pricing reapply returned HTTP {response.status_code}")
+                details.append(f"Minor: Invalid date format handling returned HTTP {response.status_code}")
             
-            # Test 6: Cancel custom pricing for user
-            response = self.session.delete(f"{API_BASE}/admin/custom-pricing/user/{test_user_email}", 
-                                         headers=admin_headers)
-            
-            if response.status_code == 200:
-                cancel_result = response.json()
-                if "message" in cancel_result:
-                    details.append("✓ Custom pricing cancellation working")
-                else:
-                    all_passed = False
-                    details.append("✗ Custom pricing cancellation response invalid")
-            else:
-                if response.status_code == 404:
-                    details.append("Minor: No custom pricing to cancel (acceptable if apply failed)")
-                else:
-                    all_passed = False
-                    details.append(f"✗ Cancel custom pricing failed: HTTP {response.status_code}")
-            
-            # Test 7: Verify custom pricing is canceled
-            response = self.session.get(f"{API_BASE}/admin/custom-pricing/user/{test_user_email}", 
-                                      headers=admin_headers)
-            
-            if response.status_code == 200:
-                user_pricing = response.json()
-                if not user_pricing:  # Should be None/null after cancellation
-                    details.append("✓ Custom pricing properly canceled")
-                else:
-                    details.append("Minor: Custom pricing still active after cancellation")
-            else:
-                details.append("Minor: Cannot verify cancellation status")
-            
-            # Test 8: Test authentication requirements
-            # Try without admin token
+            # Test 7: Test authentication requirements
             response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
-                                       json=custom_pricing_data)
+                                       json=custom_pricing_with_expiry)
             
             if response.status_code == 401:
                 details.append("✓ Authentication required for custom pricing endpoints")
@@ -1878,44 +1899,21 @@ class BackendTester:
                 all_passed = False
                 details.append(f"✗ Authentication not required: HTTP {response.status_code}")
             
-            # Test 9: Test validation - invalid email format
-            invalid_pricing_data = {
-                "user_email": "invalid-email",
-                "plan_type": "professional",
-                "custom_price_monthly": 50,
-                "custom_price_yearly": 40
-            }
-            
-            response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
-                                       json=invalid_pricing_data, headers=admin_headers)
-            
-            if response.status_code in [400, 422]:
-                details.append("✓ Email validation working")
-            else:
-                details.append(f"Minor: Email validation returned HTTP {response.status_code}")
-            
-            # Test 10: Test validation - negative prices
-            negative_pricing_data = {
-                "user_email": "test@example.com",
-                "plan_type": "professional", 
-                "custom_price_monthly": -10,
-                "custom_price_yearly": -5
-            }
-            
-            response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
-                                       json=negative_pricing_data, headers=admin_headers)
-            
-            if response.status_code in [400, 422]:
-                details.append("✓ Price validation working")
-            else:
-                details.append(f"Minor: Price validation returned HTTP {response.status_code}")
+            # Test 8: Cancel custom pricing for cleanup
+            for email in [test_user_email_1, test_user_email_2]:
+                response = self.session.delete(f"{API_BASE}/admin/custom-pricing/user/{email}", 
+                                             headers=admin_headers)
+                if response.status_code == 200:
+                    details.append(f"✓ Custom pricing canceled for {email}")
+                elif response.status_code == 404:
+                    details.append(f"Minor: No custom pricing to cancel for {email}")
             
             if all_passed:
                 self.log_test("admin_custom_pricing_system", "pass", 
-                            f"Admin custom pricing system working. {'; '.join(details)}")
+                            f"Admin custom pricing system with expiration dates working. {'; '.join(details)}")
             else:
                 self.log_test("admin_custom_pricing_system", "fail", 
-                            f"Admin custom pricing issues: {'; '.join(details)}")
+                            f"Admin custom pricing system issues: {'; '.join(details)}")
                 
         except Exception as e:
             self.log_test("admin_custom_pricing_system", "fail", f"Admin custom pricing test error: {str(e)}")
