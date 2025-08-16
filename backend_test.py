@@ -1695,12 +1695,19 @@ class BackendTester:
             test_user_email_1 = "custom_pricing_expiry_test@example.com"
             test_user_email_2 = "custom_pricing_permanent_test@example.com"
             
-            # Create user activity first by making searches
+            # Create user activity first by making searches and creating companies
             for email in [test_user_email_1, test_user_email_2]:
                 search_headers = {"X-User-ID": email}
                 search_data = {"search_term": f"custom pricing test for {email}"}
-                self.session.post(f"{API_BASE}/search", json=search_data, headers=search_headers)
-            time.sleep(1)  # Wait for background tasks
+                search_response = self.session.post(f"{API_BASE}/search", json=search_data, headers=search_headers)
+                
+                # Also create a company to ensure user exists in system
+                company_data = {"name": f"Test Company for {email}"}
+                company_response = self.session.post(f"{API_BASE}/companies", json=company_data, headers=search_headers)
+                
+                details.append(f"✓ Created user activity for {email} (search: {search_response.status_code}, company: {company_response.status_code})")
+            
+            time.sleep(2)  # Wait for background tasks
             
             # Test 1: Apply custom pricing WITH expiration date
             from datetime import datetime, timedelta
