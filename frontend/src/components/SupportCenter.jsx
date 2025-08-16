@@ -36,8 +36,69 @@ const SupportCenter = ({ isOpen, onClose }) => {
   const [newTicketMessage, setNewTicketMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Populate default FAQ items
-  const defaultFAQ = [
+  const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+
+  useEffect(() => {
+    if (isOpen) {
+      loadSupportData();
+    }
+  }, [isOpen]);
+
+  const loadSupportData = async () => {
+    try {
+      // Load FAQ items
+      await loadFAQItems();
+      // Load chat messages  
+      await loadChatMessages();
+      // Load user tickets
+      await loadUserTickets();
+      // Load user data
+      loadUserData();
+    } catch (error) {
+      console.error('Error loading support data:', error);
+    }
+  };
+
+  const loadFAQItems = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/support/faq`);
+      if (response.data && response.data.length > 0) {
+        setFaqItems(response.data);
+      } else {
+        // Use default FAQ if none exist in backend
+        setFaqItems(defaultFAQ);
+      }
+    } catch (error) {
+      console.error('Error loading FAQ:', error);
+      // Fall back to default FAQ
+      setFaqItems(defaultFAQ);
+    }
+  };
+
+  const loadChatMessages = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/support/chat/messages?limit=50`);
+      setChatMessages(response.data || []);
+    } catch (error) {
+      console.error('Error loading chat messages:', error);
+      setChatMessages([]);
+    }
+  };
+
+  const loadUserTickets = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await axios.get(`${backendUrl}/api/support/tickets`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUserTickets(response.data || []);
+    } catch (error) {
+      console.error('Error loading user tickets:', error);
+      setUserTickets([]);
+    }
+  };
     {
       id: '1',
       question: 'How do I perform my first keyword search?',
