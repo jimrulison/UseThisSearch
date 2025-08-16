@@ -110,7 +110,6 @@ const UserAvailabilityNotice = () => {
       <StripeCheckout 
         isOpen={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
-        initialPlan={getUpgradeOptions().plan}
       />
     </>
   );
