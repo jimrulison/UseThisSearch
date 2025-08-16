@@ -244,6 +244,24 @@ const CustomPricingWidget = ({ getAuthHeaders }) => {
           />
         </div>
 
+        {/* Expiration Date Input */}
+        <div>
+          <label className="block text-gray-300 text-sm font-medium mb-2">
+            Expiration Date (Optional)
+          </label>
+          <input
+            type="date"
+            value={expirationDate}
+            onChange={(e) => setExpirationDate(e.target.value)}
+            className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
+            disabled={isLoading}
+            min={new Date().toISOString().split('T')[0]} // Prevent past dates
+          />
+          <div className="text-xs text-gray-400 mt-1">
+            💡 Leave empty for permanent custom pricing. Set date to automatically revert to standard pricing after expiration.
+          </div>
+        </div>
+
         {/* Apply Button */}
         <Button
           type="submit"
