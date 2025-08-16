@@ -658,10 +658,46 @@ This manual provides everything you need to effectively manage the Use This Sear
     }
   ];
 
-  const handleDownloadPDF = (materialId) => {
+  const handleViewDocument = (materialId) => {
     const material = educationalMaterials.find(m => m.id === materialId);
     if (material && material.docContent) {
       setViewingDocument(material);
+    } else {
+      console.log(`Document content not available: ${materialId}`);
+      alert(`Document content will be available soon: ${material?.title || materialId}`);
+    }
+  };
+
+  const handleDownloadPDF = (materialId) => {
+    const material = educationalMaterials.find(m => m.id === materialId);
+    if (material && material.docContent) {
+      try {
+        const pdf = new jsPDF();
+        
+        // Set up PDF properties
+        pdf.setFont("helvetica");
+        pdf.setFontSize(16);
+        
+        // Add title
+        pdf.text(material.title, 20, 20);
+        
+        // Add description
+        pdf.setFontSize(12);
+        pdf.text(material.description, 20, 35);
+        
+        // Add content
+        pdf.setFontSize(10);
+        const lines = pdf.splitTextToSize(material.docContent, 170);
+        pdf.text(lines, 20, 50);
+        
+        // Download the PDF
+        pdf.save(`${material.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`);
+        
+        console.log(`PDF downloaded: ${material.title}`);
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        alert('Error generating PDF. Please try again.');
+      }
     } else {
       console.log(`Document content not available: ${materialId}`);
       alert(`Document content will be available soon: ${material?.title || materialId}`);
