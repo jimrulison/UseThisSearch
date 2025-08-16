@@ -356,6 +356,7 @@ const AdminDashboard = () => {
           <div className="flex space-x-0">
             {[
               { id: 'dashboard', label: 'Dashboard' },
+              { id: 'announcements', label: 'Announcements' },
               { id: 'support', label: 'Support Center' },
               { id: 'lookup', label: 'User Lookup' },
               { id: 'analytics', label: 'Global Analytics' },
