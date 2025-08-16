@@ -657,10 +657,13 @@ This manual provides everything you need to effectively manage the Use This Sear
   ];
 
   const handleDownloadPDF = (materialId) => {
-    // This will be implemented to generate/serve PDF files
-    console.log(`Downloading PDF: ${materialId}`);
-    // For now, we'll show a placeholder action
-    alert(`PDF download functionality will be implemented for: ${materialId}`);
+    const material = educationalMaterials.find(m => m.id === materialId);
+    if (material && material.docContent) {
+      setViewingDocument(material);
+    } else {
+      console.log(`Document content not available: ${materialId}`);
+      alert(`Document content will be available soon: ${material?.title || materialId}`);
+    }
   };
 
   const handlePlayTutorial = (tutorialId) => {
