@@ -230,6 +230,13 @@ const SafeSearchWrapper = ({ children, onSearchAttempt, onCompanyCreateAttempt }
         usageInfo={lastUsageInfo}
         onUpgrade={handleUpgrade}
       />
+      
+      {/* Stripe Checkout Modal */}
+      <StripeCheckout 
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        initialPlan={selectedUpgradePlan}
+      />
     </>
   );
 };
