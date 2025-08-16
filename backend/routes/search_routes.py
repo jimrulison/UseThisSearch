@@ -42,13 +42,49 @@ def get_company_id_from_request(request: Request) -> str:
 async def search_suggestions(
     request: SearchRequest,
     background_tasks: BackgroundTasks,
-    http_request: Request
+    http_request: Request,
+    current_user=Depends(get_current_user)
 ):
     """Generate keyword suggestions using Claude AI"""
     
     start_time = time.time()
     
     try:
+        # Check trial limits for trial users
+        user = await db.users.find_one({"email": current_user["email"]})
+        if user and user.get("trial_info"):
+            trial_info = UserTrialInfo(**user["trial_info"])
+            
+            # Check if trial has expired
+            if trial_info.is_trial_expired():
+                raise HTTPException(
+                    status_code=403, 
+                    detail="Your 7-day free trial has expired. Please upgrade to a paid plan to continue using the platform."
+                )
+            
+            # Check daily search limit for trial users
+            if not trial_info.can_search_today():
+                remaining = max(0, 25 - trial_info.searches_used_today)
+                if remaining == 0:
+                    raise HTTPException(
+                        status_code=429,
+                        detail=f"You've reached your daily limit of 25 searches. Trial users can perform 25 searches per day. Please try again tomorrow or upgrade to remove limits."
+                    )
+            
+            # Increment search count for trial users
+            today = datetime.utcnow().date()
+            if trial_info.last_search_date is None or trial_info.last_search_date.date() != today:
+                trial_info.searches_used_today = 0
+            
+            trial_info.searches_used_today += 1
+            trial_info.last_search_date = datetime.utcnow()
+            
+            # Update trial info in database
+            await db.users.update_one(
+                {"email": current_user["email"]},
+                {"$set": {"trial_info": trial_info.dict()}}
+            )
+        
         # Validate search term
         search_term = request.search_term.strip().lower()
         if not search_term:
