@@ -38,6 +38,70 @@ const SupportCenter = ({ isOpen, onClose }) => {
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
+  // Default FAQ items as fallback
+  const defaultFAQ = [
+    {
+      id: '1',
+      question: 'How do I perform my first keyword search?',
+      answer: 'To perform your first search: 1) Type your target keyword in the search box (e.g., "digital marketing"), 2) Click "Generate Ideas" or press Enter, 3) Wait 10-30 seconds for AI processing, 4) View your 40+ keyword suggestions in 4 categories.',
+      category: 'Getting Started'
+    },
+    {
+      id: '2',
+      question: 'What are the different result categories?',
+      answer: 'Results are organized into 4 categories: Questions (user questions about your topic), Prepositions (keywords with relationships), Comparisons (alternative searches), and Alphabetical (comprehensive related terms). Each category helps with different content strategies.',
+      category: 'Search Results'
+    },
+    {
+      id: '3',
+      question: 'How do I use the content generation tools?',
+      answer: 'After performing a search, click any of the 6 content tools: Blog Titles, Meta Descriptions, Social Media Posts, FAQ Generator, Content Brief Templates, or Hashtag Generator. Select relevant keywords from your results and click "Generate" to create content.',
+      category: 'Content Creation'
+    },
+    {
+      id: '4',
+      question: 'How do I upgrade my subscription plan?',
+      answer: 'Click the "UPGRADE" button in the top navigation. Review the plan comparison, select your desired tier (Professional, Agency, or Enterprise), and complete the secure payment process. Your new limits take effect immediately.',
+      category: 'Billing'
+    },
+    {
+      id: '5',
+      question: 'How do I add team members?',
+      answer: 'From your dashboard, access team management. Click "Invite Team Member", enter their email address, select their role (Owner, Admin, or Member), and send the invitation. They\'ll receive an email to join your workspace.',
+      category: 'Team Management'
+    },
+    {
+      id: '6',
+      question: 'What does "Team full" mean?',
+      answer: 'This means you\'ve reached your plan\'s user limit. Solo plans support 1 user, Professional plans support 2 users, Agency plans support 5 users, and Enterprise supports 7 users. Upgrade your plan to add more team members.',
+      category: 'Team Management'
+    },
+    {
+      id: '7',
+      question: 'How do I export my search results?',
+      answer: 'After completing a search, click the "Export CSV" button. This downloads all keyword suggestions organized by category in a spreadsheet-compatible format. Files are named with your keyword and date for easy organization.',
+      category: 'Data Export'
+    },
+    {
+      id: '8',
+      question: 'Can I manage multiple companies/projects?',
+      answer: 'Yes! Use the Company Selector dropdown to switch between workspaces. Professional plans support 5 companies, while Agency and Enterprise plans support unlimited companies. Each company has separate data and analytics.',
+      category: 'Company Management'
+    },
+    {
+      id: '9',
+      question: 'How do I access the GROUP KEYWORDS feature?',
+      answer: 'GROUP KEYWORDS is available exclusively for annual subscription holders. If you have an annual plan, you\'ll see the feature on your main search page. It uses AI to organize related keywords into strategic content groups.',
+      category: 'Premium Features'
+    },
+    {
+      id: '10',
+      question: 'Where can I view my usage statistics?',
+      answer: 'Click the "Dashboard" button to view your analytics including total searches used, popular terms, recent activity, and team performance. You can also see your usage limits and remaining allowance.',
+      category: 'Analytics'
+    }
+  ];
+
   useEffect(() => {
     if (isOpen) {
       loadSupportData();
