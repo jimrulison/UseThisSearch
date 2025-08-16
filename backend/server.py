@@ -40,6 +40,9 @@ from routes.admin_support_routes import router as admin_support_router
 from routes.trial_routes import router as trial_router
 from routes.auth_routes import router as auth_router
 
+# Import scheduler
+from services.trial_scheduler import get_trial_scheduler
+
 from database import init_database, close_database
 
 ROOT_DIR = Path(__file__).parent
