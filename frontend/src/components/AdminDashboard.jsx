@@ -514,9 +514,9 @@ const AdminDashboard = () => {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Top Row - Custom Pricing and Support Dashboard */}
-        <div className="flex gap-6 mb-8">
+        <div className="flex gap-6 mb-6">
           {/* Custom Pricing Widget - Left Side */}
           <div className="w-80 flex-shrink-0">
             <CustomPricingWidget getAuthHeaders={getAuthHeaders} />
