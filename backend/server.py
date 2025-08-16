@@ -53,6 +53,39 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Manage application lifecycle"""
+    logger.info("Starting Use This Search API...")
+    
+    # Initialize database
+    await init_database()
+    
+    # Start trial scheduler
+    scheduler = get_trial_scheduler()
+    scheduler_task = asyncio.create_task(scheduler.start_scheduler())
+    logger.info("Trial scheduler started")
+    
+    yield
+    
+    # Cleanup
+    scheduler.stop_scheduler()
+    scheduler_task.cancel()
+    try:
+        await scheduler_task
+    except asyncio.CancelledError:
+        pass
+    
+    await close_database()
+    logger.info("API shutdown complete!")
+
 # Create the main app without a prefix
 app = FastAPI(
     title="Use This Search - AI Keyword Research Tool",
