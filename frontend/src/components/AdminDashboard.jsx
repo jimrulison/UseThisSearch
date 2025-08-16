@@ -1237,6 +1237,14 @@ const AdminDashboard = () => {
           </div>
         )}
 
+        {/* Trial Management Tab */}
+        {activeTab === 'trials' && (
+          <div className="space-y-2">
+            <h2 className="text-lg font-bold text-white mb-2">Trial Management</h2>
+            <TrialManagement getAuthHeaders={getAuthHeaders} />
+          </div>
+        )}
+
         {/* All Users Tab */}
         {activeTab === 'users' && (
           <div className="space-y-2">
