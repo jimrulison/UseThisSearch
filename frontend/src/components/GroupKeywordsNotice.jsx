@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { Layers, Crown, Sparkles, ArrowRight } from 'lucide-react';
+import { Crown, Sparkles, ArrowRight } from 'lucide-react';
 import { useBilling } from '../contexts/BillingContext';
 
 const GroupKeywordsNotice = () => {
@@ -19,12 +19,21 @@ const GroupKeywordsNotice = () => {
           <div className="flex items-center gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-1">
-                {/* Group Keywords Logo */}
-                <Layers className="w-6 h-6 text-purple-600" />
-                <h3 className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                  GROUP KEYWORDS
-                </h3>
-                <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs">
+                {/* Custom Group Keywords Logo */}
+                <img 
+                  src="/group-keywords-logo.png" 
+                  alt="Group Keywords" 
+                  className="w-8 h-8 object-contain"
+                />
+                <div className="flex flex-col">
+                  <h3 className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent leading-tight">
+                    GROUP KEYWORDS
+                  </h3>
+                  <div className="text-sm text-gray-500" style={{ fontSize: '0.75em', marginTop: '-2px' }}>
+                    (clustering)
+                  </div>
+                </div>
+                <Badge className="bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs ml-2">
                   <Crown className="w-3 h-3 mr-1" />
                   ANNUAL ONLY
                 </Badge>
