@@ -55,6 +55,14 @@ const SearchInterface = ({ onSearch, isLoading, searchTerm, setSearchTerm, viewM
             onLanguageChange={changeLanguage}
             className=""
           />
+          <Button 
+            variant="outline" 
+            onClick={() => setIsSupportOpen(true)}
+            className="flex items-center gap-2 text-purple-600 hover:bg-purple-50 border-purple-200 hover:border-purple-300 transition-all duration-200"
+          >
+            <HelpCircle className="h-4 w-4" />
+            SUPPORT
+          </Button>
           <UpgradeButton />
           <UserDropdown />
         </div>
