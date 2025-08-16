@@ -12,7 +12,8 @@ import {
   Settings, 
   Search,
   X,
-  ExternalLink
+  ExternalLink,
+  ArrowLeft
 } from 'lucide-react';
 
 const EducationCenter = ({ isOpen, onClose }) => {
