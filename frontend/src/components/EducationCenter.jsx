@@ -280,14 +280,21 @@ const EducationCenter = ({ isOpen, onClose }) => {
                   {educationalMaterials.map((material) => {
                     const IconComponent = material.icon;
                     return (
-                      <Card key={material.id} className="border-2 hover:border-green-300 transition-colors">
+                      <Card key={material.id} className={`border-2 hover:border-green-300 transition-colors ${material.featured ? 'ring-2 ring-blue-200 bg-blue-50' : ''}`}>
                         <CardContent className="p-6">
                           <div className="flex items-start gap-4">
-                            <div className="bg-green-100 p-3 rounded-lg">
-                              <IconComponent className="h-6 w-6 text-green-600" />
+                            <div className={`p-3 rounded-lg ${material.featured ? 'bg-blue-100' : 'bg-green-100'}`}>
+                              <IconComponent className={`h-6 w-6 ${material.featured ? 'text-blue-600' : 'text-green-600'}`} />
                             </div>
                             <div className="flex-1">
-                              <h4 className="font-semibold text-gray-800 mb-1">{material.title}</h4>
+                              <div className="flex items-start justify-between mb-1">
+                                <h4 className="font-semibold text-gray-800">{material.title}</h4>
+                                {material.featured && (
+                                  <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+                                    Featured
+                                  </span>
+                                )}
+                              </div>
                               <p className="text-sm text-gray-600 mb-2">{material.description}</p>
                               <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
                                 <span className="bg-gray-100 px-2 py-1 rounded">{material.type}</span>
@@ -298,7 +305,7 @@ const EducationCenter = ({ isOpen, onClose }) => {
                               <Button
                                 onClick={() => handleDownloadPDF(material.id)}
                                 size="sm"
-                                className="bg-green-600 hover:bg-green-700 text-white"
+                                className={`text-white ${material.featured ? 'bg-blue-600 hover:bg-blue-700' : 'bg-green-600 hover:bg-green-700'}`}
                               >
                                 <Download className="h-4 w-4 mr-2" />
                                 Download PDF
