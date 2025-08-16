@@ -147,6 +147,36 @@ const LoginPage = ({ onLogin }) => {
           />
         </div>
         
+        {/* Announcements */}
+        {activeAnnouncements.length > 0 && (
+          <div className="space-y-2">
+            {activeAnnouncements.map((announcement) => {
+              const IconComponent = getAnnouncementIcon(announcement.type);
+              return (
+                <div 
+                  key={announcement.id}
+                  className={`rounded-lg border p-4 ${getAnnouncementColor(announcement.type)} relative`}
+                >
+                  <button
+                    onClick={() => dismissAnnouncement(announcement.id)}
+                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                  
+                  <div className="flex items-start gap-3 pr-6">
+                    <IconComponent className="h-5 w-5 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h3 className="font-semibold text-sm mb-1">{announcement.title}</h3>
+                      <p className="text-sm leading-relaxed">{announcement.message}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        
         {/* Logo */}
         <div className="text-center">
           <Logo size="large" showText={true} className="justify-center" />
