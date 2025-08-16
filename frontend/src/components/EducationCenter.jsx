@@ -101,6 +101,27 @@ const EducationCenter = ({ isOpen, onClose }) => {
       content: 'Complete step-by-step training for both user and admin platforms'
     },
     {
+      id: 'question-economy-whitepaper',
+      title: 'The Question Economy White Paper',
+      description: 'How Google\'s 2025 Algorithm Rewards Question-Answering Businesses',
+      type: 'PDF',
+      size: '3.2 MB',
+      pages: '35',
+      icon: FileText,
+      content: 'Comprehensive analysis of Google\'s search transformation and strategic response framework',
+      featured: true
+    },
+    {
+      id: 'building-great-questions',
+      title: 'Building Great Questions Guide',
+      description: 'Master the art of question recognition and content structure',
+      type: 'PDF',
+      size: '1.8 MB',
+      pages: '22',
+      icon: Search,
+      content: 'Complete guide to producing question-based content that ranks and converts'
+    },
+    {
       id: 'user-quick-start',
       title: 'User Quick Start Guide',
       description: 'Get started quickly with essential features',
