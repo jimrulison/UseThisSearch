@@ -4264,9 +4264,8 @@ class BackendTester:
                 details.append("✓ Test trial user created for convert test")
             
             # Test 1: Convert trial with valid plan
-            convert_data = {"plan_type": "professional"}
-            response = self.session.post(f"{API_BASE}/admin/trial/convert/{test_user_email}", 
-                                       json=convert_data, headers=admin_headers)
+            response = self.session.post(f"{API_BASE}/admin/trial/convert/{test_user_email}?plan_type=professional", 
+                                       headers=admin_headers)
             
             if response.status_code == 200:
                 convert_result = response.json()
