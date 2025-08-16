@@ -13,8 +13,10 @@ import {
   Calendar,
   AlertCircle,
   CheckCircle,
-  Clock
+  Clock,
+  Trash2
 } from 'lucide-react';
+import axios from 'axios';
 
 const SupportCenter = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('faq');
