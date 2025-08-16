@@ -874,8 +874,8 @@ const AdminDashboard = () => {
             </div>
 
             {/* Existing Announcements */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-              <h3 className="text-lg font-semibold text-white mb-4">Existing Announcements</h3>
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+              <h3 className="text-base font-semibold text-white mb-2">Existing Announcements</h3>
               
               {announcements.length > 0 ? (
                 <div className="space-y-4">
