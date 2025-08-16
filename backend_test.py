@@ -4299,9 +4299,8 @@ class BackendTester:
                 details.append(f"✗ Trial convert failed: HTTP {response.status_code}")
             
             # Test 2: Test invalid plan type
-            invalid_convert_data = {"plan_type": "invalid_plan"}
-            response = self.session.post(f"{API_BASE}/admin/trial/convert/{test_user_email}", 
-                                       json=invalid_convert_data, headers=admin_headers)
+            response = self.session.post(f"{API_BASE}/admin/trial/convert/{test_user_email}?plan_type=invalid_plan", 
+                                       headers=admin_headers)
             if response.status_code == 400:
                 details.append("✓ Trial convert validates plan type (invalid_plan rejected)")
             else:
