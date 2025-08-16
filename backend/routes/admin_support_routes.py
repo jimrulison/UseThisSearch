@@ -288,3 +288,72 @@ async def get_support_dashboard(current_admin=Depends(get_admin_user)):
         open_tickets=open_tickets,
         recent_activity=recent_activity
     )
+
+# User Announcements Management
+@router.get("/announcements", response_model=List[UserAnnouncementResponse])
+async def get_user_announcements(current_admin=Depends(get_admin_user)):
+    """Get all user announcements (admin only)"""
+    
+    announcements = await db.user_announcements.find({}).sort("created_at", -1).to_list(1000)
+    
+    for announcement in announcements:
+        announcement["id"] = str(announcement["_id"])
+        del announcement["_id"]
+    
+    return announcements
+
+@router.post("/announcements", response_model=UserAnnouncementResponse)
+async def create_user_announcement(
+    announcement_data: UserAnnouncementCreate,
+    current_admin=Depends(get_admin_user)
+):
+    """Create a new user announcement"""
+    
+    announcement = UserAnnouncement(
+        **announcement_data.dict(),
+        created_by=current_admin["email"]
+    )
+    
+    result = await db.user_announcements.insert_one(announcement.dict())
+    announcement.id = str(result.inserted_id)
+    
+    return announcement
+
+@router.put("/announcements/{announcement_id}", response_model=UserAnnouncementResponse)
+async def update_user_announcement(
+    announcement_id: str,
+    announcement_data: UserAnnouncementUpdate,
+    current_admin=Depends(get_admin_user)
+):
+    """Update a user announcement"""
+    
+    update_data = {k: v for k, v in announcement_data.dict().items() if v is not None}
+    update_data["updated_at"] = datetime.utcnow()
+    
+    result = await db.user_announcements.update_one(
+        {"_id": announcement_id},
+        {"$set": update_data}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Announcement not found")
+    
+    updated_announcement = await db.user_announcements.find_one({"_id": announcement_id})
+    updated_announcement["id"] = str(updated_announcement["_id"])
+    del updated_announcement["_id"]
+    
+    return updated_announcement
+
+@router.delete("/announcements/{announcement_id}")
+async def delete_user_announcement(
+    announcement_id: str,
+    current_admin=Depends(get_admin_user)
+):
+    """Delete a user announcement"""
+    
+    result = await db.user_announcements.delete_one({"_id": announcement_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Announcement not found")
+    
+    return {"message": "Announcement deleted successfully"}
