@@ -84,7 +84,12 @@ class BackendTester:
             "admin_trial_convert_functionality": {"status": "pending", "details": ""},
             # NEW TESTS for updated plan structure
             "admin_custom_pricing_new_plan_structure": {"status": "pending", "details": ""},
-            "feature_access_validation_new_plans": {"status": "pending", "details": ""}
+            "feature_access_validation_new_plans": {"status": "pending", "details": ""},
+            "admin_authentication_new_plan_testing": {"status": "pending", "details": ""},
+            "admin_trial_management_new_plans": {"status": "pending", "details": ""},
+            "group_keywords_access_validation": {"status": "pending", "details": ""},
+            "search_limits_validation_new_plans": {"status": "pending", "details": ""},
+            "backend_model_updates_validation": {"status": "pending", "details": ""}
         }
         self.session = requests.Session()
         self.session.timeout = 30
