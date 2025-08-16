@@ -51,9 +51,8 @@ const UserAvailabilityNotice = () => {
   };
 
   const handleUpgrade = () => {
-    // This would trigger the upgrade modal
-    // For now, let's just redirect to dashboard billing
-    window.location.href = '/dashboard';
+    // Show the Stripe checkout modal for upgrade
+    setShowUpgradeModal(true);
   };
 
   return (
