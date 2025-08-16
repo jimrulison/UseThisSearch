@@ -17,14 +17,10 @@ const GroupKeywordsNotice = () => {
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex-shrink-0">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
-                <Layers className="w-6 h-6 text-white" />
-              </div>
-            </div>
-            
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-3 mb-1">
+                {/* Group Keywords Logo */}
+                <Layers className="w-6 h-6 text-purple-600" />
                 <h3 className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                   GROUP KEYWORDS
                 </h3>
@@ -66,26 +62,8 @@ const GroupKeywordsNotice = () => {
             )}
           </div>
         </div>
-        
-        {/* Feature Preview */}
-        <div className="mt-4 pt-4 border-t border-purple-200">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-            <div className="flex items-center gap-2 text-gray-600">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span>Smart keyword clustering</span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-600">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span>Content strategy insights</span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-600">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>Priority scoring & gaps</span>
-            </div>
-          </div>
-        </div>
 
-        {/* Explanation Box */}
+        {/* Explanation Box - Keep this as requested */}
         <div className="mt-4 p-4 bg-red-100 border border-red-200 rounded-lg">
           <p className="text-gray-800 text-sm leading-relaxed text-center">
             Keyword clustering actually groups related keywords together so you can create one comprehensive piece of content that ranks for multiple search terms instead of dozens of separate posts.
