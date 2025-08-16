@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { useBilling } from '../contexts/BillingContext';
 import { useToast } from '../hooks/use-toast';
+import StripeCheckout from './StripeCheckout';
 
 const SearchLimitModal = ({ isOpen, onClose, usageInfo, onUpgrade }) => {
   if (!isOpen) return null;
