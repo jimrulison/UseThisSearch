@@ -4307,17 +4307,28 @@ class BackendTester:
                 all_passed = False
                 details.append(f"✗ Trial convert validation failed for invalid plan: HTTP {response.status_code}")
             
-            # Test 3: Test all valid plan types
-            valid_plans = ["solo", "professional", "agency", "enterprise"]
-            for plan in valid_plans:
+            # Test 3: Test NEW plan types as specified in review request
+            new_plan_types = ["solo", "annual", "additional_user", "additional_workspace", "additional_company"]
+            for plan in new_plan_types:
                 test_email = f"convert_test_{plan}_{int(time.time())}@example.com"
                 response = self.session.post(f"{API_BASE}/admin/trial/convert/{test_email}?plan_type={plan}", 
                                            headers=admin_headers)
                 if response.status_code in [200, 404]:  # 404 is acceptable for non-existent users
-                    details.append(f"✓ Plan type '{plan}' accepted")
+                    details.append(f"✓ NEW plan type '{plan}' accepted")
                 else:
                     all_passed = False
-                    details.append(f"✗ Plan type '{plan}' rejected: HTTP {response.status_code}")
+                    details.append(f"✗ NEW plan type '{plan}' rejected: HTTP {response.status_code}")
+                    
+            # Test 4: Test old plan types should still work for backward compatibility
+            old_plan_types = ["professional", "agency", "enterprise"]
+            for plan in old_plan_types:
+                test_email = f"convert_test_old_{plan}_{int(time.time())}@example.com"
+                response = self.session.post(f"{API_BASE}/admin/trial/convert/{test_email}?plan_type={plan}", 
+                                           headers=admin_headers)
+                if response.status_code in [200, 404]:  # 404 is acceptable for non-existent users
+                    details.append(f"✓ Legacy plan type '{plan}' still accepted")
+                else:
+                    details.append(f"Minor: Legacy plan type '{plan}' no longer accepted: HTTP {response.status_code}")
             
             # Test 4: Test non-existent user
             response = self.session.post(f"{API_BASE}/admin/trial/convert/nonexistent@example.com?plan_type=solo", 
