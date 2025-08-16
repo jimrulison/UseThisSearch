@@ -188,18 +188,13 @@ const SafeSearchWrapper = ({ children, onSearchAttempt, onCompanyCreateAttempt }
   };
 
   const handleUpgrade = (planType) => {
-    toast({
-      title: "Upgrade Required",
-      description: `Please upgrade to ${planType} plan to continue.`,
-      duration: 5000,
-    });
+    // Set the selected plan and show Stripe checkout modal
+    setSelectedUpgradePlan(planType || 'professional');
+    setShowUpgradeModal(true);
     
-    // Close modals
+    // Close other modals
     setShowSearchModal(false);
     setShowCompanyModal(false);
-    
-    // In real implementation, this would open Stripe checkout
-    console.log(`Upgrade to ${planType} plan requested`);
   };
 
   // Clone children and inject our safe handlers
