@@ -6,8 +6,8 @@ import jwt
 import uuid
 from datetime import datetime, timedelta
 
-from ..models.billing_models import UserTrialInfo, TrialStatus, PlanType
-from ..database import get_database
+from models.billing_models import UserTrialInfo, TrialStatus, PlanType
+from database import get_database
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
