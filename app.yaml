@@ -1,0 +1,56 @@
+# DigitalOcean App Platform deployment configuration
+# This file tells DigitalOcean how to deploy your app
+
+name: use-this-search
+
+services:
+# Frontend (React App)
+- name: frontend
+  source_dir: /frontend
+  github:
+    repo: YOUR_USERNAME/use-this-search  # You'll update this with your GitHub username
+    branch: main
+    deploy_on_push: true
+  build_command: yarn build
+  run_command: npx serve -s build -l 3000
+  environment_slug: node-js
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  http_port: 3000
+  routes:
+  - path: /
+  envs:
+  - key: REACT_APP_BACKEND_URL
+    value: ${backend.PUBLIC_URL}
+    type: SECRET
+
+# Backend (FastAPI)
+- name: backend
+  source_dir: /backend
+  github:
+    repo: YOUR_USERNAME/use-this-search  # You'll update this with your GitHub username
+    branch: main
+    deploy_on_push: true
+  build_command: pip install -r requirements.txt
+  run_command: uvicorn server:app --host 0.0.0.0 --port 8080
+  environment_slug: python
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  http_port: 8080
+  routes:
+  - path: /api
+  envs:
+  - key: MONGO_URL
+    value: YOUR_MONGODB_CONNECTION_STRING  # You'll get this from MongoDB Atlas
+    type: SECRET
+  - key: STRIPE_SECRET_KEY
+    value: YOUR_STRIPE_SECRET_KEY
+    type: SECRET
+  - key: STRIPE_PUBLISHABLE_KEY
+    value: YOUR_STRIPE_PUBLISHABLE_KEY
+    type: SECRET
+  - key: STRIPE_WEBHOOK_SECRET
+    value: YOUR_STRIPE_WEBHOOK_SECRET
+    type: SECRET
+
+# Database will be MongoDB Atlas (separate service)
