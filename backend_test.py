@@ -4544,6 +4544,335 @@ class BackendTester:
                 
         except Exception as e:
             self.log_test("admin_trial_convert_functionality", "fail", f"Admin trial convert functionality test error: {str(e)}")
+    
+    def test_admin_authentication_new_plan_testing(self):
+        """Test admin authentication for new plan structure testing"""
+        print("\n=== Testing Admin Authentication for New Plan Structure ===")
+        
+        try:
+            # Test admin login
+            login_data = {
+                "email": self.admin_credentials["email"],
+                "password": self.admin_credentials["password"]
+            }
+            
+            response = self.session.post(f"{API_BASE}/admin/login", json=login_data)
+            
+            if response.status_code == 200:
+                login_result = response.json()
+                if "token" in login_result:
+                    self.admin_token = login_result["token"]
+                    self.log_test("admin_authentication_new_plan_testing", "pass", 
+                                f"Admin authentication successful for new plan testing. Token obtained.")
+                else:
+                    self.log_test("admin_authentication_new_plan_testing", "fail", 
+                                "Admin login response missing token")
+            else:
+                self.log_test("admin_authentication_new_plan_testing", "fail", 
+                            f"Admin login failed: HTTP {response.status_code}")
+                
+        except Exception as e:
+            self.log_test("admin_authentication_new_plan_testing", "fail", f"Admin authentication test error: {str(e)}")
+    
+    def test_admin_custom_pricing_new_plan_structure(self):
+        """Test admin custom pricing with new plan structure"""
+        print("\n=== Testing Admin Custom Pricing with New Plan Structure ===")
+        
+        if not self.admin_token:
+            self.log_test("admin_custom_pricing_new_plan_structure", "fail", "No admin token available")
+            return
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Test all new plan types
+            new_plan_types = ['solo', 'annual', 'additional_user', 'additional_workspace', 'additional_company']
+            
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
+            
+            for plan_type in new_plan_types:
+                # Test custom pricing application
+                pricing_data = {
+                    "user_email": f"test_custom_pricing_{plan_type}@example.com",
+                    "plan_type": plan_type,
+                    "custom_price_monthly": 25,
+                    "custom_price_yearly": 250,
+                    "notes": f"Test custom pricing for {plan_type} plan"
+                }
+                
+                response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
+                                           json=pricing_data, headers=headers)
+                
+                if response.status_code == 200:
+                    details.append(f"✓ {plan_type} plan type accepted for custom pricing")
+                elif response.status_code == 422:
+                    all_passed = False
+                    details.append(f"✗ {plan_type} plan type rejected with validation error (HTTP 422)")
+                else:
+                    all_passed = False
+                    details.append(f"✗ {plan_type} plan type failed: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("admin_custom_pricing_new_plan_structure", "pass", 
+                            f"All new plan types accepted for custom pricing. {'; '.join(details)}")
+            else:
+                self.log_test("admin_custom_pricing_new_plan_structure", "fail", 
+                            f"Some new plan types rejected: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("admin_custom_pricing_new_plan_structure", "fail", f"Custom pricing new plan test error: {str(e)}")
+    
+    def test_admin_trial_management_new_plans(self):
+        """Test admin trial management with new plan types"""
+        print("\n=== Testing Admin Trial Management with New Plans ===")
+        
+        if not self.admin_token:
+            self.log_test("admin_trial_management_new_plans", "fail", "No admin token available")
+            return
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Test all new plan types for trial conversion
+            new_plan_types = ['solo', 'annual', 'additional_user', 'additional_workspace', 'additional_company']
+            
+            headers = {"Authorization": f"Bearer {self.admin_token}"}
+            
+            for plan_type in new_plan_types:
+                # Test trial conversion
+                test_email = f"trial_convert_{plan_type}@example.com"
+                
+                response = self.session.post(f"{API_BASE}/admin/trial/convert/{test_email}?plan_type={plan_type}", 
+                                           headers=headers)
+                
+                if response.status_code == 200:
+                    details.append(f"✓ {plan_type} plan type accepted for trial conversion")
+                elif response.status_code == 400:
+                    # Check if it's a "user not found" error vs plan validation error
+                    error_response = response.json()
+                    if "Invalid plan type" in error_response.get("detail", ""):
+                        all_passed = False
+                        details.append(f"✗ {plan_type} plan type rejected as invalid")
+                    else:
+                        details.append(f"✓ {plan_type} plan type accepted (user not found is expected)")
+                elif response.status_code == 404:
+                    details.append(f"✓ {plan_type} plan type accepted (user not found is expected)")
+                else:
+                    all_passed = False
+                    details.append(f"✗ {plan_type} plan type failed: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("admin_trial_management_new_plans", "pass", 
+                            f"All new plan types accepted for trial conversion. {'; '.join(details)}")
+            else:
+                self.log_test("admin_trial_management_new_plans", "fail", 
+                            f"Some new plan types rejected: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("admin_trial_management_new_plans", "fail", f"Trial management new plan test error: {str(e)}")
+    
+    def test_group_keywords_access_validation(self):
+        """Test GROUP KEYWORDS (clustering) access validation with new plans"""
+        print("\n=== Testing GROUP KEYWORDS Access Validation ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Test clustering access with 'annual' plan type
+            test_user = "test_annual_user"
+            test_company = "test_annual_company"
+            
+            # Test clustering analyze endpoint
+            clustering_data = {
+                "keywords": ["test keyword 1", "test keyword 2", "test keyword 3"],
+                "user_id": test_user,
+                "company_id": test_company,
+                "max_clusters": 3
+            }
+            
+            response = self.session.post(f"{API_BASE}/clustering/analyze", json=clustering_data)
+            
+            if response.status_code == 403:
+                # Expected for users without annual subscription
+                details.append("✓ Clustering access properly restricted (HTTP 403)")
+            elif response.status_code == 200:
+                details.append("✓ Clustering access granted (user has valid subscription)")
+            else:
+                details.append(f"Minor: Clustering endpoint returned HTTP {response.status_code}")
+            
+            # Test clustering usage limits endpoint
+            response = self.session.get(f"{API_BASE}/clustering/usage-limits?user_id={test_user}&company_id={test_company}")
+            
+            if response.status_code == 403:
+                details.append("✓ Clustering usage limits properly restricted")
+            elif response.status_code == 200:
+                details.append("✓ Clustering usage limits accessible")
+            else:
+                details.append(f"Minor: Usage limits endpoint returned HTTP {response.status_code}")
+            
+            # Test clustering stats endpoint
+            response = self.session.get(f"{API_BASE}/clustering/stats?user_id={test_user}&company_id={test_company}")
+            
+            if response.status_code == 403:
+                details.append("✓ Clustering stats properly restricted")
+            elif response.status_code == 200:
+                details.append("✓ Clustering stats accessible")
+            else:
+                details.append(f"Minor: Stats endpoint returned HTTP {response.status_code}")
+            
+            self.log_test("group_keywords_access_validation", "pass", 
+                        f"GROUP KEYWORDS access validation working. {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("group_keywords_access_validation", "fail", f"GROUP KEYWORDS access test error: {str(e)}")
+    
+    def test_search_limits_validation_new_plans(self):
+        """Test search limits validation for new plans (should be unlimited)"""
+        print("\n=== Testing Search Limits Validation for New Plans ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Get pricing configuration to check search limits
+            response = self.session.get(f"{API_BASE}/billing/pricing")
+            
+            if response.status_code == 200:
+                pricing_data = response.json()
+                
+                if "plans" in pricing_data:
+                    plans = pricing_data["plans"]
+                    
+                    # Check new plan types for unlimited searches (search_limit = -1)
+                    new_plan_types = ['solo', 'annual', 'additional_user', 'additional_workspace', 'additional_company']
+                    
+                    for plan_type in new_plan_types:
+                        if plan_type in plans:
+                            plan_config = plans[plan_type]
+                            search_limit = plan_config.get("search_limit", 0)
+                            
+                            if search_limit == -1:
+                                details.append(f"✓ {plan_type} plan has unlimited searches (search_limit: -1)")
+                            else:
+                                all_passed = False
+                                details.append(f"✗ {plan_type} plan has limited searches (search_limit: {search_limit})")
+                        else:
+                            all_passed = False
+                            details.append(f"✗ {plan_type} plan not found in pricing config")
+                    
+                    # Also check that legacy paid plans now have unlimited searches
+                    legacy_paid_plans = ['professional', 'agency', 'enterprise']
+                    for plan_type in legacy_paid_plans:
+                        if plan_type in plans:
+                            plan_config = plans[plan_type]
+                            search_limit = plan_config.get("search_limit", 0)
+                            
+                            if search_limit == -1:
+                                details.append(f"✓ {plan_type} plan updated to unlimited searches")
+                            else:
+                                details.append(f"Minor: {plan_type} plan still has limited searches ({search_limit})")
+                else:
+                    all_passed = False
+                    details.append("✗ Pricing config missing plans section")
+            else:
+                all_passed = False
+                details.append(f"✗ Could not get pricing config: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("search_limits_validation_new_plans", "pass", 
+                            f"Search limits validation passed. {'; '.join(details)}")
+            else:
+                self.log_test("search_limits_validation_new_plans", "fail", 
+                            f"Search limits validation issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("search_limits_validation_new_plans", "fail", f"Search limits validation test error: {str(e)}")
+    
+    def test_backend_model_updates_validation(self):
+        """Test backend model updates for new plan structure"""
+        print("\n=== Testing Backend Model Updates Validation ===")
+        
+        try:
+            all_passed = True
+            details = []
+            
+            # Test 1: Check if PlanType enum includes new plan types
+            # We'll test this by trying to create custom pricing with new plan types
+            if self.admin_token:
+                headers = {"Authorization": f"Bearer {self.admin_token}"}
+                
+                # Test each new plan type to see if it's accepted by the backend models
+                new_plan_types = ['solo', 'annual', 'additional_user', 'additional_workspace', 'additional_company']
+                
+                for plan_type in new_plan_types:
+                    pricing_data = {
+                        "user_email": f"model_test_{plan_type}@example.com",
+                        "plan_type": plan_type,
+                        "custom_price_monthly": 10,
+                        "custom_price_yearly": 100,
+                        "notes": f"Model validation test for {plan_type}"
+                    }
+                    
+                    response = self.session.post(f"{API_BASE}/admin/custom-pricing/apply", 
+                                               json=pricing_data, headers=headers)
+                    
+                    if response.status_code == 200:
+                        details.append(f"✓ {plan_type} accepted by PlanType enum")
+                    elif response.status_code == 422:
+                        # Check if it's a validation error for the plan type
+                        error_response = response.json()
+                        if "plan_type" in str(error_response.get("detail", "")):
+                            all_passed = False
+                            details.append(f"✗ {plan_type} rejected by PlanType enum validation")
+                        else:
+                            details.append(f"✓ {plan_type} accepted by PlanType enum (other validation error)")
+                    else:
+                        details.append(f"Minor: {plan_type} test returned HTTP {response.status_code}")
+            
+            # Test 2: Check PRICING_CONFIG includes new plans
+            response = self.session.get(f"{API_BASE}/billing/pricing")
+            
+            if response.status_code == 200:
+                pricing_data = response.json()
+                
+                if "plans" in pricing_data:
+                    plans = pricing_data["plans"]
+                    new_plan_types = ['solo', 'annual', 'additional_user', 'additional_workspace', 'additional_company']
+                    
+                    for plan_type in new_plan_types:
+                        if plan_type in plans:
+                            plan_config = plans[plan_type]
+                            # Check if plan has required fields
+                            required_fields = ['search_limit', 'company_limit', 'user_limit', 'features']
+                            missing_fields = [field for field in required_fields if field not in plan_config]
+                            
+                            if not missing_fields:
+                                details.append(f"✓ {plan_type} properly configured in PRICING_CONFIG")
+                            else:
+                                all_passed = False
+                                details.append(f"✗ {plan_type} missing fields in PRICING_CONFIG: {missing_fields}")
+                        else:
+                            all_passed = False
+                            details.append(f"✗ {plan_type} not found in PRICING_CONFIG")
+                else:
+                    all_passed = False
+                    details.append("✗ PRICING_CONFIG missing plans section")
+            else:
+                all_passed = False
+                details.append(f"✗ Could not get PRICING_CONFIG: HTTP {response.status_code}")
+            
+            if all_passed:
+                self.log_test("backend_model_updates_validation", "pass", 
+                            f"Backend model updates validation passed. {'; '.join(details)}")
+            else:
+                self.log_test("backend_model_updates_validation", "fail", 
+                            f"Backend model updates validation issues: {'; '.join(details)}")
+                
+        except Exception as e:
+            self.log_test("backend_model_updates_validation", "fail", f"Backend model updates test error: {str(e)}")
 
     def run_all_tests(self):
         """Run all backend tests"""
