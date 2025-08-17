@@ -1,0 +1,14 @@
+{
+  "name": "use-this-search",
+  "version": "1.0.0",
+  "description": "AI-Powered Keyword Research SaaS Platform",
+  "scripts": {
+    "build": "cd frontend && yarn install --frozen-lockfile && yarn build",
+    "start": "cd backend && uvicorn server:app --host 0.0.0.0 --port $PORT",
+    "install": "cd backend && pip install -r requirements.txt"
+  },
+  "engines": {
+    "node": "18.x",
+    "python": "3.11.x"
+  }
+}
