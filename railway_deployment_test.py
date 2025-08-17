@@ -188,7 +188,7 @@ class RailwayDeploymentTester:
                     
                     # Test admin-protected endpoint
                     headers = {"Authorization": f"Bearer {admin_token}"}
-                    response = self.session.get(f"{API_BASE}/admin/analytics/global", headers=headers)
+                    response = self.session.get(f"{API_BASE}/admin/analytics", headers=headers)
                     
                     if response.status_code == 200:
                         analytics = response.json()
