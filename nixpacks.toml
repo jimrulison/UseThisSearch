@@ -1,23 +1,22 @@
 [variables]
 NIXPACKS_PYTHON_VERSION = "3.11"
-NIXPACKS_NODE_VERSION = "18"
 
 [phases.setup]
 nixPkgs = ["python311", "python311Packages.pip", "nodejs_18", "yarn"]
 
 [phases.install]
 cmds = [
-  "cd backend && pip install --upgrade pip",
-  "cd backend && pip install -r requirements.txt"
+  "pip install --upgrade pip",
+  "pip install -r backend/requirements.txt"
 ]
 
 [phases.build]
 cmds = [
-  "cd frontend && yarn install --frozen-lockfile",
-  "cd frontend && yarn build",
-  "mkdir -p dist",
-  "cp -r frontend/build/* dist/",
-  "cp -r backend/* dist/"
+  "cd frontend",
+  "yarn install --frozen-lockfile",
+  "yarn build",  
+  "cd ..",
+  "cp -r frontend/build backend/static"
 ]
 
 [start]
