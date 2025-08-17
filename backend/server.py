@@ -168,6 +168,25 @@ api_router.include_router(auth_router, tags=["auth"])
 # Include the router in the main app
 app.include_router(api_router)
 
+# Serve static files (React build)
+static_path = Path(__file__).parent / "static"
+if static_path.exists():
+    app.mount("/static", StaticFiles(directory=static_path), name="static")
+    
+    # Serve React app for all non-API routes
+    @app.get("/{full_path:path}")
+    async def serve_react_app(full_path: str):
+        if full_path.startswith("api/"):
+            # Let FastAPI handle API routes
+            return None
+        
+        # Serve index.html for all other routes (SPA routing)
+        index_file = static_path / "index.html"
+        if index_file.exists():
+            return FileResponse(index_file)
+        else:
+            return {"error": "Frontend not built"}
+
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
