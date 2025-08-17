@@ -1,0 +1,1 @@
+user_problem_statement: "Update the KeywordClustering component to use the term 'Group Keywords' instead of 'clustering' as per the user's latest request. Update the KeywordClustering component to use the term 'GROUP KEYWORDS'. Make that box on the bottom a solid light red so it stands out more."
