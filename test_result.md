@@ -41,6 +41,7 @@ metadata:
 test_plan:
   current_focus:
     - "Railway Deployment Preparation"
+    - "Frontend Integration Testing"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
