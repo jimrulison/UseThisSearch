@@ -1,1 +1,2 @@
-web: cd backend && uvicorn server:app --host 0.0.0.0 --port $PORT
+web: cd backend && python -m uvicorn server:app --host 0.0.0.0 --port $PORT
+release: cd backend && python -c "print('Backend ready for deployment')"
